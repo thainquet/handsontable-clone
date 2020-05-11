@@ -2,10 +2,18 @@ table, th, td {
   border: 1px solid black;
   border-collapse: collapse;
 }
-th {
+th{
   width: 100px;
 }
 
-.scroll-x-able {
-  overflow-x:auto;
+th:focus{
+  outline: none;
+}
+
+.scroll {
+  width: max-content
+}
+
+.cell {
+  height: 100%;
 }
