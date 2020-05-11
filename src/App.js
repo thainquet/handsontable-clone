@@ -22,11 +22,11 @@ const makeid = (length) => {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
-}
+};
 
 function App() {
-  const [rowNum, setRowNum] = useState(20);
-  const [colNum, setColNum] = useState(10);
+  const [rowNum, setRowNum] = useState(16);
+  const [colNum, setColNum] = useState(11);
   const [initArray, setInitArray] = useState([]);
   let count = -1;
 
@@ -42,26 +42,29 @@ function App() {
   };
 
   const handleClickCell = (e) => {
-    let tungdo = e.target.parentNode.rowIndex;
-    let hoanhdo = e.target.cellIndex;
-
-    let th = e.target
-    th.parentNode.parentNode.childNodes.forEach(tr => {
-      tr.style.backgroundColor = null
-      tr.childNodes.forEach(th => th.style.backgroundColor = null)
-    })
+    let th = e.target;
+    th.parentNode.parentNode.childNodes.forEach((tr) => {
+      tr.style.backgroundColor = null;
+      tr.childNodes.forEach((th) => (th.style.backgroundColor = null));
+    });
 
     if (e.target.cellIndex === 0) {
       e.target.parentNode.style.backgroundColor = "#e6efff";
     } else {
-      e.target.parentNode.style.backgroundColor = ""
+      e.target.parentNode.style.backgroundColor = "";
       e.target.style.backgroundColor = "#e6efff";
+      e.target.contentEditable = "true";
     }
-    // console.log("value", initArray[tungdo][hoanhdo]);
   };
 
   const handleChangeCell = (e) => {
-    console.log(e.target.value);
+    let tungdo = e.target.parentNode.rowIndex;
+    let hoanhdo = e.target.cellIndex;
+
+    let data = e.target.innerHTML;
+    let tempArr = [...initArray];
+    tempArr[tungdo][hoanhdo] = data;
+    setInitArray(tempArr);
   };
 
   return (
@@ -74,7 +77,9 @@ function App() {
         placeholder="column"
         onChange={(e) => setColNum(parseInt(e.target.value))}
       />
-      <button onClick={() => handleClickCreate()}>Create</button>
+      <button onClick={() => handleClickCreate()} onChange={handleChangeCell}>
+        Create
+      </button>
       <div className="scroll">
         <table>
           <tbody>
@@ -83,9 +88,7 @@ function App() {
                 <>
                   <tr>
                     {i.map((j) => (
-                      <th onClick={handleClickCell}>
-                        {j}
-                      </th>
+                      <th onClick={handleClickCell}>{j}</th>
                     ))}
                   </tr>
                 </>

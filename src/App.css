@@ -1,17 +1,22 @@
-table, th, td {
+table,
+th,
+td {
   border: 1px solid black;
   border-collapse: collapse;
 }
-th{
+th {
   width: 100px;
+  height: 30px;
+  max-width: 100px;
+  word-wrap: break-word;
 }
 
-th:focus{
+th:focus {
   outline: none;
 }
 
 .scroll {
-  width: max-content
+  width: max-content;
 }
 
 .cell {
