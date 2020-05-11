@@ -39,10 +39,10 @@ function App() {
       event.preventDefault();
       const clickX = event.clientX;
       const clickY = event.clientY;
-      setTop(clickY);
-      setLeft(clickX);
-      // setVisible(true);
+      setTop(clickY + 5);
+      setLeft(clickX + 5);
       document.elementFromPoint(clickX, clickY).click();
+      setVisible(true);
     });
   });
 
