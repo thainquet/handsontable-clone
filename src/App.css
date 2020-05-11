@@ -22,3 +22,7 @@ th:focus {
 .cell {
   height: 100%;
 }
+
+.hiden {
+  display: none;
+}

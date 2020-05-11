@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import Table from "./components/Table";
 
 const data = [
   { id: 1, name: "Wasif", age: 21, email: "wasif@email.com" },
@@ -28,7 +27,24 @@ function App() {
   const [rowNum, setRowNum] = useState(16);
   const [colNum, setColNum] = useState(11);
   const [initArray, setInitArray] = useState([]);
+  // For context menu
+  const [visible, setVisible] = useState(false);
+  const [top, setTop] = useState(0);
+  const [left, setLeft] = useState(0);
+
   let count = -1;
+
+  useEffect(() => {
+    window.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+      const clickX = event.clientX;
+      const clickY = event.clientY;
+      setTop(clickY);
+      setLeft(clickX);
+      // setVisible(true);
+      document.elementFromPoint(clickX, clickY).click();
+    });
+  });
 
   const handleClickCreate = () => {
     let arr = [...Array(rowNum)].map((x) => Array(colNum).fill(makeid(5)));
@@ -67,8 +83,18 @@ function App() {
     setInitArray(tempArr);
   };
 
+  const menuStyle = {
+    position: "absolute",
+    top: `${top}px`,
+    left: `${left}px`,
+    border: "1px solid red",
+  };
+
   return (
     <div>
+      <div className={visible ? "" : "hiden"} style={menuStyle}>
+        Test
+      </div>
       <input
         placeholder="row"
         onChange={(e) => setRowNum(parseInt(e.target.value))}
