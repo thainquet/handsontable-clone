@@ -15,17 +15,19 @@ const makeid = (length) => {
 function App() {
   const [rowNum, setRowNum] = useState(6);
   const [colNum, setColNum] = useState(7);
-  const [initArray, setInitArray] = useState([]);
+  const [initArray, setInitArray] = useState(
+    [...Array(rowNum)].map((x) => Array(colNum).fill(""))
+  );
   // For context menu
   const [visible, setVisible] = useState(false);
   const [top, setTop] = useState(0);
   const [left, setLeft] = useState(0);
 
-  let count = -1;
-  let keycount = 0;
+  let count = -1; // index for first row and column
+  let keycount = 0; // key in loop render
 
   useEffect(() => {
-    let arr = [...Array(rowNum)].map((x) => Array(colNum).fill(""));
+    let arr = [...initArray];
     arr.forEach((i) => {
       i[0] = arr.indexOf(i);
     });
@@ -57,6 +59,8 @@ function App() {
     window.addEventListener("click", handleClickOutsideMenu);
     return () => window.removeEventListener("click", handleClickOutsideMenu);
   }, [visible]);
+
+  useEffect(() => console.log(initArray), [initArray]);
 
   const handleClickCreate = () => {
     let arr = [...Array(rowNum)].map((x) => Array(colNum).fill(makeid(5)));
@@ -139,6 +143,19 @@ function App() {
     setInitArray(tempArr);
   };
 
+  const handleDeleteColumnContent = (event) => {
+    event.preventDefault();
+    const thisTH = document.elementFromPoint(left - 5, top - 5);
+    const indexOfCellAndArrayItem = thisTH.cellIndex;
+    let tempArr = [...initArray];
+    tempArr.forEach((el, index) => {
+      if (index !== 0) {
+        el[indexOfCellAndArrayItem] = "";
+      }
+    });
+    setInitArray(tempArr);
+  };
+
   const handleInsertRow = (event) => {
     event.preventDefault();
     const position = event.target.getAttribute("data-position");
@@ -165,6 +182,17 @@ function App() {
     setInitArray(tempArr);
   };
 
+  const handleDeleteRowContent = (event) => {
+    event.preventDefault();
+    const thisTH = document.elementFromPoint(left - 5, top - 5);
+    const indexOfRowAndArrayItem = thisTH.parentNode.rowIndex;
+    let tempArr = [...initArray];
+    tempArr[indexOfRowAndArrayItem] = tempArr[
+      indexOfRowAndArrayItem
+    ].map((el, index) => (index !== 0 ? (el = "") : el));
+    setInitArray(tempArr);
+  };
+
   return (
     <div>
       <div className={visible ? "menu" : "menu hiden"} style={menuStyle}>
@@ -182,25 +210,34 @@ function App() {
         >
           Insert column left
         </div>
-        <div className="menu-line borderBottom" onClick={handleDeleteColumn}>
+        <div className="menu-line" onClick={handleDeleteColumn}>
           Delete this column
+        </div>
+        <div
+          className="menu-line borderBottom"
+          onClick={handleDeleteColumnContent}
+        >
+          Delete this column content
         </div>
         <div
           className="menu-line"
           data-position="above"
           onClick={handleInsertRow}
         >
-          Insert row to above
+          Insert row above
         </div>
         <div
           className="menu-line borderBottom"
           data-position="below"
           onClick={handleInsertRow}
         >
-          Insert row to below
+          Insert row below
         </div>
         <div className="menu-line" onClick={handleDeleteRow}>
           Delete this row
+        </div>
+        <div className="menu-line" onClick={handleDeleteRowContent}>
+          Delete this row content
         </div>
       </div>
       <input
