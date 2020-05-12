@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./App.css";
 
 const data = [
@@ -33,26 +33,43 @@ function App() {
   const [left, setLeft] = useState(0);
 
   let count = -1;
-  const handleContextClick = (event) => {
-    event.preventDefault();
-    const clickX = event.clientX;
-    const clickY = event.clientY;
-    setTop(clickY + 5);
-    setLeft(clickX + 5);
-    document.elementFromPoint(clickX, clickY).click();
-    setVisible(true);
+  let keycount = 0;
+
+  const init = () => {
+    let arr = [...Array(rowNum)].map((x) => Array(colNum).fill(makeid(5)));
+    arr.forEach((i) => {
+      i[0] = arr.indexOf(i);
+    });
+    for (let i = 0; i < arr[0].length; i++) {
+      arr[0][i] = ++count;
+    }
+    setInitArray(arr);
   };
   useEffect(() => {
-    window.addEventListener("contextmenu", handleContextClick);
-  });
+    init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
-    const handleContextClickOutside = (event) => {
-      setVisible(false);
-      window.removeEventListener("contextmenu", handleContextClick);
+    const handleRightClick = (event) => {
+      event.preventDefault();
+      const clickX = event.clientX;
+      const clickY = event.clientY;
+      setTop(clickY + 5);
+      setLeft(clickX + 5);
+      document.elementFromPoint(clickX, clickY).click();
+      setVisible(true);
     };
-    window.addEventListener("click", handleContextClickOutside);
-    return () => window.removeEventListener("click", handleContextClickOutside);
+    window.addEventListener("contextmenu", handleRightClick);
+    return () => window.removeEventListener("contextmenu", handleRightClick);
+  }, [visible]);
+
+  useEffect(() => {
+    const handleClickOutsideMenu = (event) => {
+      setVisible(false);
+    };
+    window.addEventListener("click", handleClickOutsideMenu);
+    return () => window.removeEventListener("click", handleClickOutsideMenu);
   }, [visible]);
 
   const handleClickCreate = () => {
@@ -106,11 +123,73 @@ function App() {
     left: `${left}px`,
   };
 
+  const handleInsertColumn = (event) => {
+    event.preventDefault();
+    const position = event.target.getAttribute("data-position");
+    const thisTH = document.elementFromPoint(left - 5, top - 5);
+    const indexOfCellAndArrayItem = thisTH.cellIndex;
+    let tempArr = [...initArray];
+    if (position === "right") {
+      tempArr.forEach((el) => {
+        el.splice(indexOfCellAndArrayItem + 1, 0, "");
+      });
+    }
+    if (position === "left") {
+      tempArr.forEach((el) => {
+        el.splice(indexOfCellAndArrayItem, 0, "");
+      });
+    }
+    setInitArray(tempArr);
+  };
+
+  const handleInsertRow = (event) => {
+    event.preventDefault();
+    const position = event.target.getAttribute("data-position");
+    const thisTH = document.elementFromPoint(left - 5, top - 5);
+    const indexOfRowAndArrayItem = thisTH.parentNode.rowIndex;
+    let tempArr = [...initArray];
+    const lengthItem = tempArr[0].length;
+    const Item = new Array(lengthItem).fill("");
+    if (position === "below") {
+      tempArr.splice(indexOfRowAndArrayItem + 1, 0, Item);
+    }
+    if (position === "above") {
+      tempArr.splice(indexOfRowAndArrayItem, 0, Item);
+    }
+    setInitArray(tempArr);
+  };
+
   return (
     <div>
       <div className={visible ? "menu" : "menu hiden"} style={menuStyle}>
-        <div className="menu-line">Insert column right</div>
-        <div className="menu-line">Insert row to below</div>
+        <div
+          className="menu-line"
+          data-position="right"
+          onClick={handleInsertColumn}
+        >
+          Insert column right
+        </div>
+        <div
+          className="menu-line"
+          data-position="left"
+          onClick={handleInsertColumn}
+        >
+          Insert column left
+        </div>
+        <div
+          className="menu-line"
+          data-position="above"
+          onClick={handleInsertRow}
+        >
+          Insert row to above
+        </div>
+        <div
+          className="menu-line"
+          data-position="below"
+          onClick={handleInsertRow}
+        >
+          Insert row to below
+        </div>
       </div>
       <input
         placeholder="row"
@@ -128,13 +207,13 @@ function App() {
           <tbody>
             {initArray &&
               initArray.map((i) => (
-                <>
-                  <tr>
-                    {i.map((j) => (
-                      <th onClick={handleClickCell}>{j}</th>
-                    ))}
-                  </tr>
-                </>
+                <tr key={++keycount}>
+                  {i.map((j) => (
+                    <th key={++keycount + 100} onClick={handleClickCell}>
+                      {j}
+                    </th>
+                  ))}
+                </tr>
               ))}
           </tbody>
         </table>
