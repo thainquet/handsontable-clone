@@ -58,18 +58,26 @@ function App() {
   };
 
   const handleClickCell = (e) => {
-    let th = e.target;
-    th.parentNode.parentNode.childNodes.forEach((tr) => {
+    let thisTH = e.target;
+    let thisTR = e.target.parentNode;
+    let allTR = thisTH.parentNode.parentNode.childNodes;
+    allTR.forEach((tr) => {
       tr.style.backgroundColor = null;
       tr.childNodes.forEach((th) => (th.style.backgroundColor = null));
     });
-
-    if (e.target.cellIndex === 0) {
-      e.target.parentNode.style.backgroundColor = "#e6efff";
+    if (thisTH.cellIndex === 0 && thisTR.rowIndex === 0) {
+      thisTH.style.backgroundColor = "#e6efff";
+    } else if (thisTH.cellIndex === 0 && thisTR.rowIndex !== 0) {
+      thisTR.style.backgroundColor = "#e6efff";
+    } else if (thisTH.cellIndex !== 0 && thisTR.rowIndex === 0) {
+      let index = thisTH.cellIndex;
+      allTR.forEach(
+        (tr) => (tr.childNodes[index].style.backgroundColor = "#e6efff")
+      );
     } else {
-      e.target.parentNode.style.backgroundColor = "";
-      e.target.style.backgroundColor = "#e6efff";
-      e.target.contentEditable = "true";
+      thisTR.style.backgroundColor = "";
+      thisTH.style.backgroundColor = "#e6efff";
+      thisTH.contentEditable = "true";
     }
   };
 
