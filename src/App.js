@@ -1,16 +1,5 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
-
-const data = [
-  { id: 1, name: "Wasif", age: 21, email: "wasif@email.com" },
-  { id: 2, name: "Ali", age: 19, email: "ali@email.com" },
-  { id: 3, name: "Saad", age: 16, email: "saad@email.com" },
-  { id: 4, name: "Asad", age: 25, email: "asad@email.com" },
-];
-
-const Array2D = (row, col, value) =>
-  [...Array(row)].map((x) => Array(col).fill(value));
 
 const makeid = (length) => {
   var result = "";
@@ -25,7 +14,7 @@ const makeid = (length) => {
 
 function App() {
   const [rowNum, setRowNum] = useState(6);
-  const [colNum, setColNum] = useState(11);
+  const [colNum, setColNum] = useState(7);
   const [initArray, setInitArray] = useState([]);
   // For context menu
   const [visible, setVisible] = useState(false);
@@ -35,8 +24,8 @@ function App() {
   let count = -1;
   let keycount = 0;
 
-  const init = () => {
-    let arr = [...Array(rowNum)].map((x) => Array(colNum).fill(makeid(5)));
+  useEffect(() => {
+    let arr = [...Array(rowNum)].map((x) => Array(colNum).fill(""));
     arr.forEach((i) => {
       i[0] = arr.indexOf(i);
     });
@@ -44,9 +33,6 @@ function App() {
       arr[0][i] = ++count;
     }
     setInitArray(arr);
-  };
-  useEffect(() => {
-    init();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -142,6 +128,17 @@ function App() {
     setInitArray(tempArr);
   };
 
+  const handleDeleteColumn = (event) => {
+    event.preventDefault();
+    const thisTH = document.elementFromPoint(left - 5, top - 5);
+    const indexOfCellAndArrayItem = thisTH.cellIndex;
+    let tempArr = [...initArray];
+    tempArr.forEach((el) => {
+      el.splice(indexOfCellAndArrayItem, 1);
+    });
+    setInitArray(tempArr);
+  };
+
   const handleInsertRow = (event) => {
     event.preventDefault();
     const position = event.target.getAttribute("data-position");
@@ -159,6 +156,15 @@ function App() {
     setInitArray(tempArr);
   };
 
+  const handleDeleteRow = (event) => {
+    event.preventDefault();
+    const thisTH = document.elementFromPoint(left - 5, top - 5);
+    const indexOfRowAndArrayItem = thisTH.parentNode.rowIndex;
+    let tempArr = [...initArray];
+    tempArr.splice(indexOfRowAndArrayItem, 1);
+    setInitArray(tempArr);
+  };
+
   return (
     <div>
       <div className={visible ? "menu" : "menu hiden"} style={menuStyle}>
@@ -170,11 +176,14 @@ function App() {
           Insert column right
         </div>
         <div
-          className="menu-line"
+          className="menu-line borderBottom"
           data-position="left"
           onClick={handleInsertColumn}
         >
           Insert column left
+        </div>
+        <div className="menu-line borderBottom" onClick={handleDeleteColumn}>
+          Delete this column
         </div>
         <div
           className="menu-line"
@@ -184,11 +193,14 @@ function App() {
           Insert row to above
         </div>
         <div
-          className="menu-line"
+          className="menu-line borderBottom"
           data-position="below"
           onClick={handleInsertRow}
         >
           Insert row to below
+        </div>
+        <div className="menu-line" onClick={handleDeleteRow}>
+          Delete this row
         </div>
       </div>
       <input
@@ -221,10 +233,5 @@ function App() {
     </div>
   );
 }
-// const App = () => (
-//   <div style={{ width: 'max-content' }}>
-//     <Table x={50} y={10} />
-//   </div>
-// )
 
 export default App;

@@ -41,3 +41,7 @@ th:focus {
   background-color: #f0f0f0;
   cursor: pointer;
 }
+
+.borderBottom {
+  border-bottom: 1px solid rgb(172, 171, 171);
+}
