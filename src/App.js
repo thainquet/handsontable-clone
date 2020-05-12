@@ -24,7 +24,7 @@ const makeid = (length) => {
 };
 
 function App() {
-  const [rowNum, setRowNum] = useState(16);
+  const [rowNum, setRowNum] = useState(6);
   const [colNum, setColNum] = useState(11);
   const [initArray, setInitArray] = useState([]);
   // For context menu
@@ -33,18 +33,27 @@ function App() {
   const [left, setLeft] = useState(0);
 
   let count = -1;
+  const handleContextClick = (event) => {
+    event.preventDefault();
+    const clickX = event.clientX;
+    const clickY = event.clientY;
+    setTop(clickY + 5);
+    setLeft(clickX + 5);
+    document.elementFromPoint(clickX, clickY).click();
+    setVisible(true);
+  };
+  useEffect(() => {
+    window.addEventListener("contextmenu", handleContextClick);
+  });
 
   useEffect(() => {
-    window.addEventListener("contextmenu", (event) => {
-      event.preventDefault();
-      const clickX = event.clientX;
-      const clickY = event.clientY;
-      setTop(clickY + 5);
-      setLeft(clickX + 5);
-      document.elementFromPoint(clickX, clickY).click();
-      setVisible(true);
-    });
-  });
+    const handleContextClickOutside = (event) => {
+      setVisible(false);
+      window.removeEventListener("contextmenu", handleContextClick);
+    };
+    window.addEventListener("click", handleContextClickOutside);
+    return () => window.removeEventListener("click", handleContextClickOutside);
+  }, [visible]);
 
   const handleClickCreate = () => {
     let arr = [...Array(rowNum)].map((x) => Array(colNum).fill(makeid(5)));
@@ -95,26 +104,26 @@ function App() {
     position: "absolute",
     top: `${top}px`,
     left: `${left}px`,
-    border: "1px solid red",
   };
 
   return (
     <div>
-      <div className={visible ? "" : "hiden"} style={menuStyle}>
-        Test
+      <div className={visible ? "menu" : "menu hiden"} style={menuStyle}>
+        <div className="menu-line">Insert column right</div>
+        <div className="menu-line">Insert row to below</div>
       </div>
       <input
         placeholder="row"
-        onChange={(e) => setRowNum(parseInt(e.target.value))}
+        onChange={(e) => setRowNum(parseInt(e.target.value) + 1)}
       />
       <input
         placeholder="column"
-        onChange={(e) => setColNum(parseInt(e.target.value))}
+        onChange={(e) => setColNum(parseInt(e.target.value) + 1)}
       />
       <button onClick={() => handleClickCreate()} onChange={handleChangeCell}>
         Create
       </button>
-      <div className="scroll">
+      <div className="scrollable">
         <table>
           <tbody>
             {initArray &&

@@ -15,7 +15,7 @@ th:focus {
   outline: none;
 }
 
-.scroll {
+.scrollable {
   width: max-content;
 }
 
@@ -25,4 +25,19 @@ th:focus {
 
 .hiden {
   display: none;
+}
+
+.menu {
+  width: 200px;
+  background-color: #ffffff;
+  border: 1px solid gray;
+}
+
+.menu-line {
+  padding: 5px 10px 5px 10px;
+}
+
+.menu-line:hover {
+  background-color: #f0f0f0;
+  cursor: pointer;
 }
