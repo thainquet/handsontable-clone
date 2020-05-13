@@ -329,6 +329,53 @@ function Table() {
     };
   });
 
+  useEffect(() => {
+    var thElm;
+    var startOffset;
+
+    Array.prototype.forEach.call(
+      document.querySelectorAll("table th"),
+      function (th) {
+        th.style.position = "relative";
+
+        var grip = document.createElement("div");
+        grip.innerHTML = "&nbsp;";
+        grip.style.bottom = 0;
+        grip.style.left = 0;
+        grip.style.right = 0;
+        grip.style.height = "5px";
+        grip.style.position = "absolute";
+        grip.style.cursor = "row-resize";
+        grip.addEventListener("mousedown", function (e) {
+          thElm = th;
+          startOffset = th.offsetHeight - e.pageY;
+        });
+
+        th.appendChild(grip);
+      }
+    );
+
+    document.addEventListener("mousemove", function (e) {
+      if (thElm) {
+        thElm.style.height = startOffset + e.pageY + "px";
+      }
+    });
+
+    document.addEventListener("mouseup", function () {
+      thElm = undefined;
+    });
+    return () => {
+      document.removeEventListener("mousemove", function (e) {
+        if (thElm) {
+          thElm.style.height = startOffset + e.pageY + "px";
+        }
+      });
+      document.removeEventListener("mouseup", function () {
+        thElm = undefined;
+      });
+    };
+  });
+
   return (
     <div style={{ position: "relative" }}>
       <div className={visible ? "menu" : "menu hiden"} style={menuStyle}>
@@ -403,13 +450,6 @@ function Table() {
                       onClick={handleClickCell}
                     >
                       <input onChange={handleChangeCell} value={j} />
-                      {/* <div
-                        className="resizeColumn"
-                        // onMouseDown={resizeColumn}
-                        // onMouseUp={resizeColumnOut}
-                      >
-                        &nbsp;
-                      </div> */}
                     </th>
                   ))}
                 </tr>
