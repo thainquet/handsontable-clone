@@ -47,6 +47,7 @@ function App() {
     for (let i = 0; i < arr[0].length; i++) {
       arr[0][i] = ++count;
     }
+    arr[0][0] = ""
     setInitArray(arr);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -80,10 +81,9 @@ function App() {
     };
   }, [visible]);
 
-  // useEffect(() => console.log(initArray), [initArray]);
+  useEffect(() => console.log(initArray), [initArray]);
 
   const handleClickCreate = (e) => {
-    e.preventDefault();
     let arr = [...Array(rowNum)].map((x) => Array(colNum).fill(makeid(5)));
     arr.forEach((i) => {
       i[0] = arr.indexOf(i);
@@ -96,37 +96,44 @@ function App() {
 
   const handleClickCell = (e) => {
     e.preventDefault();
-    let thisTH = e.target;
-    let thisTR = e.target.parentNode;
+    let thisInput = e.target;
+    let thisTH = thisInput.parentNode;
+    let thisTR = thisTH.parentNode;
     let allTR = thisTH.parentNode.parentNode.childNodes;
     allTR.forEach((tr) => {
-      tr.style.backgroundColor = null;
-      tr.childNodes.forEach((th) => (th.style.backgroundColor = null));
+      tr.childNodes.forEach((th) => (th.childNodes.forEach(ip => ip.style.backgroundColor = null)));
     });
     if (thisTH.cellIndex === 0 && thisTR.rowIndex === 0) {
-      thisTH.style.backgroundColor = "#e6efff";
+      thisInput.style.backgroundColor = "#e6efff";
     } else if (thisTH.cellIndex === 0 && thisTR.rowIndex !== 0) {
       thisTR.style.backgroundColor = "#e6efff";
+      thisTR.childNodes.forEach(
+        (th) => (th.childNodes[0].style.backgroundColor = "#e6efff")
+      );
     } else if (thisTH.cellIndex !== 0 && thisTR.rowIndex === 0) {
       let index = thisTH.cellIndex;
       allTR.forEach(
-        (tr) => (tr.childNodes[index].style.backgroundColor = "#e6efff")
+        (tr) => (tr.childNodes[index].childNodes[0].style.backgroundColor = "#e6efff")
       );
     } else {
       thisTR.style.backgroundColor = "";
-      thisTH.style.backgroundColor = "#e6efff";
+      thisTR.childNodes.forEach(
+        (th) => (th.childNodes[0].style.backgroundColor = "")
+      );
+      thisInput.style.backgroundColor = "#e6efff"
       thisTH.contentEditable = "true";
     }
   };
 
   const handleChangeCell = (e) => {
     e.preventDefault();
-    let tungdo = e.target.parentNode.rowIndex;
-    let hoanhdo = e.target.cellIndex;
+    let tungdo = e.target.parentNode.parentNode.rowIndex;
+    let hoanhdo = e.target.parentNode.cellIndex;
 
-    let data = e.target.innerHTML;
+    let data = e.target.value;
     let tempArr = [...initArray];
     let tempArr1 = JSON.parse(JSON.stringify(initArray));
+    // console.log(tempArr1);
     setClipBoard(tempArr1);
     tempArr[tungdo][hoanhdo] = data;
     setInitArray(tempArr);
@@ -236,6 +243,10 @@ function App() {
     setInitArray(clipBoard);
   };
 
+  const exportCSV = () => {
+    console.log(initArray);
+  };
+
   return (
     <div>
       <div className={visible ? "menu" : "menu hiden"} style={menuStyle}>
@@ -305,7 +316,7 @@ function App() {
                 <tr key={++keycount}>
                   {i.map((j) => (
                     <th key={++keycount + 100} onClick={handleClickCell}>
-                      {j}
+                      <input onChange={handleChangeCell} value={j} />
                     </th>
                   ))}
                 </tr>
@@ -313,6 +324,7 @@ function App() {
           </tbody>
         </table>
       </div>
+      <button onClick={exportCSV}>Export CSV</button>
     </div>
   );
 }
