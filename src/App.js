@@ -16,8 +16,16 @@ function App() {
   const [rowNum, setRowNum] = useState(6);
   const [colNum, setColNum] = useState(7);
   const [initArray, setInitArray] = useState(
-    [...Array(rowNum)].map((x) => Array(colNum).fill(""))
+    // [...Array(rowNum)].map((x) => Array(colNum).fill(""))
+    [
+      ["a", "b", "c", "d", "e", "f", "G"],
+      ["q1", "b", "c", "d", "e", "f", "G"],
+      ["q2", "b", "c", "d", "e", "f", "G"],
+      ["q3", "b", "c", "d", "e", "f", "G"],
+      ["a", "b", "c", "d", "e", "f", "G"],
+    ]
   );
+  const [clipBoard, setClipBoard] = useState([]);
   // For context menu
   const [visible, setVisible] = useState(false);
   const [top, setTop] = useState(0);
@@ -27,7 +35,12 @@ function App() {
   let keycount = 0; // key in loop render
 
   useEffect(() => {
-    let arr = [...initArray];
+    let arr = JSON.parse(JSON.stringify(initArray)); // deep clone
+    let lengthItem = initArray[0].length;
+    // console.log(arr);
+    arr.splice(0, 0, Array(lengthItem).fill("")); // add new row at top of array
+    arr.map((el) => el.splice(0, 0, "")); // add new column at left of array
+    // console.log(arr);
     arr.forEach((i) => {
       i[0] = arr.indexOf(i);
     });
@@ -48,8 +61,13 @@ function App() {
       document.elementFromPoint(clickX, clickY).click();
       setVisible(true);
     };
-    window.addEventListener("contextmenu", handleRightClick);
-    return () => window.removeEventListener("contextmenu", handleRightClick);
+    document
+      .getElementById("table-data")
+      .addEventListener("contextmenu", handleRightClick);
+    return () =>
+      document
+        .getElementById("table-data")
+        .removeEventListener("contextmenu", handleRightClick);
   }, [visible]);
 
   useEffect(() => {
@@ -57,12 +75,15 @@ function App() {
       setVisible(false);
     };
     window.addEventListener("click", handleClickOutsideMenu);
-    return () => window.removeEventListener("click", handleClickOutsideMenu);
+    return () => {
+      window.removeEventListener("click", handleClickOutsideMenu);
+    };
   }, [visible]);
 
-  useEffect(() => console.log(initArray), [initArray]);
+  // useEffect(() => console.log(initArray), [initArray]);
 
-  const handleClickCreate = () => {
+  const handleClickCreate = (e) => {
+    e.preventDefault();
     let arr = [...Array(rowNum)].map((x) => Array(colNum).fill(makeid(5)));
     arr.forEach((i) => {
       i[0] = arr.indexOf(i);
@@ -74,6 +95,7 @@ function App() {
   };
 
   const handleClickCell = (e) => {
+    e.preventDefault();
     let thisTH = e.target;
     let thisTR = e.target.parentNode;
     let allTR = thisTH.parentNode.parentNode.childNodes;
@@ -98,11 +120,14 @@ function App() {
   };
 
   const handleChangeCell = (e) => {
+    e.preventDefault();
     let tungdo = e.target.parentNode.rowIndex;
     let hoanhdo = e.target.cellIndex;
 
     let data = e.target.innerHTML;
     let tempArr = [...initArray];
+    let tempArr1 = JSON.parse(JSON.stringify(initArray));
+    setClipBoard(tempArr1);
     tempArr[tungdo][hoanhdo] = data;
     setInitArray(tempArr);
   };
@@ -119,6 +144,8 @@ function App() {
     const thisTH = document.elementFromPoint(left - 5, top - 5);
     const indexOfCellAndArrayItem = thisTH.cellIndex;
     let tempArr = [...initArray];
+    let tempArr1 = JSON.parse(JSON.stringify(initArray));
+    setClipBoard(tempArr1);
     if (position === "right") {
       tempArr.forEach((el) => {
         el.splice(indexOfCellAndArrayItem + 1, 0, "");
@@ -137,6 +164,8 @@ function App() {
     const thisTH = document.elementFromPoint(left - 5, top - 5);
     const indexOfCellAndArrayItem = thisTH.cellIndex;
     let tempArr = [...initArray];
+    let tempArr1 = JSON.parse(JSON.stringify(initArray));
+    setClipBoard(tempArr1);
     tempArr.forEach((el) => {
       el.splice(indexOfCellAndArrayItem, 1);
     });
@@ -147,6 +176,8 @@ function App() {
     event.preventDefault();
     const thisTH = document.elementFromPoint(left - 5, top - 5);
     const indexOfCellAndArrayItem = thisTH.cellIndex;
+    let tempArr1 = JSON.parse(JSON.stringify(initArray));
+    setClipBoard(tempArr1);
     let tempArr = [...initArray];
     tempArr.forEach((el, index) => {
       if (index !== 0) {
@@ -162,6 +193,8 @@ function App() {
     const thisTH = document.elementFromPoint(left - 5, top - 5);
     const indexOfRowAndArrayItem = thisTH.parentNode.rowIndex;
     let tempArr = [...initArray];
+    let tempArr1 = JSON.parse(JSON.stringify(initArray));
+    setClipBoard(tempArr1);
     const lengthItem = tempArr[0].length;
     const Item = new Array(lengthItem).fill("");
     if (position === "below") {
@@ -178,6 +211,8 @@ function App() {
     const thisTH = document.elementFromPoint(left - 5, top - 5);
     const indexOfRowAndArrayItem = thisTH.parentNode.rowIndex;
     let tempArr = [...initArray];
+    let tempArr1 = JSON.parse(JSON.stringify(initArray));
+    setClipBoard(tempArr1);
     tempArr.splice(indexOfRowAndArrayItem, 1);
     setInitArray(tempArr);
   };
@@ -187,10 +222,18 @@ function App() {
     const thisTH = document.elementFromPoint(left - 5, top - 5);
     const indexOfRowAndArrayItem = thisTH.parentNode.rowIndex;
     let tempArr = [...initArray];
+    let tempArr1 = JSON.parse(JSON.stringify(initArray));
+    setClipBoard(tempArr1);
     tempArr[indexOfRowAndArrayItem] = tempArr[
       indexOfRowAndArrayItem
     ].map((el, index) => (index !== 0 ? (el = "") : el));
     setInitArray(tempArr);
+  };
+
+  const handleUndo = (e) => {
+    e.preventDefault();
+    console.log(clipBoard);
+    setInitArray(clipBoard);
   };
 
   return (
@@ -218,6 +261,9 @@ function App() {
           onClick={handleDeleteColumnContent}
         >
           Delete this column content
+        </div>
+        <div className="menu-line borderBottom" onClick={handleUndo}>
+          Undo
         </div>
         <div
           className="menu-line"
@@ -251,9 +297,9 @@ function App() {
       <button onClick={() => handleClickCreate()} onChange={handleChangeCell}>
         Create
       </button>
-      <div className="scrollable">
+      <div id="table-data" className="scrollable">
         <table>
-          <tbody>
+          <tbody id="tbody">
             {initArray &&
               initArray.map((i) => (
                 <tr key={++keycount}>
