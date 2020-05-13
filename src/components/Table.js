@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import "./Table.css";
 
 const makeid = (length) => {
-  var result = "";
-  var characters =
+  let result = "";
+  let characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
+  let charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
@@ -109,8 +109,10 @@ function Table() {
       thisInput.style.backgroundColor = "#e6efff";
     } else if (thisTH.cellIndex === 0 && thisTR.rowIndex !== 0) {
       thisTR.style.backgroundColor = "#e6efff";
-      thisTR.childNodes.forEach(
-        (th) => (th.childNodes[0].style.backgroundColor = "#e6efff")
+      thisTR.childNodes.forEach((th, index) =>
+        index === 0
+          ? (th.childNodes[0].style.backgroundColor = "#8eb0e7")
+          : (th.childNodes[0].style.backgroundColor = "#e6efff")
       );
     } else if (thisTH.cellIndex !== 0 && thisTR.rowIndex === 0) {
       let index = thisTH.cellIndex;
@@ -124,7 +126,6 @@ function Table() {
         (th) => (th.childNodes[0].style.backgroundColor = "")
       );
       thisInput.style.backgroundColor = "#e6efff";
-      thisTH.contentEditable = "true";
     }
   };
 
@@ -253,50 +254,29 @@ function Table() {
     arr.map((x) => x.splice(0, 1));
     let csvContent =
       "data:text/csv;charset=utf-8," + arr.map((e) => e.join(",")).join("\n");
-    var encodedUri = encodeURI(csvContent);
-    var link = document.createElement("a");
+    let encodedUri = encodeURI(csvContent);
+    let link = document.createElement("a");
     link.setAttribute("href", encodedUri);
     link.setAttribute("download", "my_data.csv");
     document.body.appendChild(link);
     link.click();
   };
 
-  // const [oldX, setOldX] = useState();
-  // const [diffX, setDiffX] = useState();
-  // const resizeColumn = (e) => {
-  //   console.log(e.clientX);
-  //   setOldX(e.clientX)
-  //   const th = e.target.parentNode;
-  //   th.style.width = diffX.toString() + "px";
-  // };
-
-  // useEffect(() => {
-  //   const handler = (e) => {
-  //     setDiffX(e.clientX - oldX);
-  //   };
-  //   window.addEventListener("mousemove", handler);
-  // });
-
-  // const resizeColumnOut = (e) => {
-  //   const th = e.target.parentNode;
-  //   console.log(2);
-  //   th.style.width = diffX + "px";
-  // };
   useEffect(() => {
-    var thElm;
-    var startOffset;
+    let thElm;
+    let startOffset;
 
     Array.prototype.forEach.call(
       document.querySelectorAll("table th"),
       function (th) {
         th.style.position = "relative";
 
-        var grip = document.createElement("div");
+        let grip = document.createElement("div");
         grip.innerHTML = "&nbsp;";
         grip.style.top = 0;
         grip.style.right = 0;
         grip.style.bottom = 0;
-        grip.style.width = "5px";
+        grip.style.width = "2px";
         grip.style.position = "absolute";
         grip.style.cursor = "col-resize";
         grip.addEventListener("mousedown", function (e) {
@@ -330,20 +310,20 @@ function Table() {
   });
 
   useEffect(() => {
-    var thElm;
-    var startOffset;
+    let thElm;
+    let startOffset;
 
     Array.prototype.forEach.call(
       document.querySelectorAll("table th"),
       function (th) {
         th.style.position = "relative";
 
-        var grip = document.createElement("div");
+        let grip = document.createElement("div");
         grip.innerHTML = "&nbsp;";
         grip.style.bottom = 0;
         grip.style.left = 0;
         grip.style.right = 0;
-        grip.style.height = "5px";
+        grip.style.height = "2px";
         grip.style.position = "absolute";
         grip.style.cursor = "row-resize";
         grip.addEventListener("mousedown", function (e) {
@@ -443,13 +423,18 @@ function Table() {
             {initArray &&
               initArray.map((i) => (
                 <tr key={++keycount}>
-                  {i.map((j) => (
+                  {i.map((j, index) => (
                     <th
+                      className={index === 0 ? "disabledInput" : ""}
                       style={{ position: "relative" }}
                       key={++keycount + 100}
                       onClick={handleClickCell}
                     >
-                      <input onChange={handleChangeCell} value={j} />
+                      <input
+                        disabled={index === 0 ? true : false}
+                        onChange={handleChangeCell}
+                        value={j}
+                      />
                     </th>
                   ))}
                 </tr>

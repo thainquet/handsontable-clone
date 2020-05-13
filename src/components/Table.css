@@ -30,6 +30,10 @@ th input {
   /* box-sizing: border-box; */
 }
 
+.disabledInput {
+  width: 30px;
+}
+
 th input :focus {
   background-color: #e6efff;
 }
