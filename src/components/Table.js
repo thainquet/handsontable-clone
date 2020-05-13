@@ -146,6 +146,7 @@ function Table() {
     position: "absolute",
     top: `${top}px`,
     left: `${left}px`,
+    zIndex: "100",
   };
 
   const handleInsertColumn = (event) => {
@@ -260,8 +261,30 @@ function Table() {
     link.click();
   };
 
+  // const [oldX, setOldX] = useState();
+  // const [diffX, setDiffX] = useState();
+  // const resizeColumn = (e) => {
+  //   console.log(e.clientX);
+  //   setOldX(e.clientX)
+  //   const th = e.target.parentNode;
+  //   th.style.width = diffX.toString() + "px";
+  // };
+
+  // useEffect(() => {
+  //   const handler = (e) => {
+  //     setDiffX(e.clientX - oldX);
+  //   };
+  //   window.addEventListener("mousemove", handler);
+  // });
+
+  // const resizeColumnOut = (e) => {
+  //   const th = e.target.parentNode;
+  //   console.log(2);
+  //   th.style.width = diffX.toString() + "px";
+  // };
+
   return (
-    <div>
+    <div style={{ position: "relative" }}>
       <div className={visible ? "menu" : "menu hiden"} style={menuStyle}>
         <div
           className="menu-line"
@@ -328,8 +351,19 @@ function Table() {
               initArray.map((i) => (
                 <tr key={++keycount}>
                   {i.map((j) => (
-                    <th key={++keycount + 100} onClick={handleClickCell}>
+                    <th
+                      style={{ position: "relative" }}
+                      key={++keycount + 100}
+                      onClick={handleClickCell}
+                    >
                       <input onChange={handleChangeCell} value={j} />
+                      <div
+                        className="resizeColumn"
+                        // onMouseDown={resizeColumn}
+                        // onMouseUp={resizeColumnOut}
+                      >
+                        &nbsp;
+                      </div>
                     </th>
                   ))}
                 </tr>
