@@ -47,7 +47,7 @@ function App() {
     for (let i = 0; i < arr[0].length; i++) {
       arr[0][i] = ++count;
     }
-    arr[0][0] = ""
+    arr[0][0] = "";
     setInitArray(arr);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -101,7 +101,9 @@ function App() {
     let thisTR = thisTH.parentNode;
     let allTR = thisTH.parentNode.parentNode.childNodes;
     allTR.forEach((tr) => {
-      tr.childNodes.forEach((th) => (th.childNodes.forEach(ip => ip.style.backgroundColor = null)));
+      tr.childNodes.forEach((th) =>
+        th.childNodes.forEach((ip) => (ip.style.backgroundColor = null))
+      );
     });
     if (thisTH.cellIndex === 0 && thisTR.rowIndex === 0) {
       thisInput.style.backgroundColor = "#e6efff";
@@ -113,14 +115,15 @@ function App() {
     } else if (thisTH.cellIndex !== 0 && thisTR.rowIndex === 0) {
       let index = thisTH.cellIndex;
       allTR.forEach(
-        (tr) => (tr.childNodes[index].childNodes[0].style.backgroundColor = "#e6efff")
+        (tr) =>
+          (tr.childNodes[index].childNodes[0].style.backgroundColor = "#e6efff")
       );
     } else {
       thisTR.style.backgroundColor = "";
       thisTR.childNodes.forEach(
         (th) => (th.childNodes[0].style.backgroundColor = "")
       );
-      thisInput.style.backgroundColor = "#e6efff"
+      thisInput.style.backgroundColor = "#e6efff";
       thisTH.contentEditable = "true";
     }
   };
@@ -149,7 +152,7 @@ function App() {
     event.preventDefault();
     const position = event.target.getAttribute("data-position");
     const thisTH = document.elementFromPoint(left - 5, top - 5);
-    const indexOfCellAndArrayItem = thisTH.cellIndex;
+    const indexOfCellAndArrayItem = thisTH.parentNode.cellIndex;
     let tempArr = [...initArray];
     let tempArr1 = JSON.parse(JSON.stringify(initArray));
     setClipBoard(tempArr1);
@@ -169,7 +172,7 @@ function App() {
   const handleDeleteColumn = (event) => {
     event.preventDefault();
     const thisTH = document.elementFromPoint(left - 5, top - 5);
-    const indexOfCellAndArrayItem = thisTH.cellIndex;
+    const indexOfCellAndArrayItem = thisTH.parentNode.cellIndex;
     let tempArr = [...initArray];
     let tempArr1 = JSON.parse(JSON.stringify(initArray));
     setClipBoard(tempArr1);
@@ -182,7 +185,7 @@ function App() {
   const handleDeleteColumnContent = (event) => {
     event.preventDefault();
     const thisTH = document.elementFromPoint(left - 5, top - 5);
-    const indexOfCellAndArrayItem = thisTH.cellIndex;
+    const indexOfCellAndArrayItem = thisTH.parentNode.cellIndex;
     let tempArr1 = JSON.parse(JSON.stringify(initArray));
     setClipBoard(tempArr1);
     let tempArr = [...initArray];
@@ -198,7 +201,7 @@ function App() {
     event.preventDefault();
     const position = event.target.getAttribute("data-position");
     const thisTH = document.elementFromPoint(left - 5, top - 5);
-    const indexOfRowAndArrayItem = thisTH.parentNode.rowIndex;
+    const indexOfRowAndArrayItem = thisTH.parentNode.parentNode.rowIndex;
     let tempArr = [...initArray];
     let tempArr1 = JSON.parse(JSON.stringify(initArray));
     setClipBoard(tempArr1);
@@ -216,7 +219,7 @@ function App() {
   const handleDeleteRow = (event) => {
     event.preventDefault();
     const thisTH = document.elementFromPoint(left - 5, top - 5);
-    const indexOfRowAndArrayItem = thisTH.parentNode.rowIndex;
+    const indexOfRowAndArrayItem = thisTH.parentNode.parentNode.rowIndex;
     let tempArr = [...initArray];
     let tempArr1 = JSON.parse(JSON.stringify(initArray));
     setClipBoard(tempArr1);
@@ -227,7 +230,7 @@ function App() {
   const handleDeleteRowContent = (event) => {
     event.preventDefault();
     const thisTH = document.elementFromPoint(left - 5, top - 5);
-    const indexOfRowAndArrayItem = thisTH.parentNode.rowIndex;
+    const indexOfRowAndArrayItem = thisTH.parentNode.parentNode.rowIndex;
     let tempArr = [...initArray];
     let tempArr1 = JSON.parse(JSON.stringify(initArray));
     setClipBoard(tempArr1);
@@ -244,7 +247,17 @@ function App() {
   };
 
   const exportCSV = () => {
-    console.log(initArray);
+    let arr = JSON.parse(JSON.stringify(initArray));
+    arr.splice(0, 1);
+    arr.map((x) => x.splice(0, 1));
+    let csvContent =
+      "data:text/csv;charset=utf-8," + arr.map((e) => e.join(",")).join("\n");
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "my_data.csv");
+    document.body.appendChild(link);
+    link.click();
   };
 
   return (
