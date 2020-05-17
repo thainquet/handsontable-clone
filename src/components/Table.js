@@ -102,7 +102,7 @@ function Table() {
     let allTR = thisTH.parentNode.parentNode.childNodes;
     allTR.forEach((tr) => {
       tr.childNodes.forEach((th) =>
-        th.childNodes.forEach((ip) => (ip.style.backgroundColor = null))
+        th.childNodes.forEach((input) => (input.style.backgroundColor = null))
       );
     });
     if (thisTH.cellIndex === 0 && thisTR.rowIndex === 0) {
@@ -124,7 +124,10 @@ function Table() {
         (th) => (th.childNodes[0].style.backgroundColor = "")
       );
       thisInput.style.backgroundColor = "#e6efff";
-      thisTH.contentEditable = "true";
+      let cellIndex = thisTH.cellIndex
+      let rowIndex = thisTR.rowIndex
+      allTR[0].childNodes[cellIndex].childNodes[0].style.backgroundColor = "#e6efff"
+      allTR[rowIndex].childNodes[0].childNodes[0].style.backgroundColor = "#e6efff"
     }
   };
 
@@ -261,27 +264,6 @@ function Table() {
     link.click();
   };
 
-  // const [oldX, setOldX] = useState();
-  // const [diffX, setDiffX] = useState();
-  // const resizeColumn = (e) => {
-  //   console.log(e.clientX);
-  //   setOldX(e.clientX)
-  //   const th = e.target.parentNode;
-  //   th.style.width = diffX.toString() + "px";
-  // };
-
-  // useEffect(() => {
-  //   const handler = (e) => {
-  //     setDiffX(e.clientX - oldX);
-  //   };
-  //   window.addEventListener("mousemove", handler);
-  // });
-
-  // const resizeColumnOut = (e) => {
-  //   const th = e.target.parentNode;
-  //   console.log(2);
-  //   th.style.width = diffX + "px";
-  // };
   useEffect(() => {
     var thElm;
     var startOffset;
@@ -296,7 +278,7 @@ function Table() {
         grip.style.top = 0;
         grip.style.right = 0;
         grip.style.bottom = 0;
-        grip.style.width = "5px";
+        grip.style.width = "1px";
         grip.style.position = "absolute";
         grip.style.cursor = "col-resize";
         grip.addEventListener("mousedown", function (e) {
@@ -343,7 +325,7 @@ function Table() {
         grip.style.bottom = 0;
         grip.style.left = 0;
         grip.style.right = 0;
-        grip.style.height = "5px";
+        grip.style.height = "1px";
         grip.style.position = "absolute";
         grip.style.cursor = "row-resize";
         grip.addEventListener("mousedown", function (e) {
@@ -443,13 +425,13 @@ function Table() {
             {initArray &&
               initArray.map((i) => (
                 <tr key={++keycount}>
-                  {i.map((j) => (
+                  {i.map((j, columnIndex) => (
                     <th
                       style={{ position: "relative" }}
                       key={++keycount + 100}
                       onClick={handleClickCell}
                     >
-                      <input onChange={handleChangeCell} value={j} />
+                      {columnIndex !== 0 ? <input onChange={handleChangeCell} value={j} /> : <input disabled value={j} />}
                     </th>
                   ))}
                 </tr>
