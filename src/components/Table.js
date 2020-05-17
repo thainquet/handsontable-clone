@@ -101,8 +101,10 @@ function Table() {
     let thisTR = thisTH.parentNode;
     let allTR = thisTH.parentNode.parentNode.childNodes;
     allTR.forEach((tr) => {
-      tr.childNodes.forEach((th) =>
-        th.childNodes.forEach((input) => (input.style.backgroundColor = null))
+      tr.childNodes.forEach((th) => {
+        th.childNodes.forEach((input) => (input.style.backgroundColor = ""))
+        th.style.backgroundColor = ""
+      }
       );
     });
     if (thisTH.cellIndex === 0 && thisTR.rowIndex === 0) {
@@ -123,11 +125,14 @@ function Table() {
       thisTR.childNodes.forEach(
         (th) => (th.childNodes[0].style.backgroundColor = "")
       );
+      thisTH.style.backgroundColor = "#e6efff"
       thisInput.style.backgroundColor = "#e6efff";
       let cellIndex = thisTH.cellIndex
       let rowIndex = thisTR.rowIndex
       allTR[0].childNodes[cellIndex].childNodes[0].style.backgroundColor = "#e6efff"
       allTR[rowIndex].childNodes[0].childNodes[0].style.backgroundColor = "#e6efff"
+      allTR[0].childNodes[cellIndex].style.backgroundColor = "#e6efff"
+      allTR[rowIndex].childNodes[0].style.backgroundColor = "#e6efff"
     }
   };
 
@@ -423,19 +428,36 @@ function Table() {
         <table>
           <tbody id="tbody">
             {initArray &&
-              initArray.map((i) => (
-                <tr key={++keycount}>
-                  {i.map((j, columnIndex) => (
-                    <th
-                      style={{ position: "relative" }}
-                      key={++keycount + 100}
-                      onClick={handleClickCell}
-                    >
-                      {columnIndex !== 0 ? <input onChange={handleChangeCell} value={j} /> : <input disabled value={j} />}
-                    </th>
-                  ))}
-                </tr>
-              ))}
+              initArray.map((i, rowIndex) => (
+                rowIndex === 0 ? (
+                  <tr key={rowIndex}>
+                    {i.map((j) => (
+                      <th className="boundaryColor"
+                        style={{ position: "relative" }}
+                        key={++keycount + 100}
+                      >
+                        <input className="boundaryColor"
+                          onClick={handleClickCell} onChange={handleChangeCell} value={j} />
+                      </th>
+                    ))}
+                  </tr>
+                ) : (
+                    <tr key={++keycount}>
+                      {i.map((j, columnIndex) => (
+                        <th
+                          style={{ position: "relative" }}
+                          key={++keycount + 100}
+                        >
+                          {columnIndex !== 0 ? <input
+                            onClick={handleClickCell} onChange={handleChangeCell} value={j} />
+                            : <input disabled value={j} />}
+                        </th>
+                      ))}
+                    </tr>
+                  )
+              )
+              )
+            }
           </tbody>
         </table>
       </div>

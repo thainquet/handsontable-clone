@@ -80,3 +80,7 @@ th input :focus {
   cursor: col-resize;
   user-select: none;
 }
+
+.boundaryColor {
+  background-color: #ebebe4;
+}
