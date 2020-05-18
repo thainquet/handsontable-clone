@@ -96,10 +96,14 @@ function Table() {
 
   const clearBackgroundColor = (TR) => {
     TR.childNodes.forEach((th) => {
-      th.childNodes.forEach((input) => (input.style.backgroundColor = ""))
+      th.childNodes.forEach((input) => {
+        input.style.backgroundColor = ""
+        input.style.border = ""
+      })
       th.style.backgroundColor = ""
       th.style.border = ""
     })
+    TR.style.border = ""
   }
 
   const handleClickCell = (e) => {
@@ -114,6 +118,7 @@ function Table() {
       thisInput.style.backgroundColor = "#e6efff";
     } else if (thisTH.cellIndex === 0 && thisTR.rowIndex !== 0) {
       allTR.forEach(TR => clearBackgroundColor(TR))
+      thisTR.style.border = "2px solid #4b89ff"
       thisTR.style.backgroundColor = "#e6efff";
       thisTR.childNodes.forEach(
         (th) => {
@@ -121,12 +126,35 @@ function Table() {
           th.style.backgroundColor = "#e6efff"
         }
       );
+      thisTR.childNodes[0].style.backgroundColor = "#8eb0e7"
+      thisTR.childNodes[0].childNodes[0].style.backgroundColor = "#8eb0e7"
     } else if (thisTH.cellIndex !== 0 && thisTR.rowIndex === 0) {
       let index = thisTH.cellIndex;
       allTR.forEach(
-        (tr) => {
-          tr.childNodes[index].childNodes[0].style.backgroundColor = "#e6efff"
-          tr.childNodes[index].style.backgroundColor = "#e6efff"
+        (tr, i) => {
+          if (i === 0) {
+            clearBackgroundColor(tr)
+            tr.childNodes[index].childNodes[0].style.backgroundColor = "#8eb0e7"
+            tr.childNodes[index].style.backgroundColor = "#8eb0e7"
+            tr.childNodes[index].style.borderTop = "2px solid #4b89ff"
+            tr.childNodes[index].style.borderLeft = "2px solid #4b89ff"
+            tr.childNodes[index].style.borderRight = "2px solid #4b89ff"
+          }
+          if (i !== 0 && i < allTR.length - 1) {
+            clearBackgroundColor(tr)
+            tr.childNodes[index].childNodes[0].style.backgroundColor = "#e6efff"
+            tr.childNodes[index].style.backgroundColor = "#e6efff"
+            tr.childNodes[index].style.borderRight = "2px solid #4b89ff"
+            tr.childNodes[index].style.borderLeft = "2px solid #4b89ff"
+          }
+          if (i === allTR.length - 1) {
+            clearBackgroundColor(tr)
+            tr.childNodes[index].childNodes[0].style.backgroundColor = "#e6efff"
+            tr.childNodes[index].style.backgroundColor = "#e6efff"
+            tr.childNodes[index].style.borderBottom = "2px solid #4b89ff"
+            tr.childNodes[index].style.borderLeft = "2px solid #4b89ff"
+            tr.childNodes[index].style.borderRight = "2px solid #4b89ff"
+          }
         }
       );
     } else {
@@ -150,7 +178,7 @@ function Table() {
       corner.style.marginRight = "-4px"
       corner.style.height = "6px"
       corner.style.width = "6px"
-      corner.style.zIndex = "1000"
+      corner.style.zIndex = "99"
       thisTH.appendChild(corner)
 
       let cellIndex = thisTH.cellIndex
