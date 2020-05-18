@@ -94,46 +94,71 @@ function Table() {
     setInitArray(arr);
   };
 
+  const clearBackgroundColor = (TR) => {
+    TR.childNodes.forEach((th) => {
+      th.childNodes.forEach((input) => (input.style.backgroundColor = ""))
+      th.style.backgroundColor = ""
+      th.style.border = ""
+    })
+  }
+
   const handleClickCell = (e) => {
     e.preventDefault();
+    if (e.target.tagName === 'TH') return
     let thisInput = e.target;
     let thisTH = thisInput.parentNode;
     let thisTR = thisTH.parentNode;
     let allTR = thisTH.parentNode.parentNode.childNodes;
-    allTR.forEach((tr) => {
-      tr.childNodes.forEach((th) => {
-        th.childNodes.forEach((input) => (input.style.backgroundColor = ""))
-        th.style.backgroundColor = ""
-      }
-      );
-    });
+    allTR.forEach(TR => clearBackgroundColor(TR))
     if (thisTH.cellIndex === 0 && thisTR.rowIndex === 0) {
       thisInput.style.backgroundColor = "#e6efff";
     } else if (thisTH.cellIndex === 0 && thisTR.rowIndex !== 0) {
-      console.log(thisTR)
+      allTR.forEach(TR => clearBackgroundColor(TR))
       thisTR.style.backgroundColor = "#e6efff";
       thisTR.childNodes.forEach(
-        (th) => (th.childNodes[0].style.backgroundColor = "#e6efff")
+        (th) => {
+          th.childNodes[0].style.backgroundColor = "#e6efff"
+          th.style.backgroundColor = "#e6efff"
+        }
       );
     } else if (thisTH.cellIndex !== 0 && thisTR.rowIndex === 0) {
       let index = thisTH.cellIndex;
       allTR.forEach(
-        (tr) =>
-          (tr.childNodes[index].childNodes[0].style.backgroundColor = "#e6efff")
+        (tr) => {
+          tr.childNodes[index].childNodes[0].style.backgroundColor = "#e6efff"
+          tr.childNodes[index].style.backgroundColor = "#e6efff"
+        }
       );
     } else {
+      allTR.forEach(TR => clearBackgroundColor(TR))
       thisTR.style.backgroundColor = "";
       thisTR.childNodes.forEach(
         (th) => (th.childNodes[0].style.backgroundColor = "")
       );
       thisTH.style.backgroundColor = "#e6efff"
       thisInput.style.backgroundColor = "#e6efff";
+      thisTH.style.border = "2px solid #4b89ff"
+
+      let corner = document.createElement("DIV")
+      corner.innerHTML = ""
+      corner.style.border = "1px solid white"
+      corner.style.position = "absolute"
+      corner.style.backgroundColor = "#4b89ff"
+      corner.style.bottom = "0"
+      corner.style.right = "0"
+      corner.style.marginBottom = "-4px"
+      corner.style.marginRight = "-4px"
+      corner.style.height = "6px"
+      corner.style.width = "6px"
+      corner.style.zIndex = "1000"
+      thisTH.appendChild(corner)
+
       let cellIndex = thisTH.cellIndex
       let rowIndex = thisTR.rowIndex
-      allTR[0].childNodes[cellIndex].childNodes[0].style.backgroundColor = "#e6efff"
-      allTR[rowIndex].childNodes[0].childNodes[0].style.backgroundColor = "#e6efff"
-      allTR[0].childNodes[cellIndex].style.backgroundColor = "#e6efff"
-      allTR[rowIndex].childNodes[0].style.backgroundColor = "#e6efff"
+      allTR[0].childNodes[cellIndex].childNodes[0].style.backgroundColor = "#dcdcdc"
+      allTR[rowIndex].childNodes[0].childNodes[0].style.backgroundColor = "#dcdcdc"
+      allTR[0].childNodes[cellIndex].style.backgroundColor = "#dcdcdc"
+      allTR[rowIndex].childNodes[0].style.backgroundColor = "#dcdcdc"
     }
   };
 
@@ -414,6 +439,7 @@ function Table() {
           Delete this row content
         </div>
       </div>
+
       <input
         placeholder="row"
         onChange={(e) => setRowNum(parseInt(e.target.value) + 1)}
@@ -425,6 +451,8 @@ function Table() {
       <button onClick={() => handleClickCreate()} onChange={handleChangeCell}>
         Create
       </button>
+      <br />
+      <br />
       <div id="table-data" className="scrollable">
         <table>
           <tbody id="tbody">
@@ -432,29 +460,45 @@ function Table() {
               initArray.map((i, rowIndex) => (
                 rowIndex === 0 ? (
                   <tr key={rowIndex}>
-                    {i.map((j) => (
-                      <th className="boundaryColor"
+                    {i.map((j, columnIndex) => columnIndex === 0 ? (
+                      <th className="boundaryColor firstColumn"
                         style={{ position: "relative" }}
                         key={++keycount + 100}
                       >
-                        <input className="boundaryColor"
+                        <input className="centered boundaryColor"
                           onClick={handleClickCell} onChange={handleChangeCell} value={j} />
                       </th>
-                    ))}
+                    ) : (
+                        <th className="centered boundaryColor"
+                          style={{ position: "relative" }}
+                          key={++keycount + 100}
+                        >
+                          <input className="centered boundaryColor"
+                            onClick={handleClickCell} onChange={handleChangeCell} value={j} />
+                        </th>
+                      ))}
                   </tr>
                 ) : (
                     <tr key={++keycount}>
-                      {i.map((j, columnIndex) => (
-                        <th
+                      {i.map((j, columnIndex) =>
+                        columnIndex !== 0 ? (<th
                           style={{ position: "relative" }}
                           key={++keycount + 100}
                           onClick={handleClickCell}
                         >
-                          {columnIndex !== 0 ? <input
+                          <input
                             onClick={handleClickCell} onChange={handleChangeCell} value={j} />
-                            : <input className="boundaryColor" disabled value={j} />}
-                        </th>
-                      ))}
+                        </th>)
+                          : (<th
+                            className="boundaryColor firstColumn"
+                            style={{ position: "relative" }}
+                            key={++keycount + 100}
+                            onClick={handleClickCell}
+                          >
+                            <input className="centered boundaryColor" disabled value={j} />
+                          </th>)
+
+                      )}
                     </tr>
                   )
               )
@@ -463,6 +507,7 @@ function Table() {
           </tbody>
         </table>
       </div>
+      <br />
       <button onClick={exportCSV}>Export CSV</button>
     </div >
   );
