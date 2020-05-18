@@ -110,6 +110,7 @@ function Table() {
     if (thisTH.cellIndex === 0 && thisTR.rowIndex === 0) {
       thisInput.style.backgroundColor = "#e6efff";
     } else if (thisTH.cellIndex === 0 && thisTR.rowIndex !== 0) {
+      console.log(thisTR)
       thisTR.style.backgroundColor = "#e6efff";
       thisTR.childNodes.forEach(
         (th) => (th.childNodes[0].style.backgroundColor = "#e6efff")
@@ -447,10 +448,11 @@ function Table() {
                         <th
                           style={{ position: "relative" }}
                           key={++keycount + 100}
+                          onClick={handleClickCell}
                         >
                           {columnIndex !== 0 ? <input
                             onClick={handleClickCell} onChange={handleChangeCell} value={j} />
-                            : <input disabled value={j} />}
+                            : <input className="boundaryColor" disabled value={j} />}
                         </th>
                       ))}
                     </tr>
@@ -462,7 +464,7 @@ function Table() {
         </table>
       </div>
       <button onClick={exportCSV}>Export CSV</button>
-    </div>
+    </div >
   );
 }
 
