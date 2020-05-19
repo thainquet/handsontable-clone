@@ -217,6 +217,23 @@ function Table() {
       corner.style.height = "6px";
       corner.style.width = "6px";
       corner.style.zIndex = "99";
+      corner.style.cursor = "crosshair";
+      corner.addEventListener("mousedown", function (e) {});
+      thisTR.addEventListener("mousemove", function (e) {
+        let endEl = thisTH;
+        if (endEl.tagName === "INPUT") {
+          // console.log(thisTR.childNodes);
+          // console.log(endEl.parentNode);
+          endEl.parentNode.style.border = "2px solid #4b89ff";
+        }
+      });
+      thisTR.addEventListener("mouseup", function (e) {
+        let endEl = document.elementFromPoint(e.pageX, e.pageY);
+        if (endEl.tagName === "INPUT") {
+          endEl.value = e.target.value;
+          console.log(endEl.parentNode);
+        }
+      });
       thisTH.appendChild(corner);
 
       let cellIndex = thisTH.cellIndex;
