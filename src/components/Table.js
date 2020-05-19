@@ -81,7 +81,51 @@ function Table() {
     };
   }, [visible]);
 
-  useEffect(() => console.log(initArray), [initArray]);
+  const copyToClipboard = (str) => {
+    const el = document.createElement("input");
+    el.value = str;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
+  };
+
+  useEffect(() => {
+    const handleCopyPaste = (e) => {
+      var key = e.which || e.keyCode; // keyCode detection
+      var ctrl = e.ctrlKey ? e.ctrlKey : key === 17 ? true : false; // ctrl detection
+
+      if (key === 67 && ctrl) {
+        copyToClipboard(e.target.value);
+      } else if (key === 86 && ctrl) {
+        e.preventDefault();
+
+        navigator.clipboard
+          .readText()
+          .then((data) => {
+            let tungdo = e.target.parentNode.parentNode.rowIndex;
+            let hoanhdo = e.target.parentNode.cellIndex;
+            let tempArr = [...initArray];
+            let tempArr1 = JSON.parse(JSON.stringify(initArray));
+            setClipBoard(tempArr1);
+            tempArr[tungdo][hoanhdo] = data;
+            setInitArray(tempArr);
+          })
+          .catch((err) => {
+            console.error("Failed to read clipboard contents: ", err);
+          });
+      }
+    };
+    document
+      .getElementById("table-data")
+      .addEventListener("keydown", handleCopyPaste, false);
+    return () =>
+      document
+        .getElementById("table-data")
+        .removeEventListener("keydown", handleCopyPaste, false);
+  });
+
+  // useEffect(() => console.log(initArray), [initArray]);
 
   const handleClickCreate = (e) => {
     let arr = [...Array(rowNum)].map((x) => Array(colNum).fill(makeid(5)));
