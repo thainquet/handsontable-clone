@@ -230,8 +230,12 @@ function Table() {
       thisTR.addEventListener("mouseup", function (e) {
         let endEl = document.elementFromPoint(e.pageX, e.pageY);
         if (endEl.tagName === "INPUT") {
-          endEl.value = e.target.value;
-          console.log(endEl.parentNode);
+          let startIndex = thisInput.parentNode.cellIndex;
+          let endIndex = endEl.parentNode.cellIndex;
+          // setArray for storing data if undo occur
+          for (let i = startIndex; i < endIndex; i++) {
+            // reset array => re-render
+          }
         }
       });
       thisTH.appendChild(corner);
