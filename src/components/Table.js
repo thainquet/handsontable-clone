@@ -99,15 +99,13 @@ function Table() {
         copyToClipboard(e.target.value);
       } else if (key === 86 && ctrl) {
         e.preventDefault();
-
         navigator.clipboard
           .readText()
           .then((data) => {
             let tungdo = e.target.parentNode.parentNode.rowIndex;
             let hoanhdo = e.target.parentNode.cellIndex;
-            let tempArr = [...initArray];
-            let tempArr1 = JSON.parse(JSON.stringify(initArray));
-            setClipBoard(tempArr1);
+            let tempArr = JSON.parse(JSON.stringify(initArray));
+            setClipBoard(initArray);
             tempArr[tungdo][hoanhdo] = data;
             setInitArray(tempArr);
           })
@@ -218,26 +216,56 @@ function Table() {
       corner.style.width = "6px";
       corner.style.zIndex = "99";
       corner.style.cursor = "crosshair";
-      corner.addEventListener("mousedown", function (e) {});
-      thisTR.addEventListener("mousemove", function (e) {
-        let endEl = thisTH;
-        if (endEl.tagName === "INPUT") {
-          // console.log(thisTR.childNodes);
-          // console.log(endEl.parentNode);
-          endEl.parentNode.style.border = "2px solid #4b89ff";
-        }
+      corner.addEventListener("mousedown", function (e) {
+        // console.log(e.target);
       });
-      thisTR.addEventListener("mouseup", function (e) {
+      thisTR.parentNode.addEventListener("mousemove", function (e) {
         let endEl = document.elementFromPoint(e.pageX, e.pageY);
         if (endEl.tagName === "INPUT") {
-          let startIndex = thisInput.parentNode.cellIndex;
-          let endIndex = endEl.parentNode.cellIndex;
-          // setArray for storing data if undo occur
-          for (let i = startIndex; i < endIndex; i++) {
-            // reset array => re-render
-          }
+          let position = endEl.parentNode.childNodes[0].getBoundingClientRect();
+          let { left, bottom } = position;
+          if (
+            left ===
+            thisInput.parentNode.childNodes[0].getBoundingClientRect().left
+          )
+            endEl.parentNode.style.borderImage = "2px solid #4b89ff";
+          // else if (
+          //   bottom ===
+          //   thisInput.parentNode.childNodes[0].getBoundingClientRect().bottom
+          // )
+          //   console.log(2);
+          // console.log(bottom);
         }
       });
+      let tempArr = [];
+      initArray.forEach((i) => tempArr.push(i));
+      // const handleMouseUp = (e) => {
+      //   let endEl = document.elementFromPoint(e.pageX, e.pageY);
+      //   console.log(endEl.getBoundingClientRect());
+      //   // if (endEl.tagName === "INPUT") {
+      //   //   let value = thisInput.parentNode.childNodes[0].value;
+      //   //   let startIndex = thisInput.parentNode.cellIndex;
+      //   //   let endIndex = endEl.parentNode.cellIndex;
+      //   //   let rowInd = endEl.parentNode.parentNode.rowIndex;
+
+      //   //   if (startIndex < endIndex)
+      //   //     for (let i = startIndex; i <= endIndex; i++) {
+      //   //       tempArr[rowInd][i] = value;
+      //   //       endEl.parentNode.parentNode.childNodes[i].style.border =
+      //   //         "2px solid #4b89ff";
+      //   //     }
+      //   //   else
+      //   //     for (let i = endIndex; i <= startIndex; i++) {
+      //   //       tempArr[rowInd][i] = value;
+      //   //       endEl.parentNode.parentNode.childNodes[i].style.border =
+      //   //         "2px solid #4b89ff";
+      //   //     }
+      //   //   setInitArray(tempArr);
+      //   // }
+      // };
+      // thisTR.parentNode.addEventListener("mouseup", handleMouseUp, {
+      //   once: true,
+      // });
       thisTH.appendChild(corner);
 
       let cellIndex = thisTH.cellIndex;
