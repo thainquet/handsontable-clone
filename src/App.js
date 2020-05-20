@@ -4,7 +4,11 @@ import Table from "./components/Table";
 // import { useTable } from "react-table";
 
 function App() {
-  return <Table />;
+  return (
+    <div style={{ margin: "10px" }}>
+      <Table />
+    </div>
+  );
 }
 
 export default App;
