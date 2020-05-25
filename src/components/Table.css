@@ -4,6 +4,7 @@ table {
 }
 tr {
   border-color: #ddd;
+  box-sizing: border-box;
 }
 
 th {
@@ -13,7 +14,7 @@ th {
 
 td {
   width: 100px;
-  border-color: transparent;
+  box-sizing: border-box;
   border-color: #ddd;
 }
 td input {
