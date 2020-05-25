@@ -1,16 +1,53 @@
 table {
   border-collapse: collapse;
+  width: max-content;
 }
 tr {
   border-color: #ddd;
 }
 
+th {
+  width: 100px;
+  border-color: #ddd;
+}
+
 td {
-  box-sizing: border-box;
+  width: 100px;
+  border-color: transparent;
+  border-color: #ddd;
 }
 td input {
-  border-color: transparent;
+  width: 100%;
   background-color: transparent;
   border: none;
   outline: none;
+}
+
+.resizeColumn {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 2px;
+  position: absolute;
+  cursor: col-resize;
+}
+
+.resizeRow {
+  width: 100%;
+  bottom: 0;
+  height: 2px;
+  position: absolute;
+  cursor: row-resize;
+}
+
+.resizeRow:hover {
+  background-color: #4b89ff;
+}
+
+.rowSelected {
+  border: 2px solid #4b89ff;
+}
+
+.cellSelected {
+  border: 2px solid #4b89ff;
 }
