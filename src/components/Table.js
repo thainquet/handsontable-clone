@@ -13,6 +13,15 @@ const clearAllCellBorder = () => {
   });
 };
 
+const clearAllColumnborder = () => {
+  Array.prototype.forEach.call(document.querySelectorAll("th"), function (e) {
+    e.classList.remove("selectFirstTH");
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("td"), function (e) {
+    e.classList.remove("columnSelected");
+  });
+};
+
 const removeElementsByClass = (className) => {
   var elements = document.getElementsByClassName(className);
   while (elements.length > 0) {
@@ -23,16 +32,18 @@ const removeElementsByClass = (className) => {
 const cleanTable = () => {
   clearAllCellBorder();
   clearAllTRBorder();
+  clearAllColumnborder();
   removeElementsByClass("dot");
 };
 
 const Cell = (props) => {
-  const { cellData } = props;
+  const { cellData, inColSelected } = props;
   const [localData, setLocalData] = useState(cellData.data);
   const handleCellChange = (e) => {
     setLocalData(e.target.value);
   };
   const handleClickCell = (event) => {
+    console.log(inColSelected);
     let rect = event.target.parentNode.getBoundingClientRect();
     cleanTable();
     let dot = document.createElement("DIV");
@@ -45,7 +56,7 @@ const Cell = (props) => {
     event.target.parentNode.classList.add("cellSelected");
   };
   return (
-    <td>
+    <td className={inColSelected && inColSelected ? "columnSelected" : ""}>
       <input
         value={localData}
         onChange={handleCellChange}
@@ -102,7 +113,7 @@ const Row = (props) => {
       });
     };
   }, []);
-  const { rowData } = props;
+  const { rowData, hasSelectedCell } = props;
 
   const handleClickRow = (e) => {
     e.preventDefault();
@@ -116,9 +127,21 @@ const Row = (props) => {
         <input disabled={true} />
       </td>
       {rowData &&
-        rowData.map((i, index) => (
-          <Cell key={index} cellData={{ data: i, index }} />
-        ))}
+        rowData.map((i, index) =>
+          index === hasSelectedCell - 1 ? (
+            <Cell
+              key={index}
+              inColSelected={true}
+              cellData={{ data: i, index }}
+            />
+          ) : (
+            <Cell
+              key={index}
+              inColSelected={false}
+              cellData={{ data: i, index }}
+            />
+          )
+        )}
     </tr>
   );
 };
@@ -174,12 +197,20 @@ const Table = (props) => {
     ["q3", "b", "c", "d", "e", "f", "G"],
     ["a", "b", "c", "d", "e", "f", "G"],
   ]);
-  const [isInSelectedColumn, setIsInSelectedColumn] = useState(false);
+  const [isInSelectedColumn, setIsInSelectedColumn] = useState();
   if (tableData) setInitArray(tableData);
+  const selectColumn = (event) => {
+    cleanTable();
+    let _this = event.target.parentNode;
+    let position = _this.cellIndex;
+    console.log(position);
+    if (_this.tagName === "TH") _this.classList.add("selectFirstTH");
+    setIsInSelectedColumn(position);
+  };
   let headerRow = [];
   for (let i = 0; i < initArray[0].length; i++) {
     headerRow.push(
-      <th key={i} onClick={() => setIsInSelectedColumn(true)}>
+      <th key={i} onClick={selectColumn}>
         <input />
       </th>
     );

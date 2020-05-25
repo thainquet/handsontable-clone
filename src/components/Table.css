@@ -52,6 +52,7 @@ td input {
 
 .cellSelected {
   border: 2px solid #4b89ff;
+  background-color: #e6efff;
 }
 .dot {
   user-select: none;
@@ -62,4 +63,13 @@ td input {
   width: 6px;
   z-index: 9;
   cursor: crosshair;
+}
+.selectFirstTH {
+  border: 2px solid #4b89ff;
+  border-bottom: none;
+}
+
+.columnSelected {
+  border-right: 2px solid #4b89ff;
+  border-left: 2px solid #4b89ff;
 }
