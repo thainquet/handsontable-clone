@@ -147,6 +147,110 @@ const Row = (props) => {
 };
 
 const Table = (props) => {
+  /*eslint-disable */
+  useEffect(() => {
+    let thElm;
+    let startCellIndex, startRowIndex, endCellIndex, endRowIndex;
+    let isMousedown = false;
+    Array.prototype.forEach.call(
+      document.querySelectorAll("table td"),
+      function (td) {
+        td.addEventListener("mousedown", function (e) {
+          Array.prototype.forEach.call(
+            document.getElementById("tbl").querySelectorAll("td"),
+            function (e) {
+              e.classList.remove("selected");
+            }
+          );
+          thElm = td;
+          isMousedown = true;
+          startCellIndex = td.cellIndex;
+          startRowIndex = td.parentNode.rowIndex;
+        });
+        document
+          .getElementById("tbl")
+          .addEventListener("mousemove", function (e) {
+            let endElement = document.elementFromPoint(e.pageX, e.pageY);
+            if (
+              endElement.parentNode.tagName === "TD" &&
+              endElement.tagName === "INPUT"
+            ) {
+              let thisTD = endElement.parentNode;
+              let cellIndex = thisTD.cellIndex;
+              let rowIndex = thisTD.parentNode.rowIndex;
+              let table = document.getElementById("tbl");
+              let rowStart, rowEnd, cellStart, cellEnd;
+
+              if (rowIndex < startRowIndex) {
+                rowStart = rowIndex;
+                rowEnd = startRowIndex;
+              } else {
+                rowStart = startRowIndex;
+                rowEnd = rowIndex;
+              }
+
+              if (cellIndex < startCellIndex) {
+                cellStart = cellIndex;
+                cellEnd = startCellIndex;
+              } else {
+                cellStart = startCellIndex;
+                cellEnd = cellIndex;
+              }
+
+              if (isMousedown) {
+                Array.prototype.forEach.call(
+                  document.getElementById("tbl").querySelectorAll("td"),
+                  function (e) {
+                    e.classList.remove("selected");
+                  }
+                );
+                for (let i = rowStart; i <= rowEnd; i++) {
+                  for (let j = cellStart; j <= cellEnd; j++) {
+                    table.rows[i].cells[j].classList.add("selected");
+                  }
+                }
+              }
+            }
+          });
+        document
+          .getElementById("tbl")
+          .addEventListener("mouseup", function (e) {
+            isMousedown = false;
+          });
+      }
+    );
+  });
+  /*eslint-enable */
+  useEffect(() => {
+    document.addEventListener("keydown", KeyCheck);
+    function empty() {
+      let selectedNodes = document
+        .getElementById("tbl")
+        .getElementsByClassName("selected");
+      Array.prototype.forEach.call(selectedNodes, function (selectedOne) {
+        let input = selectedOne.childNodes[0];
+        input.value = "";
+      });
+    }
+    function KeyCheck(event) {
+      var KeyID = event.keyCode;
+      switch (KeyID) {
+        case 8:
+          console.log("backspace");
+          empty();
+          break;
+        case 46:
+          console.log("delete");
+          empty();
+          break;
+        default:
+          break;
+      }
+    }
+    return () => {
+      window.removeEventListener("click", KeyCheck);
+    };
+  });
   useEffect(() => {
     let thElm;
     let startOffset;
@@ -216,7 +320,7 @@ const Table = (props) => {
     );
   }
   return (
-    <table>
+    <table id="tbl">
       <thead>
         <tr>
           <th>
