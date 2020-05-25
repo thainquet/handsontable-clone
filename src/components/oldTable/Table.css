@@ -1,11 +1,11 @@
 table {
   border-collapse: collapse;
   table-layout: fixed;
-}
-
-tr {
   user-select: none;
 }
+
+/* tr {
+} */
 
 th {
   width: 100px;
@@ -92,4 +92,8 @@ th input :focus {
 
 .centered {
   text-align: center;
+}
+
+.selected {
+  background-color: #e6efff;
 }
