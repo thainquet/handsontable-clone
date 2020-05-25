@@ -1,20 +1,47 @@
 import React, { useState, useEffect } from "react";
 import "./Table.css";
 
+const clearAllTRBorder = () => {
+  Array.prototype.forEach.call(document.querySelectorAll("tr"), function (e) {
+    e.classList.remove("rowSelected");
+  });
+};
+
+const clearAllCellBorder = () => {
+  Array.prototype.forEach.call(document.querySelectorAll("td"), function (e) {
+    e.classList.remove("cellSelected");
+  });
+};
+
+const removeElementsByClass = (className) => {
+  var elements = document.getElementsByClassName(className);
+  while (elements.length > 0) {
+    elements[0].parentNode.removeChild(elements[0]);
+  }
+};
+
+const cleanTable = () => {
+  clearAllCellBorder();
+  clearAllTRBorder();
+  removeElementsByClass("dot");
+};
+
 const Cell = (props) => {
   const { cellData } = props;
   const [localData, setLocalData] = useState(cellData.data);
   const handleCellChange = (e) => {
     setLocalData(e.target.value);
   };
-
-  const clearAllCellBorder = () => {
-    Array.prototype.forEach.call(document.querySelectorAll("td"), function (e) {
-      e.classList.remove("cellSelected");
-    });
-  };
   const handleClickCell = (event) => {
-    clearAllCellBorder();
+    let rect = event.target.parentNode.getBoundingClientRect();
+    cleanTable();
+    let dot = document.createElement("DIV");
+    dot.innerHTML = "";
+    dot.classList.add("dot");
+    dot.style.top = rect.bottom - 4 + "px";
+    dot.style.left = rect.right - 4 + "px";
+    document.getElementsByTagName("BODY")[0].appendChild(dot);
+
     event.target.parentNode.classList.add("cellSelected");
   };
   return (
@@ -26,12 +53,6 @@ const Cell = (props) => {
       />
     </td>
   );
-};
-
-const clearAllBorder = (className) => {
-  Array.prototype.forEach.call(document.querySelectorAll("tr"), function (e) {
-    e.classList.remove(className);
-  });
 };
 
 const Row = (props) => {
@@ -86,7 +107,7 @@ const Row = (props) => {
   const handleClickRow = (e) => {
     e.preventDefault();
     let thisTR = e.target.parentNode.parentNode;
-    clearAllBorder("rowSelected");
+    cleanTable();
     if (thisTR.tagName === "TR") thisTR.classList.add("rowSelected");
   };
   return (
@@ -153,11 +174,12 @@ const Table = (props) => {
     ["q3", "b", "c", "d", "e", "f", "G"],
     ["a", "b", "c", "d", "e", "f", "G"],
   ]);
+  const [isInSelectedColumn, setIsInSelectedColumn] = useState(false);
   if (tableData) setInitArray(tableData);
   let headerRow = [];
-  for (let i = 0; i <= initArray[0].length; i++) {
+  for (let i = 0; i < initArray[0].length; i++) {
     headerRow.push(
-      <th key={i}>
+      <th key={i} onClick={() => setIsInSelectedColumn(true)}>
         <input />
       </th>
     );
@@ -165,11 +187,18 @@ const Table = (props) => {
   return (
     <table>
       <thead>
-        <tr>{headerRow ? headerRow : ""}</tr>
+        <tr>
+          <th>
+            <input disabled />
+          </th>
+          {headerRow ? headerRow : ""}
+        </tr>
       </thead>
       <tbody>
         {initArray &&
-          initArray.map((i, index) => <Row key={index} rowData={i} />)}
+          initArray.map((i, index) => (
+            <Row key={index} rowData={i} hasSelectedCell={isInSelectedColumn} />
+          ))}
       </tbody>
     </table>
   );

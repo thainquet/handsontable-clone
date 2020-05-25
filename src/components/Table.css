@@ -1,6 +1,7 @@
 table {
   border-collapse: collapse;
   width: max-content;
+  user-select: none;
 }
 tr {
   border-color: #ddd;
@@ -51,4 +52,14 @@ td input {
 
 .cellSelected {
   border: 2px solid #4b89ff;
+}
+.dot {
+  user-select: none;
+  border: 1px solid white;
+  position: absolute;
+  background-color: #4b89ff;
+  height: 6px;
+  width: 6px;
+  z-index: 9;
+  cursor: crosshair;
 }
