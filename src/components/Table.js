@@ -9,16 +9,13 @@ const clearAllTRBorder = () => {
 
 const clearAllCellBorder = () => {
   Array.prototype.forEach.call(document.querySelectorAll("td"), function (e) {
-    e.classList.remove("cellSelected");
+    e.classList.remove("columnSelected", "columnSelectedLast", "cellSelected");
   });
 };
 
 const clearAllColumnborder = () => {
   Array.prototype.forEach.call(document.querySelectorAll("th"), function (e) {
     e.classList.remove("selectFirstTH");
-  });
-  Array.prototype.forEach.call(document.querySelectorAll("td"), function (e) {
-    e.classList.remove("columnSelected", "columnSelectedLast");
   });
 };
 
@@ -30,7 +27,7 @@ const removeElementsByClass = (className) => {
 };
 
 const clearAllSelectedCell = () => {
-  Array.prototype.forEach.call(document.getElementById("tbl").querySelectorAll("td"), function (e) {
+  Array.prototype.forEach.call(document.querySelectorAll("td"), function (e) {
     e.classList.remove("selected");
   });
 }
@@ -136,7 +133,7 @@ const Row = (props) => {
   };
   return (
     <tr>
-      <td onClick={handleClickRow} id="row">
+      <td className="disabledInput boundaryColor" onClick={handleClickRow} id="row">
         <input disabled={true} />
       </td>
       {rowData &&
@@ -320,7 +317,7 @@ const Table = (props) => {
   let headerRow = [];
   for (let i = 0; i < initArray[0].length; i++) {
     headerRow.push(
-      <th key={i} onClick={selectColumn}>
+      <th className="boundaryColor" key={i} onClick={selectColumn}>
         <input />
       </th>
     );
@@ -329,7 +326,7 @@ const Table = (props) => {
     <table id="tbl">
       <thead>
         <tr>
-          <th>
+          <th className="disabledInput boundaryColor">
             <input disabled />
           </th>
           {headerRow ? headerRow : ""}

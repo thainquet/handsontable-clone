@@ -18,7 +18,7 @@ td {
   box-sizing: border-box;
   border-color: #ddd;
 }
-td input {
+input {
   width: 100%;
   background-color: transparent;
   border: none;
@@ -80,4 +80,16 @@ td input {
 
 .selected {
   background-color: #e6efff;
+}
+
+.disabledInput {
+  width: 30px;
+}
+
+.boundaryColor {
+  background-color: #f0f0f0;
+}
+
+.selectedBoundaryColor {
+  background-color: #dcdcdc;
 }

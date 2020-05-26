@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Table.css";
-import $ from "jquery";
-window.$ = $;
+// import $ from "jquery";
+// window.$ = $;
 
 const makeid = (length) => {
   let result = "";
@@ -36,75 +36,75 @@ function Table() {
   let count = -1; // index for first row and column
   let keycount = 0; // key in loop render
 
-  useEffect(() => {
-    var table = $("#tbl");
+  // useEffect(() => {
+  //   var table = $("#tbl");
 
-    var isMouseDown = false;
-    var startRowIndex = null;
-    var startCellIndex = null;
+  //   var isMouseDown = false;
+  //   var startRowIndex = null;
+  //   var startCellIndex = null;
 
-    function selectTo(cell) {
-      var row = cell.parent();
-      var cellIndex = cell.index();
-      var rowIndex = row.index();
+  //   function selectTo(cell) {
+  //     var row = cell.parent();
+  //     var cellIndex = cell.index();
+  //     var rowIndex = row.index();
 
-      var rowStart, rowEnd, cellStart, cellEnd;
+  //     var rowStart, rowEnd, cellStart, cellEnd;
 
-      if (rowIndex < startRowIndex) {
-        rowStart = rowIndex;
-        rowEnd = startRowIndex;
-      } else {
-        rowStart = startRowIndex;
-        rowEnd = rowIndex;
-      }
+  //     if (rowIndex < startRowIndex) {
+  //       rowStart = rowIndex;
+  //       rowEnd = startRowIndex;
+  //     } else {
+  //       rowStart = startRowIndex;
+  //       rowEnd = rowIndex;
+  //     }
 
-      if (cellIndex < startCellIndex) {
-        cellStart = cellIndex;
-        cellEnd = startCellIndex;
-      } else {
-        cellStart = startCellIndex;
-        cellEnd = cellIndex;
-      }
+  //     if (cellIndex < startCellIndex) {
+  //       cellStart = cellIndex;
+  //       cellEnd = startCellIndex;
+  //     } else {
+  //       cellStart = startCellIndex;
+  //       cellEnd = cellIndex;
+  //     }
 
-      for (var i = rowStart; i <= rowEnd; i++) {
-        var rowCells = table.find("tr").eq(i).find("th");
-        for (var j = cellStart; j <= cellEnd; j++) {
-          rowCells.eq(j).addClass("selected");
-        }
-      }
-    }
+  //     for (var i = rowStart; i <= rowEnd; i++) {
+  //       var rowCells = table.find("tr").eq(i).find("th");
+  //       for (var j = cellStart; j <= cellEnd; j++) {
+  //         rowCells.eq(j).addClass("selected");
+  //       }
+  //     }
+  //   }
 
-    table
-      .find("th")
-      .mousedown(function (e) {
-        isMouseDown = true;
-        var cell = $(this);
+  //   table
+  //     .find("th")
+  //     .mousedown(function (e) {
+  //       isMouseDown = true;
+  //       var cell = $(this);
 
-        table.find(".selected").removeClass("selected"); // deselect everything
+  //       table.find(".selected").removeClass("selected"); // deselect everything
 
-        if (e.shiftKey) {
-          selectTo(cell);
-        } else {
-          cell.addClass("selected");
-          startCellIndex = cell.index();
-          startRowIndex = cell.parent().index();
-        }
+  //       if (e.shiftKey) {
+  //         selectTo(cell);
+  //       } else {
+  //         cell.addClass("selected");
+  //         startCellIndex = cell.index();
+  //         startRowIndex = cell.parent().index();
+  //       }
 
-        return false; // prevent text selection
-      })
-      .mouseover(function () {
-        if (!isMouseDown) return;
-        table.find(".selected").removeClass("selected");
-        selectTo($(this));
-      })
-      .bind("selectstart", function () {
-        return false;
-      });
+  //       return false; // prevent text selection
+  //     })
+  //     .mouseover(function () {
+  //       if (!isMouseDown) return;
+  //       table.find(".selected").removeClass("selected");
+  //       selectTo($(this));
+  //     })
+  //     .bind("selectstart", function () {
+  //       return false;
+  //     });
 
-    $(document).mouseup(function () {
-      isMouseDown = false;
-    });
-  });
+  //   $(document).mouseup(function () {
+  //     isMouseDown = false;
+  //   });
+  // });
 
   useEffect(() => {
     let arr = JSON.parse(JSON.stringify(initArray)); // deep clone
@@ -636,53 +636,53 @@ function Table() {
                           />
                         </th>
                       ) : (
-                        <th
-                          className="centered boundaryColor"
-                          style={{ position: "relative" }}
-                          key={++keycount + 100}
-                        >
-                          <input
+                          <th
                             className="centered boundaryColor"
-                            onClick={handleClickCell}
-                            onChange={handleChangeCell}
-                            value={j}
-                          />
-                        </th>
-                      )
+                            style={{ position: "relative" }}
+                            key={++keycount + 100}
+                          >
+                            <input
+                              className="centered boundaryColor"
+                              onClick={handleClickCell}
+                              onChange={handleChangeCell}
+                              value={j}
+                            />
+                          </th>
+                        )
                     )}
                   </tr>
                 ) : (
-                  <tr key={++keycount}>
-                    {i.map((j, columnIndex) =>
-                      columnIndex !== 0 ? (
-                        <th
-                          style={{ position: "relative" }}
-                          key={++keycount + 100}
-                          onClick={handleClickCell}
-                        >
-                          <input
+                    <tr key={++keycount}>
+                      {i.map((j, columnIndex) =>
+                        columnIndex !== 0 ? (
+                          <th
+                            style={{ position: "relative" }}
+                            key={++keycount + 100}
                             onClick={handleClickCell}
-                            onChange={handleChangeCell}
-                            value={j}
-                          />
-                        </th>
-                      ) : (
-                        <th
-                          className="boundaryColor firstColumn"
-                          style={{ position: "relative" }}
-                          key={++keycount + 100}
-                          onClick={handleClickCell}
-                        >
-                          <input
-                            className="centered boundaryColor"
-                            disabled
-                            value={j}
-                          />
-                        </th>
-                      )
-                    )}
-                  </tr>
-                )
+                          >
+                            <input
+                              onClick={handleClickCell}
+                              onChange={handleChangeCell}
+                              value={j}
+                            />
+                          </th>
+                        ) : (
+                            <th
+                              className="boundaryColor firstColumn"
+                              style={{ position: "relative" }}
+                              key={++keycount + 100}
+                              onClick={handleClickCell}
+                            >
+                              <input
+                                className="centered boundaryColor"
+                                disabled
+                                value={j}
+                              />
+                            </th>
+                          )
+                      )}
+                    </tr>
+                  )
               )}
           </tbody>
         </table>
