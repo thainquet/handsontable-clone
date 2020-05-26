@@ -15,7 +15,7 @@ const clearAllCellBorder = () => {
 
 const clearAllColumnborder = () => {
   Array.prototype.forEach.call(document.querySelectorAll("th"), function (e) {
-    e.classList.remove("selectFirstTH");
+    e.classList.remove("selectFirstTH", "selectedBoundaryColor");
   });
 };
 
@@ -28,7 +28,7 @@ const removeElementsByClass = (className) => {
 
 const clearAllSelectedCell = () => {
   Array.prototype.forEach.call(document.querySelectorAll("td"), function (e) {
-    e.classList.remove("selected", "selectedForChangingData");
+    e.classList.remove("selected", "selectedForChangingData", "selectedBoundaryColor");
   });
 }
 
@@ -58,8 +58,10 @@ const Cell = (props) => {
 
     let value = event.target.value
     let td = event.target.parentNode
-    let startCellIndex, startRowIndex, endCellIndex, endRowIndex;
+    let startCellIndex, startRowIndex;
     let isMousedown = false;
+    document.getElementById("tbl").rows[td.parentNode.rowIndex].cells[0].classList.add("selectedBoundaryColor")
+    document.getElementById("tbl").rows[0].cells[td.cellIndex].classList.add("selectedBoundaryColor")
 
     document.getElementsByClassName("dot")[0].addEventListener('mousedown', function (e) {
       isMousedown = true
