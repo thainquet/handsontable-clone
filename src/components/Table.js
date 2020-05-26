@@ -83,13 +83,11 @@ const Cell = (props) => {
           if (rowIndex < startRowIndex) {
             rowStart = rowIndex;
             rowEnd = startRowIndex;
-            cellStart = startCellIndex;
-            cellEnd = startCellIndex;
+            cellStart = cellEnd = startCellIndex;
           } else if (rowIndex > startRowIndex) {
             rowStart = startRowIndex;
             rowEnd = rowIndex;
-            cellStart = startCellIndex;
-            cellEnd = startCellIndex;
+            cellStart = cellEnd = startCellIndex;
           } else {
             rowStart = rowEnd = startRowIndex;
             if (cellIndex < startCellIndex) {
@@ -100,21 +98,6 @@ const Cell = (props) => {
               cellEnd = cellIndex;
             }
           }
-
-          // if (cellIndex < startCellIndex) {
-          //   cellStart = cellIndex;
-          //   cellEnd = startCellIndex;
-          // } else {
-          //   cellStart = startCellIndex;
-          //   cellEnd = cellIndex;
-          // }
-
-          // if (rowIndex != startRowIndex) {
-          //   rowStart = rowIndex;
-          //   rowEnd = startRowIndex;
-          //   cellStart = startCellIndex;
-          //   cellEnd = startCellIndex;
-          // }
           if (isMousedown) {
             Array.prototype.forEach.call(
               document.getElementById("tbl").querySelectorAll("td"),
