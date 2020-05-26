@@ -382,23 +382,49 @@ const Table = (props) => {
       </th>
     );
   }
+
+  const exportCSV = () => {
+    let data = []
+    let table = document.getElementById("tbl")
+    Array.prototype.forEach.call(table.rows, (row) => {
+      let dataItem = []
+      Array.prototype.forEach.call(row.cells, (cell) => {
+        if (cell.cellIndex != 0) dataItem.push(cell.childNodes[0].value)
+      })
+      data.push(dataItem)
+    })
+    let arr = JSON.parse(JSON.stringify(data));
+    let csvContent =
+      "data:text/csv;charset=utf-8," + arr.map((e) => e.join(",")).join("\n");
+    let encodedUri = encodeURI(csvContent);
+    let link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "my_data.csv");
+    document.body.appendChild(link);
+    link.click();
+  }
+
   return (
-    <table id="tbl">
-      <thead>
-        <tr>
-          <th className="disabledInput boundaryColor">
-            <input disabled />
-          </th>
-          {headerRow ? headerRow : ""}
-        </tr>
-      </thead>
-      <tbody>
-        {initArray &&
-          initArray.map((i, index) => (
-            <Row key={index} rowData={i} />
-          ))}
-      </tbody>
-    </table>
+    <>
+      <table id="tbl">
+        <thead>
+          <tr>
+            <th className="disabledInput boundaryColor">
+              <input disabled />
+            </th>
+            {headerRow ? headerRow : ""}
+          </tr>
+        </thead>
+        <tbody>
+          {initArray &&
+            initArray.map((i, index) => (
+              <Row key={index} rowData={i} />
+            ))}
+        </tbody>
+      </table>
+      <br></br>
+      <button onClick={exportCSV}>Export CSV</button>
+    </>
   );
 };
 
