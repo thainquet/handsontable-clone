@@ -73,6 +73,10 @@ td input {
   border-right: 2px solid #4b89ff;
   border-left: 2px solid #4b89ff;
 }
+.columnSelectedLast {
+  border: 2px solid #4b89ff;
+  border-top: none;
+}
 
 .selected {
   background-color: #e6efff;
