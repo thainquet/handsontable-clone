@@ -57,16 +57,96 @@ const Cell = (props) => {
     document.getElementsByTagName("BODY")[0].appendChild(dot);
 
     let value = event.target.value
-    console.log(value)
+    let td = event.target.parentNode
+    let startCellIndex, startRowIndex, endCellIndex, endRowIndex;
+    let isMousedown = false;
 
-    document.getElementsByClassName("dot")[0].addEventListener('click', function (e) {
-      console.log(e.target)
+    document.getElementsByClassName("dot")[0].addEventListener('mousedown', function (e) {
+      isMousedown = true
+      startCellIndex = td.cellIndex;
+      startRowIndex = td.parentNode.rowIndex;
     })
+    document
+      .getElementById("tbl")
+      .addEventListener("mousemove", function (e) {
+        let endElement = document.elementFromPoint(e.pageX, e.pageY);
+        if (
+          endElement.parentNode.tagName === "TD" &&
+          endElement.tagName === "INPUT"
+        ) {
+          let thisTD = endElement.parentNode;
+          let cellIndex = thisTD.cellIndex;
+          let rowIndex = thisTD.parentNode.rowIndex;
+          let table = document.getElementById("tbl");
+          let rowStart, rowEnd, cellStart, cellEnd;
+
+          if (rowIndex < startRowIndex) {
+            rowStart = rowIndex;
+            rowEnd = startRowIndex;
+            cellStart = startCellIndex;
+            cellEnd = startCellIndex;
+          } else if (rowIndex > startRowIndex) {
+            rowStart = startRowIndex;
+            rowEnd = rowIndex;
+            cellStart = startCellIndex;
+            cellEnd = startCellIndex;
+          } else {
+            rowStart = rowEnd = startRowIndex;
+            if (cellIndex < startCellIndex) {
+              cellStart = cellIndex;
+              cellEnd = startCellIndex;
+            } else {
+              cellStart = startCellIndex;
+              cellEnd = cellIndex;
+            }
+          }
+
+          // if (cellIndex < startCellIndex) {
+          //   cellStart = cellIndex;
+          //   cellEnd = startCellIndex;
+          // } else {
+          //   cellStart = startCellIndex;
+          //   cellEnd = cellIndex;
+          // }
+
+          // if (rowIndex != startRowIndex) {
+          //   rowStart = rowIndex;
+          //   rowEnd = startRowIndex;
+          //   cellStart = startCellIndex;
+          //   cellEnd = startCellIndex;
+          // }
+          if (isMousedown) {
+            Array.prototype.forEach.call(
+              document.getElementById("tbl").querySelectorAll("td"),
+              function (e) {
+                e.classList.remove("selected");
+              }
+            );
+            for (let i = rowStart; i <= rowEnd; i++) {
+              for (let j = cellStart; j <= cellEnd; j++) {
+                let thisCell = table.rows[i].cells[j]
+                thisCell.classList.add("selected");
+              }
+            }
+          }
+        }
+      });
+    document
+      .getElementById("tbl")
+      .addEventListener("mouseup", function (e) {
+        isMousedown = false;
+        Array.prototype.forEach.call(
+          document.getElementById("tbl").querySelectorAll("td.selected"),
+          function (e) {
+            e.childNodes[0].value = value
+          }
+        );
+      });
 
     event.target.parentNode.classList.add("cellSelected");
   };
   return (
-    <td className="cellData">
+    <td className="cellData mycol">
       <input
         value={localData}
         onChange={handleCellChange}
