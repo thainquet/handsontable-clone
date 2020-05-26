@@ -60,7 +60,8 @@ const Cell = (props) => {
     dot.style.left = rect.right - 4 + "px";
     document.getElementsByTagName("BODY")[0].appendChild(dot);
 
-    let value = ''
+    let value = event.target.value
+    console.log(value)
 
     document.getElementsByClassName("dot")[0].addEventListener('click', function (e) {
       console.log(e.target)
@@ -69,7 +70,7 @@ const Cell = (props) => {
     event.target.parentNode.classList.add("cellSelected");
   };
   return (
-    <td className={inColSelected && inColSelected ? "columnSelected" : ""}>
+    <td className={inColSelected && inColSelected ? "columnSelected mycol" : "mycol"}>
       <input
         value={localData}
         onChange={handleCellChange}
@@ -166,7 +167,7 @@ const Table = (props) => {
     let startCellIndex, startRowIndex, endCellIndex, endRowIndex;
     let isMousedown = false;
     Array.prototype.forEach.call(
-      document.querySelectorAll("table td"),
+      document.querySelectorAll("table td.mycol"),
       function (td) {
         td.addEventListener("mousedown", function (e) {
           e.target.click()
