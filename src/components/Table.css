@@ -87,6 +87,10 @@ input {
   background-color: #e6efff;
 }
 
+.selectedForChangingData {
+  background-color: #e6efff;
+}
+
 .disabledInput {
   width: 30px;
 }

@@ -28,7 +28,7 @@ const removeElementsByClass = (className) => {
 
 const clearAllSelectedCell = () => {
   Array.prototype.forEach.call(document.querySelectorAll("td"), function (e) {
-    e.classList.remove("selected");
+    e.classList.remove("selected", "selectedForChangingData");
   });
 }
 
@@ -102,13 +102,13 @@ const Cell = (props) => {
             Array.prototype.forEach.call(
               document.getElementById("tbl").querySelectorAll("td"),
               function (e) {
-                e.classList.remove("selected");
+                e.classList.remove("selectedForChangingData");
               }
             );
             for (let i = rowStart; i <= rowEnd; i++) {
               for (let j = cellStart; j <= cellEnd; j++) {
                 let thisCell = table.rows[i].cells[j]
-                thisCell.classList.add("selected");
+                thisCell.classList.add("selectedForChangingData");
               }
             }
           }
@@ -119,7 +119,7 @@ const Cell = (props) => {
       .addEventListener("mouseup", function (e) {
         isMousedown = false;
         Array.prototype.forEach.call(
-          document.getElementById("tbl").querySelectorAll("td.selected"),
+          document.getElementById("tbl").querySelectorAll("td.selectedForChangingData"),
           function (e) {
             e.childNodes[0].value = value
           }
