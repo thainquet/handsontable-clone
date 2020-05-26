@@ -5,7 +5,7 @@ table {
 }
 tr {
   border-color: #ddd;
-  box-sizing: border-box;
+  /* box-sizing: border-box; */
 }
 
 th {
@@ -34,9 +34,14 @@ input {
   cursor: col-resize;
 }
 
+.resizeColumn:hover {
+  background-color: #4b89ff;
+}
+
 .resizeRow {
-  width: 100%;
   bottom: 0;
+  left: 0;
+  right: 0;
   height: 2px;
   position: absolute;
   cursor: row-resize;
@@ -88,6 +93,8 @@ input {
 
 .boundaryColor {
   background-color: #f0f0f0;
+  background-clip: content-box;
+  overflow: hidden;
 }
 
 .selectedBoundaryColor {

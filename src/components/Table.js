@@ -82,18 +82,13 @@ const Row = (props) => {
     let startOffset;
 
     Array.prototype.forEach.call(
-      document.querySelectorAll("table td#row"),
+      document.querySelectorAll("table td.firstRowCell"),
       function (td) {
         td.style.position = "relative";
 
         let grip = document.createElement("div");
         grip.innerHTML = "&nbsp;";
-        grip.style.bottom = 0;
-        grip.style.left = 0;
-        grip.style.right = 0;
-        grip.style.height = "2px";
-        grip.style.position = "absolute";
-        grip.style.cursor = "row-resize";
+        grip.classList.add("resizeRow")
         grip.addEventListener("mousedown", function (e) {
           thElm = td;
           startOffset = td.offsetHeight - e.pageY;
@@ -133,7 +128,7 @@ const Row = (props) => {
   };
   return (
     <tr>
-      <td className="disabledInput boundaryColor" onClick={handleClickRow} id="row">
+      <td className="disabledInput boundaryColor firstRowCell" onClick={handleClickRow}>
         <input disabled={true} />
       </td>
       {rowData &&
