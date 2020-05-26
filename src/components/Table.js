@@ -29,10 +29,17 @@ const removeElementsByClass = (className) => {
   }
 };
 
+const clearAllSelectedCell = () => {
+  Array.prototype.forEach.call(document.getElementById("tbl").querySelectorAll("td"), function (e) {
+    e.classList.remove("selected");
+  });
+}
+
 const cleanTable = () => {
   clearAllCellBorder();
   clearAllTRBorder();
   clearAllColumnborder();
+  clearAllSelectedCell()
   removeElementsByClass("dot");
 };
 
@@ -52,6 +59,12 @@ const Cell = (props) => {
     dot.style.top = rect.bottom - 4 + "px";
     dot.style.left = rect.right - 4 + "px";
     document.getElementsByTagName("BODY")[0].appendChild(dot);
+
+    let value = ''
+
+    document.getElementsByClassName("dot")[0].addEventListener('click', function (e) {
+      console.log(e.target)
+    })
 
     event.target.parentNode.classList.add("cellSelected");
   };
@@ -135,12 +148,12 @@ const Row = (props) => {
               cellData={{ data: i, index }}
             />
           ) : (
-            <Cell
-              key={index}
-              inColSelected={false}
-              cellData={{ data: i, index }}
-            />
-          )
+              <Cell
+                key={index}
+                inColSelected={false}
+                cellData={{ data: i, index }}
+              />
+            )
         )}
     </tr>
   );
@@ -156,6 +169,7 @@ const Table = (props) => {
       document.querySelectorAll("table td"),
       function (td) {
         td.addEventListener("mousedown", function (e) {
+          e.target.click()
           Array.prototype.forEach.call(
             document.getElementById("tbl").querySelectorAll("td"),
             function (e) {
