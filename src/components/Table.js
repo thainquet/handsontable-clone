@@ -84,7 +84,7 @@ const Cell = (props) => {
       let endElement = document.elementFromPoint(e.pageX, e.pageY);
       if (
         endElement.parentNode.tagName === "TD" &&
-        endElement.tagName === "INPUT"
+        endElement.tagName === "TEXTAREA"
       ) {
         let thisTD = endElement.parentNode;
         let cellIndex = thisTD.cellIndex;
@@ -181,6 +181,7 @@ const Row = (props) => {
         Array.prototype.forEach.call(thElm.parentNode.childNodes, function (
           td
         ) {
+          removeElementsByClass("dot");
           td.style.height = startOffset + e.pageY + "px";
           td.childNodes[0].style.width = "100%";
           td.childNodes[0].style.height = "100%";
@@ -363,6 +364,17 @@ const Table = (props) => {
     document.addEventListener("mousemove", function (e) {
       if (thElm) {
         thElm.style.width = startOffset + e.pageX + "px";
+        Array.prototype.forEach.call(
+          document.querySelectorAll("table td"),
+          function (td) {
+            if (td.cellIndex === thElm.cellIndex) {
+              removeElementsByClass("dot");
+              td.style.width = startOffset + e.pageY + "px";
+              td.childNodes[0].style.width = "100%";
+              td.childNodes[0].style.height = "100%";
+            }
+          }
+        );
       }
     });
 
@@ -372,6 +384,7 @@ const Table = (props) => {
     return () => {
       document.removeEventListener("mousemove", function (e) {
         if (thElm) {
+          removeElementsByClass("dot");
           thElm.style.width = startOffset + e.pageX + "px";
         }
       });
