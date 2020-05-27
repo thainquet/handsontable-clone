@@ -159,85 +159,83 @@ const Cell = (props) => {
   );
 };
 
-const Row = (props) => {
-  useEffect(() => {
-    let thElm;
-    let startOffset;
+// const Row = (props) => {
+//   useEffect(() => {
+//     let thElm;
+//     let startOffset;
 
-    Array.prototype.forEach.call(
-      document.querySelectorAll("table td.firstRowCell"),
-      function (td) {
-        td.style.position = "relative";
+//     Array.prototype.forEach.call(
+//       document.querySelectorAll("table td.firstRowCell"),
+//       function (td) {
+//         td.style.position = "relative";
 
-        let grip = document.createElement("div");
-        grip.innerHTML = "&nbsp;";
-        grip.classList.add("resizeRow");
-        grip.addEventListener("mousedown", function (e) {
-          thElm = td;
-          startOffset = td.offsetHeight - e.pageY;
-        });
+//         let grip = document.createElement("div");
+//         grip.innerHTML = "&nbsp;";
+//         grip.classList.add("resizeRow");
+//         grip.addEventListener("mousedown", function (e) {
+//           thElm = td;
+//           startOffset = td.offsetHeight - e.pageY;
+//         });
 
-        td.appendChild(grip);
-      }
-    );
+//         td.appendChild(grip);
+//       }
+//     );
 
-    document.addEventListener("mousemove", function (e) {
-      if (thElm) {
-        thElm.style.height = startOffset + e.pageY + "px";
-        Array.prototype.forEach.call(thElm.parentNode.childNodes, function (
-          td
-        ) {
-          removeElementsByClass("dot");
-          td.style.height = startOffset + e.pageY + "px";
-          td.childNodes[0].style.width = "100%";
-          td.childNodes[0].style.height = "100%";
-        });
-      }
-    });
+//     document.addEventListener("mousemove", function (e) {
+//       if (thElm) {
+//         thElm.style.height = startOffset + e.pageY + "px";
+//         Array.prototype.forEach.call(thElm.parentNode.childNodes, function (
+//           td
+//         ) {
+//           removeElementsByClass("dot");
+//           td.style.height = startOffset + e.pageY + "px";
+//           td.childNodes[0].style.width = "100%";
+//           td.childNodes[0].style.height = "100%";
+//         });
+//       }
+//     });
 
-    document.addEventListener("mouseup", function () {
-      thElm = undefined;
-    });
-    return () => {
-      document.removeEventListener("mousemove", function (e) {
-        if (thElm) {
-          thElm.style.height = startOffset + e.pageY + "px";
-        }
-      });
-      document.removeEventListener("mouseup", function () {
-        thElm = undefined;
-      });
-    };
-  }, []);
-  const { rowData } = props;
-  const handleClickRow = (e) => {
-    e.preventDefault();
-    let thisTR = e.target.parentNode.parentNode;
-    cleanTable();
-    if (thisTR.tagName === "TR") {
-      thisTR.classList.add("rowSelected");
-      e.target.parentNode.classList.add("selectedBoundaryColor");
-    }
-  };
-  return (
-    <tr>
-      <td
-        className="disabledInput boundaryColor firstRowCell"
-        onClick={handleClickRow}
-      >
-        <input disabled={true} defaultValue="" />
-      </td>
-      {rowData && rowData.map((i, index) => <Cell key={index} cellData={i} />)}
-    </tr>
-  );
-};
+//     document.addEventListener("mouseup", function () {
+//       thElm = undefined;
+//     });
+//     return () => {
+//       document.removeEventListener("mousemove", function (e) {
+//         if (thElm) {
+//           thElm.style.height = startOffset + e.pageY + "px";
+//         }
+//       });
+//       document.removeEventListener("mouseup", function () {
+//         thElm = undefined;
+//       });
+//     };
+//   }, []);
+//   const { rowData } = props;
+//   const handleClickRow = (e) => {
+//     e.preventDefault();
+//     let thisTR = e.target.parentNode.parentNode;
+//     cleanTable();
+//     if (thisTR.tagName === "TR") {
+//       thisTR.classList.add("rowSelected");
+//       e.target.parentNode.classList.add("selectedBoundaryColor");
+//     }
+//   };
+//   return (
+//     <tr>
+//       <td
+//         className="disabledInput boundaryColor firstRowCell"
+//         onClick={handleClickRow}
+//       >
+//         <input disabled={true} defaultValue="" />
+//       </td>
+//       {rowData && rowData.map((i, index) => <Cell key={index} cellData={i} />)}
+//     </tr>
+//   );
+// };
 
 const Table = (props) => {
-  /*eslint-disable */
   // handle selected cell background
   useEffect(() => {
-    let thElm;
-    let startCellIndex, startRowIndex, endCellIndex, endRowIndex;
+    let startCellIndex, startRowIndex;
     let isMousedown = false;
     Array.prototype.forEach.call(
       document.querySelectorAll("table td.mycol"),
@@ -250,7 +248,6 @@ const Table = (props) => {
               e.classList.remove("selected");
             }
           );
-          thElm = td;
           isMousedown = true;
           startCellIndex = td.cellIndex;
           startRowIndex = td.parentNode.rowIndex;
@@ -303,14 +300,10 @@ const Table = (props) => {
           .getElementById("tbl")
           .addEventListener("mouseup", function (e) {
             isMousedown = false;
-            // document
-            //   .getElementById("tbl")
-            //   .removeEventListener("mousemove", mousemove);
           });
       }
     );
   }, []);
-  /*eslint-enable */
   // handle keydown delete and backspace
   useEffect(() => {
     document.addEventListener("keydown", KeyCheck);
@@ -544,8 +537,169 @@ const Table = (props) => {
         .getElementById("tbl")
         .removeEventListener("keydown", handleCopyPaste, false);
   });
+  useEffect(() => {
+    let thElm;
+    let startOffset;
 
-  useEffect(() => console.log(initArray), [initArray]);
+    Array.prototype.forEach.call(
+      document.querySelectorAll("table td.firstRowCell"),
+      function (td) {
+        td.style.position = "relative";
+
+        let grip = document.createElement("div");
+        grip.innerHTML = "&nbsp;";
+        grip.classList.add("resizeRow");
+        grip.addEventListener("mousedown", function (e) {
+          thElm = td;
+          startOffset = td.offsetHeight - e.pageY;
+        });
+
+        td.appendChild(grip);
+      }
+    );
+
+    document.addEventListener("mousemove", function (e) {
+      if (thElm) {
+        thElm.style.height = startOffset + e.pageY + "px";
+        Array.prototype.forEach.call(thElm.parentNode.childNodes, function (
+          td
+        ) {
+          removeElementsByClass("dot");
+          td.style.height = startOffset + e.pageY + "px";
+          td.childNodes[0].style.width = "100%";
+          td.childNodes[0].style.height = "100%";
+        });
+      }
+    });
+
+    document.addEventListener("mouseup", function () {
+      thElm = undefined;
+    });
+    return () => {
+      document.removeEventListener("mousemove", function (e) {
+        if (thElm) {
+          thElm.style.height = startOffset + e.pageY + "px";
+        }
+      });
+      document.removeEventListener("mouseup", function () {
+        thElm = undefined;
+      });
+    };
+  }, []);
+  const handleClickRow = (e) => {
+    e.preventDefault();
+    let thisTR = e.target.parentNode.parentNode;
+    cleanTable();
+    if (thisTR.tagName === "TR") {
+      thisTR.classList.add("rowSelected");
+      e.target.parentNode.classList.add("selectedBoundaryColor");
+    }
+  };
+  const [localData, setLocalData] = useState();
+  const handleCellChange = (e) => {
+    // let rowIndex = e.target.parentNode.parentNode.rowIndex;
+    // let cellIndex = e.target.parentNode.cellIndex;
+    // console.log(e.target.value);
+    // console.log(
+    //   document.getElementById("tbl").rows[rowIndex].cells[cellIndex]
+    //     .childNodes[0].value
+    // );
+    setLocalData(e.target.value);
+  };
+  const handleClickCell = (event) => {
+    let rect = event.target.parentNode.getBoundingClientRect();
+    cleanTable();
+    let dot = document.createElement("DIV");
+    dot.innerHTML = "";
+    dot.classList.add("dot");
+    dot.style.top = rect.bottom - 4 + "px";
+    dot.style.left = rect.right - 4 + "px";
+    document.getElementsByTagName("BODY")[0].appendChild(dot);
+
+    let value = event.target.value;
+    let td = event.target.parentNode;
+    let startCellIndex, startRowIndex;
+    let isMousedown = false;
+    document
+      .getElementById("tbl")
+      .rows[td.parentNode.rowIndex].cells[0].classList.add(
+        "selectedBoundaryColor"
+      );
+    document
+      .getElementById("tbl")
+      .rows[0].cells[td.cellIndex].classList.add("selectedBoundaryColor");
+
+    document
+      .getElementsByClassName("dot")[0]
+      .addEventListener("mousedown", function (e) {
+        isMousedown = true;
+        startCellIndex = td.cellIndex;
+        startRowIndex = td.parentNode.rowIndex;
+      });
+    const mousemove = function (e) {
+      let endElement = document.elementFromPoint(e.pageX, e.pageY);
+      if (
+        endElement.parentNode.tagName === "TD" &&
+        endElement.tagName === "TEXTAREA"
+      ) {
+        let thisTD = endElement.parentNode;
+        let cellIndex = thisTD.cellIndex;
+        let rowIndex = thisTD.parentNode.rowIndex;
+        let table = document.getElementById("tbl");
+        let rowStart, rowEnd, cellStart, cellEnd;
+
+        if (rowIndex < startRowIndex) {
+          rowStart = rowIndex;
+          rowEnd = startRowIndex;
+          cellStart = cellEnd = startCellIndex;
+        } else if (rowIndex > startRowIndex) {
+          rowStart = startRowIndex;
+          rowEnd = rowIndex;
+          cellStart = cellEnd = startCellIndex;
+        } else {
+          rowStart = rowEnd = startRowIndex;
+          if (cellIndex < startCellIndex) {
+            cellStart = cellIndex;
+            cellEnd = startCellIndex;
+          } else {
+            cellStart = startCellIndex;
+            cellEnd = cellIndex;
+          }
+        }
+        if (isMousedown) {
+          Array.prototype.forEach.call(
+            document.getElementById("tbl").querySelectorAll("td"),
+            function (e) {
+              e.classList.remove("selectedForChangingData", "selected");
+            }
+          );
+          for (let i = rowStart; i <= rowEnd; i++) {
+            for (let j = cellStart; j <= cellEnd; j++) {
+              let thisCell = table.rows[i].cells[j];
+              thisCell.classList.add("selectedForChangingData");
+            }
+          }
+        }
+      }
+    };
+    document.getElementById("tbl").addEventListener("mousemove", mousemove);
+    document.getElementById("tbl").addEventListener("mouseup", function (e) {
+      isMousedown = false;
+      document
+        .getElementById("tbl")
+        .removeEventListener("mousemove", mousemove);
+      Array.prototype.forEach.call(
+        document
+          .getElementById("tbl")
+          .querySelectorAll("td.selectedForChangingData"),
+        function (e) {
+          e.childNodes[0].value = value;
+        }
+      );
+    });
+
+    event.target.parentNode.classList.add("cellSelected");
+  };
 
   return (
     <>
@@ -569,7 +723,28 @@ const Table = (props) => {
         <tbody>
           {initArray &&
             initArray.map((rowData, index) => (
-              <Row key={index} rowData={rowData} />
+              // <Row key={index} rowData={rowData} />
+              <tr key={index}>
+                <td
+                  className="disabledInput boundaryColor firstRowCell"
+                  onClick={handleClickRow}
+                >
+                  <input disabled={true} defaultValue="" />
+                </td>
+                {rowData &&
+                  rowData.map((i, index) => (
+                    // <Cell key={index} cellData={i} />
+                    <td className="cellData mycol" key={index}>
+                      <textarea
+                        rows="1"
+                        cols="15"
+                        value={i}
+                        onChange={handleCellChange}
+                        onClick={handleClickCell}
+                      />
+                    </td>
+                  ))}
+              </tr>
             ))}
         </tbody>
       </table>
