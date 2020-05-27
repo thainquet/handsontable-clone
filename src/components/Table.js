@@ -542,7 +542,7 @@ const Table = (props) => {
         navigator.clipboard
           .readText()
           .then((data) => {
-            console.log(data);
+            if (e.target.tagName === "TEXTAREA") e.target.value = data;
           })
           .catch((err) => {
             console.error("Failed to read clipboard contents: ", err);
