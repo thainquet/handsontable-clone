@@ -33,6 +33,7 @@ textarea {
   resize: none;
   overflow: auto;
   padding: 0px;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
 }
 
 .resizeColumn {
