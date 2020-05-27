@@ -216,7 +216,7 @@ const Table = (props) => {
   const { tableData } = props;
   let beginArr = [];
   let theadData = [
-    "ID",
+    "Id",
     "Country",
     "Code",
     "Currency",
@@ -526,7 +526,6 @@ const Table = (props) => {
         <tbody>
           {initArray &&
             initArray.map((rowData, index) => (
-              // <Row key={index} rowData={rowData} />
               <tr key={index}>
                 <td
                   className="disabledInput boundaryColor firstRowCell"
@@ -536,13 +535,11 @@ const Table = (props) => {
                 </td>
                 {rowData &&
                   rowData.map((i, index) => (
-                    // <Cell key={index} cellData={i} />
                     <td className="cellData mycol" key={index}>
                       <textarea
                         rows="1"
                         cols="15"
                         defaultValue={i}
-                        // onChange={handleCellChange}
                         onClick={handleClickCell}
                       />
                     </td>
