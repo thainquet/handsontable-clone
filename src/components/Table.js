@@ -81,7 +81,7 @@ const Cell = (props) => {
         startCellIndex = td.cellIndex;
         startRowIndex = td.parentNode.rowIndex;
       });
-    document.getElementById("tbl").addEventListener("mousemove", function (e) {
+    const mousemove = function (e) {
       let endElement = document.elementFromPoint(e.pageX, e.pageY);
       if (
         endElement.parentNode.tagName === "TD" &&
@@ -115,7 +115,7 @@ const Cell = (props) => {
           Array.prototype.forEach.call(
             document.getElementById("tbl").querySelectorAll("td"),
             function (e) {
-              e.classList.remove("selectedForChangingData");
+              e.classList.remove("selectedForChangingData", "selected");
             }
           );
           for (let i = rowStart; i <= rowEnd; i++) {
@@ -126,9 +126,13 @@ const Cell = (props) => {
           }
         }
       }
-    });
+    };
+    document.getElementById("tbl").addEventListener("mousemove", mousemove);
     document.getElementById("tbl").addEventListener("mouseup", function (e) {
       isMousedown = false;
+      document
+        .getElementById("tbl")
+        .removeEventListener("mousemove", mousemove);
       Array.prototype.forEach.call(
         document
           .getElementById("tbl")
@@ -221,7 +225,7 @@ const Row = (props) => {
         className="disabledInput boundaryColor firstRowCell"
         onClick={handleClickRow}
       >
-        <input disabled={true} />
+        <input disabled={true} defaultValue="" />
       </td>
       {rowData &&
         rowData.map((i, index) => (
@@ -258,59 +262,61 @@ const Table = (props) => {
           startCellIndex = td.cellIndex;
           startRowIndex = td.parentNode.rowIndex;
         });
-        document
-          .getElementById("tbl")
-          .addEventListener("mousemove", function (e) {
-            let endElement = document.elementFromPoint(e.pageX, e.pageY);
-            if (
-              endElement.parentNode.tagName === "TD" &&
-              endElement.tagName === "TEXTAREA"
-            ) {
-              let thisTD = endElement.parentNode;
-              let cellIndex = thisTD.cellIndex;
-              let rowIndex = thisTD.parentNode.rowIndex;
-              let table = document.getElementById("tbl");
-              let rowStart, rowEnd, cellStart, cellEnd;
+        const mousemove = function (e) {
+          let endElement = document.elementFromPoint(e.pageX, e.pageY);
+          if (
+            endElement.parentNode.tagName === "TD" &&
+            endElement.tagName === "TEXTAREA"
+          ) {
+            let thisTD = endElement.parentNode;
+            let cellIndex = thisTD.cellIndex;
+            let rowIndex = thisTD.parentNode.rowIndex;
+            let table = document.getElementById("tbl");
+            let rowStart, rowEnd, cellStart, cellEnd;
 
-              if (rowIndex < startRowIndex) {
-                rowStart = rowIndex;
-                rowEnd = startRowIndex;
-              } else {
-                rowStart = startRowIndex;
-                rowEnd = rowIndex;
-              }
+            if (rowIndex < startRowIndex) {
+              rowStart = rowIndex;
+              rowEnd = startRowIndex;
+            } else {
+              rowStart = startRowIndex;
+              rowEnd = rowIndex;
+            }
 
-              if (cellIndex < startCellIndex) {
-                cellStart = cellIndex;
-                cellEnd = startCellIndex;
-              } else {
-                cellStart = startCellIndex;
-                cellEnd = cellIndex;
-              }
+            if (cellIndex < startCellIndex) {
+              cellStart = cellIndex;
+              cellEnd = startCellIndex;
+            } else {
+              cellStart = startCellIndex;
+              cellEnd = cellIndex;
+            }
 
-              if (isMousedown) {
-                Array.prototype.forEach.call(
-                  document.getElementById("tbl").querySelectorAll("td"),
-                  function (e) {
-                    e.classList.remove("selected");
-                  }
-                );
-                for (let i = rowStart; i <= rowEnd; i++) {
-                  for (let j = cellStart; j <= cellEnd; j++) {
-                    table.rows[i].cells[j].classList.add("selected");
-                  }
+            if (isMousedown) {
+              Array.prototype.forEach.call(
+                document.getElementById("tbl").querySelectorAll("td"),
+                function (e) {
+                  e.classList.remove("selected");
+                }
+              );
+              for (let i = rowStart; i <= rowEnd; i++) {
+                for (let j = cellStart; j <= cellEnd; j++) {
+                  table.rows[i].cells[j].classList.add("selected");
                 }
               }
             }
-          });
+          }
+        };
+        document.getElementById("tbl").addEventListener("mousemove", mousemove);
         document
           .getElementById("tbl")
           .addEventListener("mouseup", function (e) {
             isMousedown = false;
+            // document
+            //   .getElementById("tbl")
+            //   .removeEventListener("mousemove", mousemove);
           });
       }
     );
-  });
+  }, []);
   /*eslint-enable */
   // handle keydown delete and backspace
   useEffect(() => {
@@ -343,7 +349,6 @@ const Table = (props) => {
       window.removeEventListener("click", KeyCheck);
     };
   });
-
   // resize column
   useEffect(() => {
     let thElm;
@@ -397,6 +402,16 @@ const Table = (props) => {
         thElm = undefined;
       });
     };
+  });
+
+  useEffect(() => {
+    Array.prototype.forEach.call(
+      document.querySelectorAll("table td.disabledInput"),
+      function (inputTD) {
+        inputTD.childNodes[0].classList.add("centered");
+        inputTD.childNodes[0].value = inputTD.parentNode.rowIndex;
+      }
+    );
   });
   const { tableData } = props;
   let beginArr = [];
@@ -500,14 +515,48 @@ const Table = (props) => {
         .removeEventListener("contextmenu", handleRightClick);
   }, [visible]);
   useEffect(() => {
-    const handleClickOutsideMenu = (event) => {
-      setVisible(false);
-    };
+    const handleClickOutsideMenu = () => setVisible(false);
     window.addEventListener("click", handleClickOutsideMenu);
     return () => {
       window.removeEventListener("click", handleClickOutsideMenu);
     };
   }, [visible]);
+
+  const copyToClipboard = (str) => {
+    const el = document.createElement("input");
+    el.value = str;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
+  };
+  useEffect(() => {
+    const handleCopyPaste = (e) => {
+      var key = e.which || e.keyCode; // keyCode detection
+      var ctrl = e.ctrlKey ? e.ctrlKey : key === 17 ? true : false; // ctrl detection
+
+      if (key === 67 && ctrl) {
+        copyToClipboard(e.target.value);
+      } else if (key === 86 && ctrl) {
+        e.preventDefault();
+        navigator.clipboard
+          .readText()
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((err) => {
+            console.error("Failed to read clipboard contents: ", err);
+          });
+      }
+    };
+    document
+      .getElementById("tbl")
+      .addEventListener("keydown", handleCopyPaste, false);
+    return () =>
+      document
+        .getElementById("tbl")
+        .removeEventListener("keydown", handleCopyPaste, false);
+  });
 
   return (
     <>

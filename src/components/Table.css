@@ -115,3 +115,7 @@ textarea {
 .selectedBoundaryColor {
   background-color: #dcdcdc;
 }
+
+.centered {
+  text-align: center;
+}
