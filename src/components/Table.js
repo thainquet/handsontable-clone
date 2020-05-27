@@ -47,7 +47,7 @@ const cleanTable = () => {
 
 const Cell = (props) => {
   const { cellData } = props;
-  const [localData, setLocalData] = useState(cellData.data);
+  const [localData, setLocalData] = useState(cellData);
   const handleCellChange = (e) => {
     setLocalData(e.target.value);
   };
@@ -208,8 +208,7 @@ const Row = (props) => {
       });
     };
   }, []);
-  const { rowData, cellSelectedPosition } = props;
-
+  const { rowData } = props;
   const handleClickRow = (e) => {
     e.preventDefault();
     let thisTR = e.target.parentNode.parentNode;
@@ -227,14 +226,7 @@ const Row = (props) => {
       >
         <input disabled={true} defaultValue="" />
       </td>
-      {rowData &&
-        rowData.map((i, index) => (
-          <Cell
-            key={index}
-            cellSelectedPosition={cellSelectedPosition}
-            cellData={{ data: i, index }}
-          />
-        ))}
+      {rowData && rowData.map((i, index) => <Cell key={index} cellData={i} />)}
     </tr>
   );
 };
@@ -403,7 +395,7 @@ const Table = (props) => {
       });
     };
   });
-
+  // labeling first column
   useEffect(() => {
     Array.prototype.forEach.call(
       document.querySelectorAll("table td.disabledInput"),
@@ -521,7 +513,7 @@ const Table = (props) => {
       window.removeEventListener("click", handleClickOutsideMenu);
     };
   }, [visible]);
-
+  // copy paste
   const copyToClipboard = (str) => {
     const el = document.createElement("input");
     el.value = str;
@@ -557,6 +549,25 @@ const Table = (props) => {
         .getElementById("tbl")
         .removeEventListener("keydown", handleCopyPaste, false);
   });
+
+  useEffect(() => console.log(initArray), [initArray]);
+  const handleInsertRow = (event) => {
+    event.preventDefault();
+    const position = event.target.getAttribute("data-position");
+    const thisTH = document.elementFromPoint(left - 5, top - 5);
+    const indexOfRowAndArrayItem = thisTH.parentNode.parentNode.rowIndex;
+    let tempArr = [...initArray];
+    const lengthItem = tempArr[0].length;
+    const Item = new Array(lengthItem).fill("");
+    if (position === "below") {
+      tempArr.splice(indexOfRowAndArrayItem + 1, 0, Item);
+    }
+    if (position === "above") {
+      tempArr.splice(indexOfRowAndArrayItem, 0, Item);
+    }
+    setInitArray(tempArr);
+    // console.log(position, thisTH);
+  };
 
   return (
     <>
@@ -596,14 +607,14 @@ const Table = (props) => {
         <div
           className="menu-line"
           data-position="above"
-          // onClick={handleInsertRow}
+          onClick={handleInsertRow}
         >
           Insert row above
         </div>
         <div
           className="menu-line borderBottom"
           data-position="below"
-          // onClick={handleInsertRow}
+          onClick={handleInsertRow}
         >
           Insert row below
         </div>
@@ -632,7 +643,9 @@ const Table = (props) => {
         </thead>
         <tbody>
           {initArray &&
-            initArray.map((i, index) => <Row key={index} rowData={i} />)}
+            initArray.map((rowData, index) => (
+              <Row key={index} rowData={rowData} />
+            ))}
         </tbody>
       </table>
       <br></br>
