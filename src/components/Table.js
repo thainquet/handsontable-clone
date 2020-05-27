@@ -28,15 +28,19 @@ const removeElementsByClass = (className) => {
 
 const clearAllSelectedCell = () => {
   Array.prototype.forEach.call(document.querySelectorAll("td"), function (e) {
-    e.classList.remove("selected", "selectedForChangingData", "selectedBoundaryColor");
+    e.classList.remove(
+      "selected",
+      "selectedForChangingData",
+      "selectedBoundaryColor"
+    );
   });
-}
+};
 
 const cleanTable = () => {
   clearAllCellBorder();
   clearAllTRBorder();
   clearAllColumnborder();
-  clearAllSelectedCell()
+  clearAllSelectedCell();
   removeElementsByClass("dot");
 };
 
@@ -56,77 +60,83 @@ const Cell = (props) => {
     dot.style.left = rect.right - 4 + "px";
     document.getElementsByTagName("BODY")[0].appendChild(dot);
 
-    let value = event.target.value
-    let td = event.target.parentNode
+    let value = event.target.value;
+    let td = event.target.parentNode;
     let startCellIndex, startRowIndex;
     let isMousedown = false;
-    document.getElementById("tbl").rows[td.parentNode.rowIndex].cells[0].classList.add("selectedBoundaryColor")
-    document.getElementById("tbl").rows[0].cells[td.cellIndex].classList.add("selectedBoundaryColor")
-
-    document.getElementsByClassName("dot")[0].addEventListener('mousedown', function (e) {
-      isMousedown = true
-      startCellIndex = td.cellIndex;
-      startRowIndex = td.parentNode.rowIndex;
-    })
     document
       .getElementById("tbl")
-      .addEventListener("mousemove", function (e) {
-        let endElement = document.elementFromPoint(e.pageX, e.pageY);
-        if (
-          endElement.parentNode.tagName === "TD" &&
-          endElement.tagName === "INPUT"
-        ) {
-          let thisTD = endElement.parentNode;
-          let cellIndex = thisTD.cellIndex;
-          let rowIndex = thisTD.parentNode.rowIndex;
-          let table = document.getElementById("tbl");
-          let rowStart, rowEnd, cellStart, cellEnd;
+      .rows[td.parentNode.rowIndex].cells[0].classList.add(
+        "selectedBoundaryColor"
+      );
+    document
+      .getElementById("tbl")
+      .rows[0].cells[td.cellIndex].classList.add("selectedBoundaryColor");
 
-          if (rowIndex < startRowIndex) {
-            rowStart = rowIndex;
-            rowEnd = startRowIndex;
-            cellStart = cellEnd = startCellIndex;
-          } else if (rowIndex > startRowIndex) {
-            rowStart = startRowIndex;
-            rowEnd = rowIndex;
-            cellStart = cellEnd = startCellIndex;
+    document
+      .getElementsByClassName("dot")[0]
+      .addEventListener("mousedown", function (e) {
+        isMousedown = true;
+        startCellIndex = td.cellIndex;
+        startRowIndex = td.parentNode.rowIndex;
+      });
+    document.getElementById("tbl").addEventListener("mousemove", function (e) {
+      let endElement = document.elementFromPoint(e.pageX, e.pageY);
+      if (
+        endElement.parentNode.tagName === "TD" &&
+        endElement.tagName === "INPUT"
+      ) {
+        let thisTD = endElement.parentNode;
+        let cellIndex = thisTD.cellIndex;
+        let rowIndex = thisTD.parentNode.rowIndex;
+        let table = document.getElementById("tbl");
+        let rowStart, rowEnd, cellStart, cellEnd;
+
+        if (rowIndex < startRowIndex) {
+          rowStart = rowIndex;
+          rowEnd = startRowIndex;
+          cellStart = cellEnd = startCellIndex;
+        } else if (rowIndex > startRowIndex) {
+          rowStart = startRowIndex;
+          rowEnd = rowIndex;
+          cellStart = cellEnd = startCellIndex;
+        } else {
+          rowStart = rowEnd = startRowIndex;
+          if (cellIndex < startCellIndex) {
+            cellStart = cellIndex;
+            cellEnd = startCellIndex;
           } else {
-            rowStart = rowEnd = startRowIndex;
-            if (cellIndex < startCellIndex) {
-              cellStart = cellIndex;
-              cellEnd = startCellIndex;
-            } else {
-              cellStart = startCellIndex;
-              cellEnd = cellIndex;
-            }
+            cellStart = startCellIndex;
+            cellEnd = cellIndex;
           }
-          if (isMousedown) {
-            Array.prototype.forEach.call(
-              document.getElementById("tbl").querySelectorAll("td"),
-              function (e) {
-                e.classList.remove("selectedForChangingData");
-              }
-            );
-            for (let i = rowStart; i <= rowEnd; i++) {
-              for (let j = cellStart; j <= cellEnd; j++) {
-                let thisCell = table.rows[i].cells[j]
-                thisCell.classList.add("selectedForChangingData");
-              }
+        }
+        if (isMousedown) {
+          Array.prototype.forEach.call(
+            document.getElementById("tbl").querySelectorAll("td"),
+            function (e) {
+              e.classList.remove("selectedForChangingData");
+            }
+          );
+          for (let i = rowStart; i <= rowEnd; i++) {
+            for (let j = cellStart; j <= cellEnd; j++) {
+              let thisCell = table.rows[i].cells[j];
+              thisCell.classList.add("selectedForChangingData");
             }
           }
         }
-      });
-    document
-      .getElementById("tbl")
-      .addEventListener("mouseup", function (e) {
-        isMousedown = false;
-        Array.prototype.forEach.call(
-          document.getElementById("tbl").querySelectorAll("td.selectedForChangingData"),
-          function (e) {
-            e.childNodes[0].value = value
-          }
-        );
-      });
+      }
+    });
+    document.getElementById("tbl").addEventListener("mouseup", function (e) {
+      isMousedown = false;
+      Array.prototype.forEach.call(
+        document
+          .getElementById("tbl")
+          .querySelectorAll("td.selectedForChangingData"),
+        function (e) {
+          e.childNodes[0].value = value;
+        }
+      );
+    });
 
     event.target.parentNode.classList.add("cellSelected");
   };
@@ -153,7 +163,7 @@ const Row = (props) => {
 
         let grip = document.createElement("div");
         grip.innerHTML = "&nbsp;";
-        grip.classList.add("resizeRow")
+        grip.classList.add("resizeRow");
         grip.addEventListener("mousedown", function (e) {
           thElm = td;
           startOffset = td.offsetHeight - e.pageY;
@@ -193,16 +203,20 @@ const Row = (props) => {
   };
   return (
     <tr>
-      <td className="disabledInput boundaryColor firstRowCell" onClick={handleClickRow}>
+      <td
+        className="disabledInput boundaryColor firstRowCell"
+        onClick={handleClickRow}
+      >
         <input disabled={true} />
       </td>
       {rowData &&
-        rowData.map((i, index) => <Cell
-          key={index}
-          cellSelectedPosition={cellSelectedPosition}
-          cellData={{ data: i, index }}
-        />
-        )}
+        rowData.map((i, index) => (
+          <Cell
+            key={index}
+            cellSelectedPosition={cellSelectedPosition}
+            cellData={{ data: i, index }}
+          />
+        ))}
     </tr>
   );
 };
@@ -217,7 +231,7 @@ const Table = (props) => {
       document.querySelectorAll("table td.mycol"),
       function (td) {
         td.addEventListener("mousedown", function (e) {
-          e.target.click()
+          e.target.click();
           Array.prototype.forEach.call(
             document.getElementById("tbl").querySelectorAll("td"),
             function (e) {
@@ -368,10 +382,17 @@ const Table = (props) => {
     cleanTable();
     let _this = event.target.parentNode;
     let position = _this.cellIndex;
-    Array.prototype.forEach.call(document.querySelectorAll("table td.cellData"), function (col) {
-      if (col.cellIndex === position) col.classList.add("columnSelected")
-      if (col.cellIndex === position && col.parentNode.rowIndex === initArray.length) col.classList.add("columnSelectedLast")
-    })
+    Array.prototype.forEach.call(
+      document.querySelectorAll("table td.cellData"),
+      function (col) {
+        if (col.cellIndex === position) col.classList.add("columnSelected");
+        if (
+          col.cellIndex === position &&
+          col.parentNode.rowIndex === initArray.length
+        )
+          col.classList.add("columnSelectedLast");
+      }
+    );
     if (_this.tagName === "TH") _this.classList.add("selectFirstTH");
   };
   let headerRow = [];
@@ -384,15 +405,15 @@ const Table = (props) => {
   }
 
   const exportCSV = () => {
-    let data = []
-    let table = document.getElementById("tbl")
+    let data = [];
+    let table = document.getElementById("tbl");
     Array.prototype.forEach.call(table.rows, (row) => {
-      let dataItem = []
+      let dataItem = [];
       Array.prototype.forEach.call(row.cells, (cell) => {
-        if (cell.cellIndex != 0) dataItem.push(cell.childNodes[0].value)
-      })
-      data.push(dataItem)
-    })
+        if (cell.cellIndex !== 0) dataItem.push(cell.childNodes[0].value);
+      });
+      data.push(dataItem);
+    });
     let arr = JSON.parse(JSON.stringify(data));
     let csvContent =
       "data:text/csv;charset=utf-8," + arr.map((e) => e.join(",")).join("\n");
@@ -402,10 +423,109 @@ const Table = (props) => {
     link.setAttribute("download", "my_data.csv");
     document.body.appendChild(link);
     link.click();
-  }
+  };
+
+  // For context menu
+  const [visible, setVisible] = useState(false);
+  const [top, setTop] = useState(0);
+  const [left, setLeft] = useState(0);
+  const menuStyle = {
+    position: "absolute",
+    top: `${top}px`,
+    left: `${left}px`,
+    zIndex: "100",
+  };
+  useEffect(() => {
+    const handleRightClick = (event) => {
+      event.preventDefault();
+      const clickX = event.clientX;
+      const clickY = event.clientY;
+      setTop(clickY + 5);
+      setLeft(clickX + 5);
+      document.elementFromPoint(clickX, clickY).click();
+      setVisible(true);
+    };
+    document
+      .getElementById("tbl")
+      .addEventListener("contextmenu", handleRightClick);
+    return () =>
+      document
+        .getElementById("tbl")
+        .removeEventListener("contextmenu", handleRightClick);
+  }, [visible]);
+  useEffect(() => {
+    const handleClickOutsideMenu = (event) => {
+      setVisible(false);
+    };
+    window.addEventListener("click", handleClickOutsideMenu);
+    return () => {
+      window.removeEventListener("click", handleClickOutsideMenu);
+    };
+  }, [visible]);
 
   return (
     <>
+      <div className={visible ? "menu" : "menu hiden"} style={menuStyle}>
+        <div
+          className="menu-line"
+          data-position="right"
+          // onClick={handleInsertColumn}
+        >
+          Insert column right
+        </div>
+        <div
+          className="menu-line borderBottom"
+          data-position="left"
+          // onClick={handleInsertColumn}
+        >
+          Insert column left
+        </div>
+        <div
+          className="menu-line"
+          // onClick={handleDeleteColumn}
+        >
+          Delete this column
+        </div>
+        <div
+          className="menu-line borderBottom"
+          // onClick={handleDeleteColumnContent}
+        >
+          Delete this column content
+        </div>
+        <div
+          className="menu-line borderBottom"
+          //  onClick={handleUndo}
+        >
+          Undo
+        </div>
+        <div
+          className="menu-line"
+          data-position="above"
+          // onClick={handleInsertRow}
+        >
+          Insert row above
+        </div>
+        <div
+          className="menu-line borderBottom"
+          data-position="below"
+          // onClick={handleInsertRow}
+        >
+          Insert row below
+        </div>
+        <div
+          className="menu-line"
+          // onClick={handleDeleteRow}
+        >
+          Delete this row
+        </div>
+        <div
+          className="menu-line"
+          // onClick={handleDeleteRowContent}
+        >
+          Delete this row content
+        </div>
+      </div>
+
       <table id="tbl">
         <thead>
           <tr>
@@ -417,9 +537,7 @@ const Table = (props) => {
         </thead>
         <tbody>
           {initArray &&
-            initArray.map((i, index) => (
-              <Row key={index} rowData={i} />
-            ))}
+            initArray.map((i, index) => <Row key={index} rowData={i} />)}
         </tbody>
       </table>
       <br></br>
