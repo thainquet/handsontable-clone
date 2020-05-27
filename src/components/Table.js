@@ -199,7 +199,10 @@ const Row = (props) => {
     e.preventDefault();
     let thisTR = e.target.parentNode.parentNode;
     cleanTable();
-    if (thisTR.tagName === "TR") thisTR.classList.add("rowSelected");
+    if (thisTR.tagName === "TR") {
+      thisTR.classList.add("rowSelected");
+      e.target.parentNode.classList.add("selectedBoundaryColor");
+    }
   };
   return (
     <tr>
@@ -393,7 +396,8 @@ const Table = (props) => {
           col.classList.add("columnSelectedLast");
       }
     );
-    if (_this.tagName === "TH") _this.classList.add("selectFirstTH");
+    if (_this.tagName === "TH")
+      _this.classList.add("selectFirstTH", "selectedBoundaryColor");
   };
   let headerRow = [];
   for (let i = 0; i < initArray[0].length; i++) {
