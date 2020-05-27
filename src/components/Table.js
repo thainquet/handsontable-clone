@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Table.css";
+import dummyData from "./dummyData.js";
 
 const clearAllTRBorder = () => {
   Array.prototype.forEach.call(document.querySelectorAll("tr"), function (e) {
@@ -236,6 +237,7 @@ const Row = (props) => {
 
 const Table = (props) => {
   /*eslint-disable */
+  // handle selected cell background
   useEffect(() => {
     let thElm;
     let startCellIndex, startRowIndex, endCellIndex, endRowIndex;
@@ -310,6 +312,7 @@ const Table = (props) => {
     );
   });
   /*eslint-enable */
+  // handle keydown delete and backspace
   useEffect(() => {
     document.addEventListener("keydown", KeyCheck);
     function empty() {
@@ -340,6 +343,8 @@ const Table = (props) => {
       window.removeEventListener("click", KeyCheck);
     };
   });
+
+  // resize column
   useEffect(() => {
     let thElm;
     let startOffset;
@@ -393,15 +398,29 @@ const Table = (props) => {
       });
     };
   });
-
   const { tableData } = props;
-  const [initArray, setInitArray] = useState([
-    ["a", "b", "c", "d", "e", "f", "G"],
-    ["q1", "b", "c", "d", "e", "f", "G"],
-    ["q2", "b", "c", "d", "e", "f", "G"],
-    ["q3", "b", "c", "d", "e", "f", "G"],
-    ["a", "b", "c", "d", "e", "f", "G"],
-  ]);
+  let beginArr = [];
+  let theadData = [
+    "ID",
+    "Country",
+    "Code",
+    "Currency",
+    "Level",
+    "Units",
+    "Date",
+    "Change",
+  ];
+  // for (let key in dummyData[0]) theadData.push(key);
+  // beginArr.push(theadData);
+  dummyData.forEach((item) => {
+    let tbodyData = [];
+    for (let key in item) {
+      let value = item[key];
+      tbodyData.push(value);
+    }
+    beginArr.push(tbodyData);
+  });
+  const [initArray, setInitArray] = useState(beginArr);
   if (tableData) setInitArray(tableData);
   const selectColumn = (event) => {
     cleanTable();
@@ -421,11 +440,12 @@ const Table = (props) => {
     if (_this.tagName === "TH")
       _this.classList.add("selectFirstTH", "selectedBoundaryColor");
   };
+
   let headerRow = [];
-  for (let i = 0; i < initArray[0].length; i++) {
+  for (let i = 0; i < theadData.length; i++) {
     headerRow.push(
       <th className="boundaryColor" key={i} onClick={selectColumn}>
-        <input />
+        <input defaultValue={theadData[i]} />
       </th>
     );
   }
