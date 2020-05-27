@@ -142,7 +142,9 @@ const Cell = (props) => {
   };
   return (
     <td className="cellData mycol">
-      <input
+      <textarea
+        rows="1"
+        cols="15"
         value={localData}
         onChange={handleCellChange}
         onClick={handleClickCell}
@@ -176,6 +178,13 @@ const Row = (props) => {
     document.addEventListener("mousemove", function (e) {
       if (thElm) {
         thElm.style.height = startOffset + e.pageY + "px";
+        Array.prototype.forEach.call(thElm.parentNode.childNodes, function (
+          td
+        ) {
+          td.style.height = startOffset + e.pageY + "px";
+          td.childNodes[0].style.width = "100%";
+          td.childNodes[0].style.height = "100%";
+        });
       }
     });
 
@@ -252,7 +261,7 @@ const Table = (props) => {
             let endElement = document.elementFromPoint(e.pageX, e.pageY);
             if (
               endElement.parentNode.tagName === "TD" &&
-              endElement.tagName === "INPUT"
+              endElement.tagName === "TEXTAREA"
             ) {
               let thisTD = endElement.parentNode;
               let cellIndex = thisTD.cellIndex;
