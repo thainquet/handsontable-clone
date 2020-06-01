@@ -66,11 +66,13 @@ textarea {
 }
 
 .rowSelected {
-  border: 2px solid #4b89ff;
+  outline: 2px solid #4b89ff;
+  outline-offset: -1px;
 }
 
 .cellSelected {
-  border: 2px solid #4b89ff;
+  outline: 2px solid #4b89ff;
+  outline-offset: -1px;
   background-color: #e6efff;
 }
 .dot {
