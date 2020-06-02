@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Table.css";
 import dummyData from "./dummyData.js";
-import ContextMenu from "./ContextMenu";
+// import ContextMenu from "./ContextMenu";
 
 const clearAllTRBorder = () => {
   Array.prototype.forEach.call(document.querySelectorAll("tr"), function (e) {
@@ -235,15 +235,20 @@ const Table = (props) => {
     }
     beginArr.push(tbodyData);
   });
-  const testArr = [
-    ["a", "b", "c", "d", "e", "f", "G"],
-    ["q1", "b", "c", "d", "e", "f", "G"],
-    ["q2", "b", "c", "d", "e", "f", "G"],
-    ["", "", "", "", "", "", ""],
-    ["q3", "b", "c", "d", "e", "f", "G"],
-    ["a", "b", "c", "d", "e", "f", "G"],
-  ]
-  const [initArray, setInitArray] = useState(testArr);
+  // const testArr = [
+  //   ["a", "b", "c", "d", "e", "f", "G"],
+  //   ["q1", "b", "c", "d", "e", "f", "G"],
+  //   ["q2", "b", "c", "d", "e", "f", "G"],
+  //   ["", "", "", "", "", "", ""],
+  //   ["q3", "b", "c", "d", "e", "f", "G"],
+  //   ["a", "b", "c", "d", "e", "f", "G"],
+  // ]
+  // const previousState = []
+  // const followingState = []
+  // useEffect(() => {
+
+  // }, [initArray])
+  const [initArray, setInitArray] = useState(beginArr);
   if (tableData) setInitArray(tableData);
   const selectColumn = (event) => {
     cleanTable();
@@ -543,11 +548,16 @@ const Table = (props) => {
 
     let data = e.target.value;
     let tempArr = [...initArray];
-    let tempArr1 = JSON.parse(JSON.stringify(initArray));
+    // let tempArr1 = JSON.parse(JSON.stringify(initArray));
     // console.log(tempArr1);
     // setClipBoard(tempArr1);
     tempArr[tungdo - 1][hoanhdo - 1] = data;
     setInitArray(tempArr);
+  }
+
+  const handleUndo = () => {
+    const tempArr =
+      setInitArray()
   }
 
   return (
@@ -581,7 +591,7 @@ const Table = (props) => {
       </div>
         <div
           className="menu-line borderBottom"
-        //  onClick={handleUndo}
+          onClick={handleUndo}
         >
           Undo
       </div>

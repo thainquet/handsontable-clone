@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button type="button" draggable="true">Drag Me</button>
+    <script>
+      const button = document.querySelector("button");
+      console.log(button);
+
+      button.addEventListener("dragstart", dragStart);
+
+      function dragStart(e) {
+        /* e.dataTransfer.setData("text/plain", 'hello');
+  e.dataTransfer.dropEffect = "move"; */
+        e.target.style.cursor = "move";
+      }
+    </script>
+  </body>
+</html>
