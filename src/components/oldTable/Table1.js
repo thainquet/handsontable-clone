@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "./Table.css";
-// import $ from "jquery";
-// window.$ = $;
 
 const makeid = (length) => {
   let result = "";

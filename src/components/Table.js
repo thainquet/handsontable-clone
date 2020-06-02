@@ -235,7 +235,15 @@ const Table = (props) => {
     }
     beginArr.push(tbodyData);
   });
-  const [initArray, setInitArray] = useState(beginArr);
+  const testArr = [
+    ["a", "b", "c", "d", "e", "f", "G"],
+    ["q1", "b", "c", "d", "e", "f", "G"],
+    ["q2", "b", "c", "d", "e", "f", "G"],
+    ["", "", "", "", "", "", ""],
+    ["q3", "b", "c", "d", "e", "f", "G"],
+    ["a", "b", "c", "d", "e", "f", "G"],
+  ]
+  const [initArray, setInitArray] = useState(testArr);
   if (tableData) setInitArray(tableData);
   const selectColumn = (event) => {
     cleanTable();
@@ -504,15 +512,106 @@ const Table = (props) => {
     event.target.parentNode.classList.add("cellSelected");
   };
 
+  const menuStyle = {
+    position: "absolute",
+    top: `${top}px`,
+    left: `${left}px`,
+    zIndex: "100",
+  };
+  const handleInsertRow = (event) => {
+    event.preventDefault();
+    const position = event.target.getAttribute("data-position");
+    const thisTextarea = document.elementFromPoint(left - 5, top - 5);
+    const indexOfRowAndArrayItem = thisTextarea.parentNode.parentNode.rowIndex;
+    let tempArr = JSON.parse(JSON.stringify(initArray));
+    const lengthItem = tempArr[0].length;
+    const Item = new Array(lengthItem).fill("");
+    if (position === "below") {
+      tempArr.splice(indexOfRowAndArrayItem, 0, Item);
+    }
+    if (position === "above") {
+      tempArr.splice(indexOfRowAndArrayItem - 1, 0, Item);
+    }
+    setInitArray(tempArr);
+    // console.log(tempArr)
+  };
+
+  const handleChangeCell = (e) => {
+    e.preventDefault();
+    let tungdo = e.target.parentNode.parentNode.rowIndex;
+    let hoanhdo = e.target.parentNode.cellIndex;
+
+    let data = e.target.value;
+    let tempArr = [...initArray];
+    let tempArr1 = JSON.parse(JSON.stringify(initArray));
+    // console.log(tempArr1);
+    // setClipBoard(tempArr1);
+    tempArr[tungdo - 1][hoanhdo - 1] = data;
+    setInitArray(tempArr);
+  }
+
   return (
     <>
-      <ContextMenu
-        top={top}
-        left={left}
-        initArray={initArray}
-        visible={visible}
-        setInitArray={setInitArray}
-      />
+      <div className={visible ? "menu" : "menu hiden"} style={menuStyle}>
+        <div
+          className="menu-line"
+          data-position="right"
+        // onClick={handleInsertColumn}
+        >
+          Insert column right
+      </div>
+        <div
+          className="menu-line borderBottom"
+          data-position="left"
+        // onClick={handleInsertColumn}
+        >
+          Insert column left
+      </div>
+        <div
+          className="menu-line"
+        // onClick={handleDeleteColumn}
+        >
+          Delete this column
+      </div>
+        <div
+          className="menu-line borderBottom"
+        // onClick={handleDeleteColumnContent}
+        >
+          Delete this column content
+      </div>
+        <div
+          className="menu-line borderBottom"
+        //  onClick={handleUndo}
+        >
+          Undo
+      </div>
+        <div
+          className="menu-line"
+          data-position="above"
+          onClick={handleInsertRow}
+        >
+          Insert row above
+      </div>
+        <div
+          className="menu-line borderBottom"
+          data-position="below"
+          onClick={handleInsertRow}
+        >
+          Insert row below
+      </div>
+        <div
+          className="menu-line"
+        // onClick={handleDeleteRow}
+        >
+          Delete this row
+      </div>
+        <div
+          className="menu-line"
+        // onClick={handleDeleteRowContent}
+        >
+          Delete this row content
+      </div>
+      </div>
 
       <table id="tbl">
         <thead>
@@ -524,28 +623,27 @@ const Table = (props) => {
           </tr>
         </thead>
         <tbody>
-          {initArray &&
-            initArray.map((rowData, index) => (
-              <tr key={index}>
-                <td
-                  className="disabledInput boundaryColor firstRowCell"
-                  onClick={handleClickRow}
-                >
-                  <input disabled={true} defaultValue="" />
+          {initArray.map((rowData, rindex) => (
+            <tr key={rindex}>
+              <td
+                className="disabledInput boundaryColor firstRowCell"
+                onClick={handleClickRow}
+              >
+                <input disabled={true} defaultValue="" />
+              </td>
+              {rowData && rowData.map((columnData, cindex) => (
+                <td className="cellData mycol" key={cindex}>
+                  <textarea
+                    rows="1"
+                    cols="15"
+                    value={columnData}
+                    onChange={handleChangeCell}
+                    onClick={handleClickCell}
+                  />
                 </td>
-                {rowData &&
-                  rowData.map((i, index) => (
-                    <td className="cellData mycol" key={index}>
-                      <textarea
-                        rows="1"
-                        cols="15"
-                        defaultValue={i}
-                        onClick={handleClickCell}
-                      />
-                    </td>
-                  ))}
-              </tr>
-            ))}
+              ))}
+            </tr>
+          ))}
         </tbody>
       </table>
       <br></br>
