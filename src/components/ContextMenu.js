@@ -23,7 +23,6 @@ const ContextMenu = (props) => {
       tempArr.splice(indexOfRowAndArrayItem, 0, Item);
     }
     setInitArray(tempArr);
-    // console.log(position, thisTH);
   };
 
   return (
@@ -31,32 +30,32 @@ const ContextMenu = (props) => {
       <div
         className="menu-line"
         data-position="right"
-        // onClick={handleInsertColumn}
+      // onClick={handleInsertColumn}
       >
         Insert column right
       </div>
       <div
         className="menu-line borderBottom"
         data-position="left"
-        // onClick={handleInsertColumn}
+      // onClick={handleInsertColumn}
       >
         Insert column left
       </div>
       <div
         className="menu-line"
-        // onClick={handleDeleteColumn}
+      // onClick={handleDeleteColumn}
       >
         Delete this column
       </div>
       <div
         className="menu-line borderBottom"
-        // onClick={handleDeleteColumnContent}
+      // onClick={handleDeleteColumnContent}
       >
         Delete this column content
       </div>
       <div
         className="menu-line borderBottom"
-        //  onClick={handleUndo}
+      //  onClick={handleUndo}
       >
         Undo
       </div>
@@ -76,13 +75,13 @@ const ContextMenu = (props) => {
       </div>
       <div
         className="menu-line"
-        // onClick={handleDeleteRow}
+      // onClick={handleDeleteRow}
       >
         Delete this row
       </div>
       <div
         className="menu-line"
-        // onClick={handleDeleteRowContent}
+      // onClick={handleDeleteRowContent}
       >
         Delete this row content
       </div>
