@@ -303,11 +303,13 @@ const Table = (props) => {
       setTop(clickY + 5);
       setLeft(clickX + 5);
       let clickedElement = document.elementFromPoint(clickX, clickY);
-      if (clickedElement.tagName !== "TEXTAREA") setVisible(false);
-      else {
+      if (
+        clickedElement.tagName === "TEXTAREA" ||
+        clickedElement.tagName === "INPUT"
+      ) {
         document.elementFromPoint(clickX, clickY).click();
         setVisible(true);
-      }
+      } else setVisible(false);
     };
     document
       .getElementById("tbl")
@@ -528,7 +530,7 @@ const Table = (props) => {
     const indexOfRowAndArrayItem = thisTextarea.parentNode.parentNode.rowIndex;
     let tempArr = JSON.parse(JSON.stringify(initArray));
     let tempArr1 = JSON.parse(JSON.stringify(initArray));
-    setClipBoard(tempArr1);
+    setClipBoard([[...tempArr1], [...theadData]]);
     const lengthItem = tempArr[0].length;
     const Item = new Array(lengthItem).fill("");
     if (position === "below") {
@@ -546,7 +548,7 @@ const Table = (props) => {
     const indexOfCellAndArrayItem = thisTH.parentNode.cellIndex;
     let tempArr = [...initArray];
     let tempArr1 = JSON.parse(JSON.stringify(initArray));
-    setClipBoard(tempArr1);
+    setClipBoard([[...tempArr1], [...theadData]]);
 
     if (position === "right") {
       tempArr.forEach((el) => {
@@ -562,20 +564,6 @@ const Table = (props) => {
     }
     setInitArray(tempArr);
   };
-
-  // const tx = document.getElementsByTagName("textarea");
-  // for (let i = 0; i < tx.length; i++) {
-  //   tx[i].setAttribute(
-  //     "style",
-  //     "height:" + tx[i].scrollHeight + "px;overflow-y:hidden;"
-  //   );
-  //   tx[i].addEventListener("input", OnInput, false);
-  // }
-
-  // function OnInput() {
-  //   this.style.height = "auto";
-  //   this.style.height = this.scrollHeight + "px";
-  // }
 
   const handleChangeHeaderCell = (e) => {
     let hoanhdo = e.target.parentNode.cellIndex;
@@ -599,10 +587,36 @@ const Table = (props) => {
     setInitArray(tempArr);
   };
 
+  const handleDeleteRow = (event) => {
+    event.preventDefault();
+    const thisTH = document.elementFromPoint(left - 5, top - 5);
+    const indexOfRowAndArrayItem = thisTH.parentNode.parentNode.rowIndex;
+    let tempArr = [...initArray];
+    let tempArr1 = JSON.parse(JSON.stringify(initArray));
+    setClipBoard([[...tempArr1], [...theadData]]);
+    tempArr.splice(indexOfRowAndArrayItem - 1, 1);
+
+    setInitArray(tempArr);
+  };
+  const handleDeleteColumn = (event) => {
+    event.preventDefault();
+    const thisTH = document.elementFromPoint(left - 5, top - 5);
+    const indexOfCellAndArrayItem = thisTH.parentNode.cellIndex;
+    let tempArr = [...initArray];
+    let tempArr1 = JSON.parse(JSON.stringify(initArray));
+    setClipBoard([[...tempArr1], [...theadData]]);
+    tempArr.forEach((el) => {
+      el.splice(indexOfCellAndArrayItem - 1, 1);
+    });
+    setInitArray(tempArr);
+    theadData.splice(indexOfCellAndArrayItem - 1, 1);
+    // setTheadData();
+  };
+
   const handleUndo = (e) => {
     e.preventDefault();
-    console.log(clipBoard);
-    setInitArray(clipBoard);
+    setInitArray(clipBoard[0]);
+    setTheadData(clipBoard[1]);
   };
 
   return (
@@ -622,18 +636,12 @@ const Table = (props) => {
         >
           Insert column left
         </div>
-        <div
-          className="menu-line"
-          // onClick={handleDeleteColumn}
-        >
-          Delete this column
-        </div>
-        <div
+        {/* <div
           className="menu-line borderBottom"
           // onClick={handleDeleteColumnContent}
         >
           Delete this column content
-        </div>
+        </div> */}
         <div className="menu-line borderBottom" onClick={handleUndo}>
           Undo
         </div>
@@ -651,18 +659,18 @@ const Table = (props) => {
         >
           Insert row below
         </div>
-        <div
-          className="menu-line"
-          // onClick={handleDeleteRow}
-        >
+        <div className="menu-line" onClick={handleDeleteColumn}>
+          Delete this column
+        </div>
+        <div className="menu-line" onClick={handleDeleteRow}>
           Delete this row
         </div>
-        <div
+        {/* <div
           className="menu-line"
           // onClick={handleDeleteRowContent}
         >
           Delete this row content
-        </div>
+        </div> */}
       </div>
 
       <table id="tbl">
