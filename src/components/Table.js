@@ -215,7 +215,7 @@ const Table = (props) => {
   });
   const { tableData } = props;
   let beginArr = [];
-  let theadData = [
+  let [theadData, setTheadData] = useState([
     "Id",
     "Country",
     "Code",
@@ -224,7 +224,7 @@ const Table = (props) => {
     "Units",
     "Date",
     "Change",
-  ];
+  ]);
   // for (let key in dummyData[0]) theadData.push(key);
   // beginArr.push(theadData);
   dummyData.forEach((item) => {
@@ -268,15 +268,6 @@ const Table = (props) => {
     if (_this.tagName === "TH")
       _this.classList.add("selectFirstTH", "selectedBoundaryColor");
   };
-
-  let headerRow = [];
-  for (let i = 0; i < theadData.length; i++) {
-    headerRow.push(
-      <th className="boundaryColor" key={i} onClick={selectColumn}>
-        <input defaultValue={theadData[i]} />
-      </th>
-    );
-  }
 
   const exportCSV = () => {
     let data = [];
@@ -364,6 +355,7 @@ const Table = (props) => {
         .getElementById("tbl")
         .removeEventListener("keydown", handleCopyPaste, false);
   });
+  // resize row
   useEffect(() => {
     let thElm;
     let startOffset;
@@ -413,6 +405,7 @@ const Table = (props) => {
       });
     };
   }, []);
+
   const handleClickRow = (e) => {
     e.preventDefault();
     let thisTR = e.target.parentNode.parentNode;
@@ -540,6 +533,37 @@ const Table = (props) => {
     setInitArray(tempArr);
     // console.log(tempArr)
   };
+  const handleInsertColumn = (event) => {
+    event.preventDefault();
+    const position = event.target.getAttribute("data-position");
+    const thisTH = document.elementFromPoint(left - 5, top - 5);
+    const indexOfCellAndArrayItem = thisTH.parentNode.cellIndex;
+    let tempArr = [...initArray];
+    // let tempArr1 = JSON.parse(JSON.stringify(initArray));
+    // setClipBoard(tempArr1);
+
+    if (position === "right") {
+      tempArr.forEach((el) => {
+        el.splice(indexOfCellAndArrayItem, 0, "");
+      });
+      theadData.splice(indexOfCellAndArrayItem, 0, "");
+    }
+    if (position === "left") {
+      tempArr.forEach((el) => {
+        el.splice(indexOfCellAndArrayItem - 1, 0, "");
+      });
+      theadData.splice(indexOfCellAndArrayItem - 1, 0, "");
+    }
+    setInitArray(tempArr);
+  };
+
+  const handleChangeHeaderCell = (e) => {
+    let hoanhdo = e.target.parentNode.cellIndex;
+    let data = e.target.value;
+    let tempHeader = [...theadData];
+    tempHeader[hoanhdo - 1] = data;
+    setTheadData(tempHeader);
+  };
 
   const handleChangeCell = (e) => {
     e.preventDefault();
@@ -553,12 +577,11 @@ const Table = (props) => {
     // setClipBoard(tempArr1);
     tempArr[tungdo - 1][hoanhdo - 1] = data;
     setInitArray(tempArr);
-  }
+  };
 
   const handleUndo = () => {
-    const tempArr =
-      setInitArray()
-  }
+    // const tempArr = setInitArray();
+  };
 
   return (
     <>
@@ -566,61 +589,58 @@ const Table = (props) => {
         <div
           className="menu-line"
           data-position="right"
-        // onClick={handleInsertColumn}
+          onClick={handleInsertColumn}
         >
           Insert column right
-      </div>
+        </div>
         <div
           className="menu-line borderBottom"
           data-position="left"
-        // onClick={handleInsertColumn}
+          onClick={handleInsertColumn}
         >
           Insert column left
-      </div>
+        </div>
         <div
           className="menu-line"
-        // onClick={handleDeleteColumn}
+          // onClick={handleDeleteColumn}
         >
           Delete this column
-      </div>
+        </div>
         <div
           className="menu-line borderBottom"
-        // onClick={handleDeleteColumnContent}
+          // onClick={handleDeleteColumnContent}
         >
           Delete this column content
-      </div>
-        <div
-          className="menu-line borderBottom"
-          onClick={handleUndo}
-        >
+        </div>
+        <div className="menu-line borderBottom" onClick={handleUndo}>
           Undo
-      </div>
+        </div>
         <div
           className="menu-line"
           data-position="above"
           onClick={handleInsertRow}
         >
           Insert row above
-      </div>
+        </div>
         <div
           className="menu-line borderBottom"
           data-position="below"
           onClick={handleInsertRow}
         >
           Insert row below
-      </div>
+        </div>
         <div
           className="menu-line"
-        // onClick={handleDeleteRow}
+          // onClick={handleDeleteRow}
         >
           Delete this row
-      </div>
+        </div>
         <div
           className="menu-line"
-        // onClick={handleDeleteRowContent}
+          // onClick={handleDeleteRowContent}
         >
           Delete this row content
-      </div>
+        </div>
       </div>
 
       <table id="tbl">
@@ -629,7 +649,11 @@ const Table = (props) => {
             <th className="disabledInput boundaryColor">
               <input disabled />
             </th>
-            {headerRow ? headerRow : ""}
+            {theadData.map((th, index) => (
+              <th className="boundaryColor" key={index} onClick={selectColumn}>
+                <input value={th} onChange={handleChangeHeaderCell} />
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
@@ -641,17 +665,18 @@ const Table = (props) => {
               >
                 <input disabled={true} defaultValue="" />
               </td>
-              {rowData && rowData.map((columnData, cindex) => (
-                <td className="cellData mycol" key={cindex}>
-                  <textarea
-                    rows="1"
-                    cols="15"
-                    value={columnData}
-                    onChange={handleChangeCell}
-                    onClick={handleClickCell}
-                  />
-                </td>
-              ))}
+              {rowData &&
+                rowData.map((columnData, cindex) => (
+                  <td className="cellData mycol" key={cindex}>
+                    <textarea
+                      rows="1"
+                      cols="15"
+                      value={columnData}
+                      onChange={handleChangeCell}
+                      onClick={handleClickCell}
+                    />
+                  </td>
+                ))}
             </tr>
           ))}
         </tbody>
