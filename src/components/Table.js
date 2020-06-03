@@ -258,12 +258,13 @@ const Table = (props) => {
     Array.prototype.forEach.call(
       document.querySelectorAll("table td.cellData"),
       function (col) {
-        if (col.cellIndex === position) col.classList.add("columnSelected");
+        if (col.cellIndex === position)
+          col.classList.add("columnSelected", "selected");
         if (
           col.cellIndex === position &&
           col.parentNode.rowIndex === initArray.length
         )
-          col.classList.add("columnSelectedLast");
+          col.classList.add("columnSelectedLast", "selected");
       }
     );
     if (_this.tagName === "TH")
@@ -418,6 +419,10 @@ const Table = (props) => {
     let thisTR = e.target.parentNode.parentNode;
     cleanTable();
     if (thisTR.tagName === "TR") {
+      Array.prototype.forEach.call(
+        thisTR.querySelectorAll(".cellData"),
+        (cell) => cell.classList.add("selected")
+      );
       thisTR.classList.add("rowSelected");
       e.target.parentNode.classList.add("selectedBoundaryColor");
     }
@@ -425,6 +430,8 @@ const Table = (props) => {
   const handleClickCell = (event) => {
     let rect = event.target.parentNode.getBoundingClientRect();
     cleanTable();
+    // const tempArr = JSON.parse(JSON.stringify(initArray));
+    // setClipBoard([[...tempArr], [...theadData]]);
     let dot = document.createElement("DIV");
     dot.innerHTML = "";
     dot.classList.add("dot");
@@ -697,7 +704,13 @@ const Table = (props) => {
               </td>
               {rowData &&
                 rowData.map((columnData, cindex) => (
-                  <td className="cellData mycol" key={cindex}>
+                  <td
+                    className="cellData mycol"
+                    key={cindex}
+                    // onClick={(e) => {
+                    //   console.log(e.target.childNodes[0]);
+                    // }}
+                  >
                     <textarea
                       rows="1"
                       cols="15"
