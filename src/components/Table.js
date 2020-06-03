@@ -623,7 +623,7 @@ const Table = (props) => {
     setTheadData(clipBoard[1]);
   };
 
-  //handle drag event
+  //handle drag row event
   useEffect(() => {
     Array.prototype.forEach.call(
       document.querySelectorAll("table td.disabledInput"),
@@ -692,6 +692,17 @@ const Table = (props) => {
     );
   });
 
+  // handle drag column event
+  useEffect(() => {
+    Array.prototype.forEach.call(
+      document.querySelectorAll("table th.thCellForMoving"),
+      (th) => {
+        th.addEventListener("mousedown", (e) => {
+          console.log(e.target);
+        });
+      }
+    );
+  });
   return (
     <>
       <div className={visible ? "menu" : "menu hiden"} style={menuStyle}>
@@ -754,7 +765,7 @@ const Table = (props) => {
             </th>
             {theadData.map((th, index) => (
               <th
-                className="boundaryColor"
+                className="boundaryColor thCellForMoving"
                 key={index}
                 onClick={handleSelectColumn}
               >
