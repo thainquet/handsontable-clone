@@ -622,6 +622,26 @@ const Table = (props) => {
     setTheadData(clipBoard[1]);
   };
 
+  //handle drag event
+  // event handler
+  const dragHandler = (e) => {
+    let startRow = e.target;
+    let endRow = document.elementFromPoint(e.pageX, e.pageY);
+    if (endRow.tagName === "INPUT") endRow = endRow.parentNode.parentNode;
+    let startIndex = startRow.rowIndex - 1;
+    let endIndex = endRow.rowIndex - 1;
+    let temparr = JSON.parse(JSON.stringify(initArray));
+    [temparr[startIndex], temparr[endIndex]] = [
+      temparr[endIndex],
+      temparr[startIndex],
+    ];
+    setInitArray(temparr);
+  };
+  useEffect(() => {
+    document.addEventListener("dragend", dragHandler);
+    return () => document.removeEventListener("dragend", dragHandler);
+  });
+
   return (
     <>
       <div className={visible ? "menu" : "menu hiden"} style={menuStyle}>
@@ -695,7 +715,7 @@ const Table = (props) => {
         </thead>
         <tbody>
           {initArray.map((rowData, rindex) => (
-            <tr key={rindex}>
+            <tr key={rindex} draggable="true">
               <td
                 className="disabledInput boundaryColor firstRowCell"
                 onClick={handleSelectRow}
