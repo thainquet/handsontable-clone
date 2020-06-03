@@ -98,12 +98,20 @@ const Table = (props) => {
               Array.prototype.forEach.call(
                 document.getElementById("tbl").querySelectorAll("td"),
                 function (e) {
-                  e.classList.remove("selected");
+                  e.classList.remove("selected", "selectedBoundaryColor");
+                }
+              );
+              Array.prototype.forEach.call(
+                document.getElementById("tbl").querySelectorAll("th"),
+                function (e) {
+                  e.classList.remove("selectedBoundaryColor");
                 }
               );
               for (let i = rowStart; i <= rowEnd; i++) {
                 for (let j = cellStart; j <= cellEnd; j++) {
                   table.rows[i].cells[j].classList.add("selected");
+                  table.rows[0].cells[j].classList.add("selectedBoundaryColor");
+                  table.rows[i].cells[0].classList.add("selectedBoundaryColor");
                 }
               }
             }
@@ -236,40 +244,8 @@ const Table = (props) => {
     }
     beginArr.push(tbodyData);
   });
-  // const testArr = [
-  //   ["a", "b", "c", "d", "e", "f", "G"],
-  //   ["q1", "b", "c", "d", "e", "f", "G"],
-  //   ["q2", "b", "c", "d", "e", "f", "G"],
-  //   ["", "", "", "", "", "", ""],
-  //   ["q3", "b", "c", "d", "e", "f", "G"],
-  //   ["a", "b", "c", "d", "e", "f", "G"],
-  // ]
-  // const previousState = []
-  // const followingState = []
-  // useEffect(() => {
-
-  // }, [initArray])
   const [initArray, setInitArray] = useState(beginArr);
   if (tableData) setInitArray(tableData);
-  const selectColumn = (event) => {
-    cleanTable();
-    let _this = event.target.parentNode;
-    let position = _this.cellIndex;
-    Array.prototype.forEach.call(
-      document.querySelectorAll("table td.cellData"),
-      function (col) {
-        if (col.cellIndex === position)
-          col.classList.add("columnSelected", "selected");
-        if (
-          col.cellIndex === position &&
-          col.parentNode.rowIndex === initArray.length
-        )
-          col.classList.add("columnSelectedLast", "selected");
-      }
-    );
-    if (_this.tagName === "TH")
-      _this.classList.add("selectFirstTH", "selectedBoundaryColor");
-  };
 
   const exportCSV = () => {
     let data = [];
@@ -414,7 +390,27 @@ const Table = (props) => {
     };
   }, []);
 
-  const handleClickRow = (e) => {
+  const handleSelectColumn = (event) => {
+    cleanTable();
+    let _this = event.target.parentNode;
+    let position = _this.cellIndex;
+    Array.prototype.forEach.call(
+      document.querySelectorAll("table td.cellData"),
+      function (col) {
+        if (col.cellIndex === position)
+          col.classList.add("columnSelected", "selected");
+        if (
+          col.cellIndex === position &&
+          col.parentNode.rowIndex === initArray.length
+        )
+          col.classList.add("columnSelectedLast", "selected");
+      }
+    );
+    if (_this.tagName === "TH")
+      _this.classList.add("selectFirstTH", "selectedBoundaryColor");
+  };
+
+  const handleSelectRow = (e) => {
     e.preventDefault();
     let thisTR = e.target.parentNode.parentNode;
     cleanTable();
@@ -687,7 +683,11 @@ const Table = (props) => {
               <input disabled />
             </th>
             {theadData.map((th, index) => (
-              <th className="boundaryColor" key={index} onClick={selectColumn}>
+              <th
+                className="boundaryColor"
+                key={index}
+                onClick={handleSelectColumn}
+              >
                 <input value={th} onChange={handleChangeHeaderCell} />
               </th>
             ))}
@@ -698,7 +698,7 @@ const Table = (props) => {
             <tr key={rindex}>
               <td
                 className="disabledInput boundaryColor firstRowCell"
-                onClick={handleClickRow}
+                onClick={handleSelectRow}
               >
                 <input disabled={true} defaultValue="" />
               </td>
