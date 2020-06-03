@@ -225,6 +225,7 @@ const Table = (props) => {
     "Date",
     "Change",
   ]);
+  const [clipBoard, setClipBoard] = useState();
   // for (let key in dummyData[0]) theadData.push(key);
   // beginArr.push(theadData);
   dummyData.forEach((item) => {
@@ -526,6 +527,8 @@ const Table = (props) => {
     const thisTextarea = document.elementFromPoint(left - 5, top - 5);
     const indexOfRowAndArrayItem = thisTextarea.parentNode.parentNode.rowIndex;
     let tempArr = JSON.parse(JSON.stringify(initArray));
+    let tempArr1 = JSON.parse(JSON.stringify(initArray));
+    setClipBoard(tempArr1);
     const lengthItem = tempArr[0].length;
     const Item = new Array(lengthItem).fill("");
     if (position === "below") {
@@ -535,7 +538,6 @@ const Table = (props) => {
       tempArr.splice(indexOfRowAndArrayItem - 1, 0, Item);
     }
     setInitArray(tempArr);
-    // console.log(tempArr)
   };
   const handleInsertColumn = (event) => {
     event.preventDefault();
@@ -543,8 +545,8 @@ const Table = (props) => {
     const thisTH = document.elementFromPoint(left - 5, top - 5);
     const indexOfCellAndArrayItem = thisTH.parentNode.cellIndex;
     let tempArr = [...initArray];
-    // let tempArr1 = JSON.parse(JSON.stringify(initArray));
-    // setClipBoard(tempArr1);
+    let tempArr1 = JSON.parse(JSON.stringify(initArray));
+    setClipBoard(tempArr1);
 
     if (position === "right") {
       tempArr.forEach((el) => {
@@ -560,6 +562,20 @@ const Table = (props) => {
     }
     setInitArray(tempArr);
   };
+
+  // const tx = document.getElementsByTagName("textarea");
+  // for (let i = 0; i < tx.length; i++) {
+  //   tx[i].setAttribute(
+  //     "style",
+  //     "height:" + tx[i].scrollHeight + "px;overflow-y:hidden;"
+  //   );
+  //   tx[i].addEventListener("input", OnInput, false);
+  // }
+
+  // function OnInput() {
+  //   this.style.height = "auto";
+  //   this.style.height = this.scrollHeight + "px";
+  // }
 
   const handleChangeHeaderCell = (e) => {
     let hoanhdo = e.target.parentNode.cellIndex;
@@ -583,8 +599,10 @@ const Table = (props) => {
     setInitArray(tempArr);
   };
 
-  const handleUndo = () => {
-    // const tempArr = setInitArray();
+  const handleUndo = (e) => {
+    e.preventDefault();
+    console.log(clipBoard);
+    setInitArray(clipBoard);
   };
 
   return (
