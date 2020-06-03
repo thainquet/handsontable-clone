@@ -624,52 +624,72 @@ const Table = (props) => {
   };
 
   //handle drag event
-  // event handler
-  const handleDragStart = (e) => {
-    let thisTD = e.target.parentNode;
-    let thisTR = thisTD.parentNode;
-    let coordinate = thisTR.getBoundingClientRect();
-    let myDiv = document.createElement("div");
-    myDiv.style.position = "absolute";
-    myDiv.innerHTML = "&nbsp";
-    myDiv.style.top = coordinate.top + "px";
-    myDiv.style.width = coordinate.width + "px";
-    myDiv.style.height = coordinate.height + "px";
-    myDiv.style.left = coordinate.left + "px";
-    document.getElementById("tbl").appendChild(myDiv);
-  };
-  const handleDrag = (e) => {
-    let thisTD = e.target.parentNode;
-    let thisTR = thisTD.parentNode;
-    let coordinate = thisTR.getBoundingClientRect();
-    let myDiv = document.createElement("div");
-    myDiv.style.position = "absolute";
-    myDiv.innerHTML = "&nbsp";
-    myDiv.style.top = coordinate.top + "px";
-    myDiv.style.width = coordinate.width + "px";
-    myDiv.style.height = coordinate.height + "px";
-    myDiv.style.left = coordinate.left + "px";
-    myDiv.style.backgroundColor = "#ddd";
-    document.getElementById("tbl").appendChild(myDiv);
-  };
-  const dragHandler = (e) => {
-    let startRow = e.target.parentNode.parentNode;
-    let endRow = document.elementFromPoint(e.pageX, e.pageY);
-    if (endRow.tagName === "INPUT") {
-      endRow = endRow.parentNode.parentNode;
-      let startIndex = startRow.rowIndex - 1;
-      let endIndex = endRow.rowIndex - 1;
-      let temparr = JSON.parse(JSON.stringify(initArray));
-      [temparr[startIndex], temparr[endIndex]] = [
-        temparr[endIndex],
-        temparr[startIndex],
-      ];
-      setInitArray(temparr);
-    }
-  };
   useEffect(() => {
-    document.addEventListener("dragend", dragHandler);
-    return () => document.removeEventListener("dragend", dragHandler);
+    Array.prototype.forEach.call(
+      document.querySelectorAll("table td.disabledInput"),
+      (td) => {
+        let coordinate = td.getBoundingClientRect();
+        let startIndex = undefined;
+        td.addEventListener("mousedown", function () {
+          startIndex = td.parentNode.rowIndex;
+          startDrag();
+        });
+
+        function startDrag() {
+          let divA = document.createElement("div");
+          divA.id = "A";
+          divA.style.position = "absolute";
+          divA.style.backgroundColor = "#e6efff";
+          divA.style.opacity = "0.5";
+          divA.style.zIndex = "-1";
+          divA.style.width =
+            td.parentNode.getBoundingClientRect().width -
+            coordinate.width +
+            "px";
+          divA.style.height = coordinate.height + "px";
+          divA.style.left = coordinate.left + coordinate.width + "px";
+          divA.style.top = coordinate.top + "px";
+          document.getElementsByTagName("body")[0].appendChild(divA);
+
+          document.onmouseup = finishDrag;
+          document.onmousemove = function (e) {
+            divA.style.top = divA.offsetTop + e.movementY + "px";
+          };
+        }
+        function finishDrag(e) {
+          let endEl = document.elementFromPoint(e.pageX, e.pageY);
+          if (endEl.tagName === "INPUT") {
+            endEl = endEl.parentNode.parentNode;
+            let endIndex = endEl.rowIndex;
+            startIndex--;
+            endIndex--;
+            if (startIndex < endIndex) {
+              let temparr = JSON.parse(JSON.stringify(initArray));
+              let startRowData = temparr[startIndex];
+              temparr.splice(endIndex + 1, 0, startRowData);
+              temparr.splice(startIndex, 1);
+              setInitArray(temparr);
+            }
+            if (startIndex > endIndex) {
+              let temparr = JSON.parse(JSON.stringify(initArray));
+              let startRowData = temparr[startIndex];
+              temparr.splice(endIndex + 1, 0, startRowData);
+              temparr.splice(startIndex + 1, 1);
+              setInitArray(temparr);
+            }
+          }
+          // remove divA after mouseup
+          Array.prototype.forEach.call(
+            document.querySelectorAll("#A"),
+            (thisEl) => {
+              thisEl.parentNode.removeChild(thisEl);
+            }
+          );
+          document.onmouseup = null;
+          document.onmousemove = null;
+        }
+      }
+    );
   });
 
   return (
@@ -750,12 +770,7 @@ const Table = (props) => {
                 className="disabledInput boundaryColor firstRowCell"
                 onClick={handleSelectRow}
               >
-                <input
-                  disabled={true}
-                  defaultValue=""
-                  draggable="true"
-                  onDrag={handleDrag}
-                />
+                <input disabled={true} defaultValue="" />
               </td>
               {rowData &&
                 rowData.map((columnData, cindex) => (
