@@ -301,8 +301,12 @@ const Table = (props) => {
       const clickY = event.clientY;
       setTop(clickY + 5);
       setLeft(clickX + 5);
-      document.elementFromPoint(clickX, clickY).click();
-      setVisible(true);
+      let clickedElement = document.elementFromPoint(clickX, clickY);
+      if (clickedElement.tagName !== "TEXTAREA") setVisible(false);
+      else {
+        document.elementFromPoint(clickX, clickY).click();
+        setVisible(true);
+      }
     };
     document
       .getElementById("tbl")
