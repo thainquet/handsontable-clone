@@ -5,6 +5,7 @@ table {
 }
 tr {
   border-color: #ddd;
+  user-select: none;
   /* box-sizing: border-box; */
 }
 
@@ -56,7 +57,7 @@ textarea {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 2px;
+  height: 3px;
   position: absolute;
   cursor: row-resize;
 }
@@ -109,6 +110,7 @@ textarea {
 
 .disabledInput {
   width: 30px;
+  user-select: none;
 }
 
 .boundaryColor {

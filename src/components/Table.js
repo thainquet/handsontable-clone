@@ -618,24 +618,54 @@ const Table = (props) => {
 
   const handleUndo = (e) => {
     e.preventDefault();
+    if (clipBoard === undefined) return;
     setInitArray(clipBoard[0]);
     setTheadData(clipBoard[1]);
   };
 
   //handle drag event
   // event handler
+  const handleDragStart = (e) => {
+    let thisTD = e.target.parentNode;
+    let thisTR = thisTD.parentNode;
+    let coordinate = thisTR.getBoundingClientRect();
+    let myDiv = document.createElement("div");
+    myDiv.style.position = "absolute";
+    myDiv.innerHTML = "&nbsp";
+    myDiv.style.top = coordinate.top + "px";
+    myDiv.style.width = coordinate.width + "px";
+    myDiv.style.height = coordinate.height + "px";
+    myDiv.style.left = coordinate.left + "px";
+    document.getElementById("tbl").appendChild(myDiv);
+  };
+  const handleDrag = (e) => {
+    let thisTD = e.target.parentNode;
+    let thisTR = thisTD.parentNode;
+    let coordinate = thisTR.getBoundingClientRect();
+    let myDiv = document.createElement("div");
+    myDiv.style.position = "absolute";
+    myDiv.innerHTML = "&nbsp";
+    myDiv.style.top = coordinate.top + "px";
+    myDiv.style.width = coordinate.width + "px";
+    myDiv.style.height = coordinate.height + "px";
+    myDiv.style.left = coordinate.left + "px";
+    myDiv.style.backgroundColor = "#ddd";
+    document.getElementById("tbl").appendChild(myDiv);
+  };
   const dragHandler = (e) => {
-    let startRow = e.target;
+    let startRow = e.target.parentNode.parentNode;
     let endRow = document.elementFromPoint(e.pageX, e.pageY);
-    if (endRow.tagName === "INPUT") endRow = endRow.parentNode.parentNode;
-    let startIndex = startRow.rowIndex - 1;
-    let endIndex = endRow.rowIndex - 1;
-    let temparr = JSON.parse(JSON.stringify(initArray));
-    [temparr[startIndex], temparr[endIndex]] = [
-      temparr[endIndex],
-      temparr[startIndex],
-    ];
-    setInitArray(temparr);
+    if (endRow.tagName === "INPUT") {
+      endRow = endRow.parentNode.parentNode;
+      let startIndex = startRow.rowIndex - 1;
+      let endIndex = endRow.rowIndex - 1;
+      let temparr = JSON.parse(JSON.stringify(initArray));
+      [temparr[startIndex], temparr[endIndex]] = [
+        temparr[endIndex],
+        temparr[startIndex],
+      ];
+      setInitArray(temparr);
+    }
   };
   useEffect(() => {
     document.addEventListener("dragend", dragHandler);
@@ -715,12 +745,17 @@ const Table = (props) => {
         </thead>
         <tbody>
           {initArray.map((rowData, rindex) => (
-            <tr key={rindex} draggable="true">
+            <tr key={rindex}>
               <td
                 className="disabledInput boundaryColor firstRowCell"
                 onClick={handleSelectRow}
               >
-                <input disabled={true} defaultValue="" />
+                <input
+                  disabled={true}
+                  defaultValue=""
+                  draggable="true"
+                  onDrag={handleDrag}
+                />
               </td>
               {rowData &&
                 rowData.map((columnData, cindex) => (
