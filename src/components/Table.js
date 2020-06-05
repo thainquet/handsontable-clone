@@ -481,6 +481,7 @@ const Table = (props) => {
     document
       .getElementsByClassName("dot")[0]
       .addEventListener("mousedown", function (e) {
+        clearAllSelectedCell();
         isMousedown = true;
         startCellIndex = td.cellIndex;
         startRowIndex = td.parentNode.rowIndex;
@@ -538,14 +539,18 @@ const Table = (props) => {
       document
         .getElementById("tbl")
         .removeEventListener("mousemove", mousemove);
+      let tempArr = [...initArray];
       Array.prototype.forEach.call(
         document
           .getElementById("tbl")
           .querySelectorAll("td.selectedForChangingData"),
-        function (e) {
-          e.childNodes[0].value = value;
+        function (td) {
+          let tungdo = td.parentNode.rowIndex;
+          let hoanhdo = td.cellIndex;
+          tempArr[tungdo - 1][hoanhdo - 1] = value;
         }
       );
+      setInitArray(tempArr);
     });
 
     event.target.parentNode.classList.add("cellSelected");
