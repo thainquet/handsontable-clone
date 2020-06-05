@@ -255,12 +255,13 @@ const Table = (props) => {
         el.push("");
       }
     });
-    let maxRowAmount = Math.floor((window.screen.height - 54) / 24);
+    let maxRowAmount = Math.floor((window.innerHeight - 53) / 24);
     if (initArray.length < maxRowAmount) {
-      for (let i = initArray.length; i < maxRowAmount - 1; i++) {
+      for (let i = initArray.length; i < maxRowAmount; i++) {
         initArray.push(new Array(maxColumnAmount).fill(""));
       }
     }
+    console.log(maxRowAmount);
   }
 
   const exportCSV = () => {
