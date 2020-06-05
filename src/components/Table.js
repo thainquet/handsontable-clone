@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Table.css";
 import dummyData from "./dummyData.js";
-// import ContextMenu from "./ContextMenu";
 
 const clearAllTRBorder = () => {
   Array.prototype.forEach.call(document.querySelectorAll("tr"), function (e) {
