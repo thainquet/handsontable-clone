@@ -126,3 +126,8 @@ textarea {
 .centered {
   text-align: center;
 }
+
+.headerCell {
+  text-align: center;
+  font-weight: bold;
+}

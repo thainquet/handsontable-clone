@@ -639,7 +639,7 @@ const Table = (props) => {
           let divA = document.createElement("div");
           divA.id = "A";
           divA.style.position = "absolute";
-          divA.style.backgroundColor = "#e6efff";
+          divA.style.backgroundColor = "#d6d3d3";
           divA.style.opacity = "0.5";
           divA.style.zIndex = "-1";
           divA.style.width =
@@ -697,9 +697,85 @@ const Table = (props) => {
     Array.prototype.forEach.call(
       document.querySelectorAll("table th.thCellForMoving"),
       (th) => {
-        th.addEventListener("mousedown", (e) => {
-          console.log(e.target);
+        let coordinate = th.getBoundingClientRect();
+        let startIndex = undefined;
+        th.addEventListener("mousedown", function () {
+          startIndex = th.cellIndex;
+          startDrag();
         });
+
+        function startDrag() {
+          let divA = document.createElement("div");
+          divA.id = "A";
+          divA.style.position = "absolute";
+          divA.style.backgroundColor = "#d6d3d3";
+          divA.style.opacity = "0.5";
+          divA.style.zIndex = "-1";
+          divA.style.left = coordinate.left + "px";
+          divA.style.width = coordinate.width + "px";
+          divA.style.height =
+            document.querySelectorAll("table")[0].getBoundingClientRect()
+              .height -
+            coordinate.height +
+            "px";
+          divA.style.top = coordinate.bottom + "px";
+          document.getElementsByTagName("body")[0].appendChild(divA);
+
+          document.onmouseup = finishDrag;
+          document.onmousemove = function (e) {
+            divA.style.left = divA.offsetLeft + e.movementX + "px";
+          };
+        }
+        function finishDrag(e) {
+          let endEl = document.elementFromPoint(e.pageX, e.pageY);
+          if (endEl.tagName === "INPUT") {
+            endEl = endEl.parentNode;
+            let endIndex = endEl.cellIndex;
+            startIndex--;
+            endIndex--;
+            if (startIndex < endIndex) {
+              //swap header
+              let tempHeader = JSON.parse(JSON.stringify(theadData));
+              let tempData = tempHeader[startIndex];
+              tempHeader.splice(endIndex + 1, 0, tempData);
+              tempHeader.splice(startIndex, 1);
+              setTheadData(tempHeader);
+              // swap tbody
+              let tempArr = JSON.parse(JSON.stringify(initArray));
+              tempArr.forEach((el) => {
+                let data = el[startIndex];
+                el.splice(endIndex + 1, 0, data);
+                el.splice(startIndex, 1);
+              });
+              setInitArray(tempArr);
+            }
+            if (startIndex > endIndex) {
+              //swap header
+              let tempHeader = JSON.parse(JSON.stringify(theadData));
+              let tempData = tempHeader[startIndex];
+              tempHeader.splice(endIndex, 0, tempData);
+              tempHeader.splice(startIndex + 1, 1);
+              setTheadData(tempHeader);
+              // swap tbody
+              let tempArr = JSON.parse(JSON.stringify(initArray));
+              tempArr.forEach((el) => {
+                let data = el[startIndex];
+                el.splice(endIndex, 0, data);
+                el.splice(startIndex + 1, 1);
+              });
+              setInitArray(tempArr);
+            }
+          }
+          // remove divA after mouseup
+          Array.prototype.forEach.call(
+            document.querySelectorAll("#A"),
+            (thisEl) => {
+              thisEl.parentNode.removeChild(thisEl);
+            }
+          );
+          document.onmouseup = null;
+          document.onmousemove = null;
+        }
       }
     );
   });
@@ -769,7 +845,11 @@ const Table = (props) => {
                 key={index}
                 onClick={handleSelectColumn}
               >
-                <input value={th} onChange={handleChangeHeaderCell} />
+                <input
+                  className="headerCell"
+                  value={th}
+                  onChange={handleChangeHeaderCell}
+                />
               </th>
             ))}
           </tr>
