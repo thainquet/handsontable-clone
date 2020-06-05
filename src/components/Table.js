@@ -715,11 +715,7 @@ const Table = (props) => {
           divA.style.zIndex = "-1";
           divA.style.left = coordinate.left + "px";
           divA.style.width = coordinate.width + "px";
-          divA.style.height =
-            document.querySelectorAll("table")[0].getBoundingClientRect()
-              .height -
-            coordinate.height +
-            "px";
+          divA.style.height = 500 - coordinate.height + "px";
           divA.style.top = coordinate.bottom + "px";
           document.getElementsByTagName("body")[0].appendChild(divA);
 
