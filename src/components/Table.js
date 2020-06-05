@@ -447,9 +447,9 @@ const Table = (props) => {
     let dot = document.createElement("DIV");
     dot.innerHTML = "";
     dot.classList.add("dot");
-    dot.style.top = rect.bottom - 4 + "px";
-    dot.style.left = rect.right - 4 + "px";
-    document.getElementsByTagName("BODY")[0].appendChild(dot);
+    dot.style.top = rect.height - 5 + "px";
+    dot.style.left = rect.width - 5 + "px";
+    event.target.parentNode.appendChild(dot);
 
     let value = event.target.value;
     let td = event.target.parentNode;

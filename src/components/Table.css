@@ -22,6 +22,7 @@ td {
   width: 100px;
   box-sizing: border-box;
   border-color: #ddd;
+  position: relative;
 }
 input {
   vertical-align: top;
