@@ -66,67 +66,65 @@ const Table = (props) => {
           startCellIndex = td.cellIndex;
           startRowIndex = td.parentNode.rowIndex;
         });
-        const mousemove = function (e) {
-          let endElement = document.elementFromPoint(e.pageX, e.pageY);
-          if (
-            endElement.parentNode !== undefined &&
-            endElement.parentNode.tagName === "TD" &&
-            endElement.tagName === "TEXTAREA"
-          ) {
-            let thisTD = endElement.parentNode;
-            let cellIndex = thisTD.cellIndex;
-            let rowIndex = thisTD.parentNode.rowIndex;
-            let table = document.getElementById("tbl");
-            let rowStart, rowEnd, cellStart, cellEnd;
-
-            if (rowIndex < startRowIndex) {
-              rowStart = rowIndex;
-              rowEnd = startRowIndex;
-            } else {
-              rowStart = startRowIndex;
-              rowEnd = rowIndex;
-            }
-
-            if (cellIndex < startCellIndex) {
-              cellStart = cellIndex;
-              cellEnd = startCellIndex;
-            } else {
-              cellStart = startCellIndex;
-              cellEnd = cellIndex;
-            }
-
-            if (isMousedown) {
-              Array.prototype.forEach.call(
-                document.getElementById("tbl").querySelectorAll("td"),
-                function (e) {
-                  e.classList.remove("selected", "selectedBoundaryColor");
-                }
-              );
-              Array.prototype.forEach.call(
-                document.getElementById("tbl").querySelectorAll("th"),
-                function (e) {
-                  e.classList.remove("selectedBoundaryColor");
-                }
-              );
-              for (let i = rowStart; i <= rowEnd; i++) {
-                for (let j = cellStart; j <= cellEnd; j++) {
-                  table.rows[i].cells[j].classList.add("selected");
-                  table.rows[0].cells[j].classList.add("selectedBoundaryColor");
-                  table.rows[i].cells[0].classList.add("selectedBoundaryColor");
-                }
-              }
-            }
-          }
-        };
-        document.getElementById("tbl").addEventListener("mousemove", mousemove);
-        document
-          .getElementById("tbl")
-          .addEventListener("mouseup", function (e) {
-            td.removeEventListener("mousemove", mousemove);
-            isMousedown = false;
-          });
       }
     );
+
+    const mousemove = function (e) {
+      let endElement = document.elementFromPoint(e.pageX, e.pageY);
+      if (
+        endElement !== null &&
+        endElement.parentNode.tagName === "TD" &&
+        endElement.tagName === "TEXTAREA"
+      ) {
+        let thisTD = endElement.parentNode;
+        let cellIndex = thisTD.cellIndex;
+        let rowIndex = thisTD.parentNode.rowIndex;
+        let table = document.getElementById("tbl");
+        let rowStart, rowEnd, cellStart, cellEnd;
+
+        if (rowIndex < startRowIndex) {
+          rowStart = rowIndex;
+          rowEnd = startRowIndex;
+        } else {
+          rowStart = startRowIndex;
+          rowEnd = rowIndex;
+        }
+
+        if (cellIndex < startCellIndex) {
+          cellStart = cellIndex;
+          cellEnd = startCellIndex;
+        } else {
+          cellStart = startCellIndex;
+          cellEnd = cellIndex;
+        }
+
+        if (isMousedown) {
+          Array.prototype.forEach.call(
+            document.getElementById("tbl").querySelectorAll("td"),
+            function (e) {
+              e.classList.remove("selected", "selectedBoundaryColor");
+            }
+          );
+          Array.prototype.forEach.call(
+            document.getElementById("tbl").querySelectorAll("th"),
+            function (e) {
+              e.classList.remove("selectedBoundaryColor");
+            }
+          );
+          for (let i = rowStart; i <= rowEnd; i++) {
+            for (let j = cellStart; j <= cellEnd; j++) {
+              table.rows[i].cells[j].classList.add("selected");
+              table.rows[0].cells[j].classList.add("selectedBoundaryColor");
+              table.rows[i].cells[0].classList.add("selectedBoundaryColor");
+            }
+          }
+        }
+      }
+    };
+    document.getElementById("tbl").addEventListener("mousemove", mousemove);
+    document.getElementById("tbl").addEventListener("mouseup", function (e) {
+      isMousedown = false;
+    });
   }, []);
   // handle keydown delete and backspace
   useEffect(() => {
@@ -248,6 +246,23 @@ const Table = (props) => {
   });
   const [initArray, setInitArray] = useState(beginArr);
   if (tableData) setInitArray(tableData);
+  let maxColumnAmount = Math.floor((window.screen.width - 50) / 125);
+  if (theadData.length < maxColumnAmount) {
+    for (let i = theadData.length; i < maxColumnAmount; i++) {
+      theadData.push("");
+    }
+    initArray.forEach((el) => {
+      for (let i = el.length; i < maxColumnAmount; i++) {
+        el.push("");
+      }
+    });
+    let maxRowAmount = Math.floor((window.screen.height - 54) / 24);
+    if (initArray.length < maxRowAmount) {
+      for (let i = initArray.length; i < maxRowAmount - 1; i++) {
+        initArray.push(new Array(maxColumnAmount).fill(""));
+      }
+    }
+  }
 
   const exportCSV = () => {
     let data = [];
@@ -460,6 +475,7 @@ const Table = (props) => {
     const mousemove = function (e) {
       let endElement = document.elementFromPoint(e.pageX, e.pageY);
       if (
+        endElement !== null &&
         endElement.parentNode.tagName === "TD" &&
         endElement.tagName === "TEXTAREA"
       ) {
@@ -715,7 +731,10 @@ const Table = (props) => {
           divA.style.zIndex = "-1";
           divA.style.left = coordinate.left + "px";
           divA.style.width = coordinate.width + "px";
-          divA.style.height = 500 - coordinate.height + "px";
+          divA.style.height =
+            document.getElementById("tbl").getBoundingClientRect().width -
+            coordinate.height +
+            "px";
           divA.style.top = coordinate.bottom + "px";
           document.getElementsByTagName("body")[0].appendChild(divA);
 

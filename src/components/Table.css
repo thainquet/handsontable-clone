@@ -2,6 +2,10 @@ table {
   border-collapse: collapse;
   width: max-content;
   user-select: none;
+  display: block;
+  height: 100vh;
+  overflow-y: scroll;
+  border: none;
 }
 tr {
   border-color: #ddd;
@@ -131,7 +135,10 @@ textarea {
   text-align: center;
   font-weight: bold;
 }
-#wrapper {
+/* #wrapper {
   max-height: 500px;
   overflow-y: scroll;
 }
+#wrapper::-webkit-scrollbar {
+  display: none;
+} */
