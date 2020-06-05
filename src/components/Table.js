@@ -126,27 +126,38 @@ const Table = (props) => {
     });
   }, []);
   // handle keydown delete and backspace
+  const hasSelectedCells = () => {
+    return document.getElementById("tbl").getElementsByClassName("selected")
+      .length > 0 &&
+      document.getElementById("tbl").getElementsByClassName("cellSelected")
+        .length === 1
+      ? true
+      : false;
+  };
   useEffect(() => {
     document.addEventListener("keydown", KeyCheck);
     function empty() {
+      let tempArr1 = JSON.parse(JSON.stringify(initArray));
+      setClipBoard([[...tempArr1], [...theadData]]);
       let selectedNodes = document
         .getElementById("tbl")
         .getElementsByClassName("selected");
+      let tempArr = [...initArray];
       Array.prototype.forEach.call(selectedNodes, function (selectedOne) {
-        let input = selectedOne.childNodes[0];
-        input.value = "";
+        let tungdo = selectedOne.parentNode.rowIndex;
+        let hoanhdo = selectedOne.cellIndex;
+        tempArr[tungdo - 1][hoanhdo - 1] = "";
       });
+      setInitArray(tempArr);
     }
     function KeyCheck(event) {
       var KeyID = event.keyCode;
       switch (KeyID) {
         case 8:
-          console.log("backspace");
-          empty();
+          if (hasSelectedCells()) empty();
           break;
         case 46:
-          console.log("delete");
-          empty();
+          if (hasSelectedCells()) empty();
           break;
         default:
           break;
@@ -155,7 +166,7 @@ const Table = (props) => {
     return () => {
       window.removeEventListener("click", KeyCheck);
     };
-  });
+  }, []);
   // resize column
   useEffect(() => {
     let thElm;
@@ -271,7 +282,7 @@ const Table = (props) => {
     Array.prototype.forEach.call(table.rows, (row) => {
       let dataItem = [];
       Array.prototype.forEach.call(row.cells, (cell) => {
-        if (cell.cellIndex !== 0 && cell.cellIndex < lastColumnIndex)
+        if (cell.cellIndex !== 0 && cell.cellIndex <= lastColumnIndex)
           dataItem.push(cell.childNodes[0].value);
       });
       data.push(dataItem);
