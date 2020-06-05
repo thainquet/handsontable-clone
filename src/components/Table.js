@@ -69,6 +69,7 @@ const Table = (props) => {
         const mousemove = function (e) {
           let endElement = document.elementFromPoint(e.pageX, e.pageY);
           if (
+            endElement.parentNode !== undefined &&
             endElement.parentNode.tagName === "TD" &&
             endElement.tagName === "TEXTAREA"
           ) {
@@ -121,6 +122,7 @@ const Table = (props) => {
         document
           .getElementById("tbl")
           .addEventListener("mouseup", function (e) {
+            td.removeEventListener("mousemove", mousemove);
             isMousedown = false;
           });
       }
@@ -833,58 +835,60 @@ const Table = (props) => {
         </div> */}
       </div>
 
-      <table id="tbl">
-        <thead>
-          <tr>
-            <th className="disabledInput boundaryColor">
-              <input disabled />
-            </th>
-            {theadData.map((th, index) => (
-              <th
-                className="boundaryColor thCellForMoving"
-                key={index}
-                onClick={handleSelectColumn}
-              >
-                <input
-                  className="headerCell"
-                  value={th}
-                  onChange={handleChangeHeaderCell}
-                />
+      <div id="wrapper">
+        <table id="tbl">
+          <thead>
+            <tr>
+              <th className="disabledInput boundaryColor">
+                <input disabled />
               </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {initArray.map((rowData, rindex) => (
-            <tr key={rindex}>
-              <td
-                className="disabledInput boundaryColor firstRowCell"
-                onClick={handleSelectRow}
-              >
-                <input disabled={true} defaultValue="" />
-              </td>
-              {rowData &&
-                rowData.map((columnData, cindex) => (
-                  <td
-                    className="cellData mycol"
-                    key={cindex}
-                    // onClick={(e) => {
-                    //   console.log(e.target.childNodes[0]);
-                    // }}
-                  >
-                    <textarea
-                      rows="1"
-                      cols="15"
-                      value={columnData}
-                      onChange={handleChangeCell}
-                      onClick={handleClickCell}
-                    />
-                  </td>
-                ))}
+              {theadData.map((th, index) => (
+                <th
+                  className="boundaryColor thCellForMoving"
+                  key={index}
+                  onClick={handleSelectColumn}
+                >
+                  <input
+                    className="headerCell"
+                    value={th}
+                    onChange={handleChangeHeaderCell}
+                  />
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {initArray.map((rowData, rindex) => (
+              <tr key={rindex}>
+                <td
+                  className="disabledInput boundaryColor firstRowCell"
+                  onClick={handleSelectRow}
+                >
+                  <input disabled={true} defaultValue="" />
+                </td>
+                {rowData &&
+                  rowData.map((columnData, cindex) => (
+                    <td
+                      className="cellData mycol"
+                      key={cindex}
+                      // onClick={(e) => {
+                      //   console.log(e.target.childNodes[0]);
+                      // }}
+                    >
+                      <textarea
+                        rows="1"
+                        cols="15"
+                        value={columnData}
+                        onChange={handleChangeCell}
+                        onClick={handleClickCell}
+                      />
+                    </td>
+                  ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <br></br>
       <button onClick={exportCSV}>Export CSV</button>
     </>

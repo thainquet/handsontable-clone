@@ -131,3 +131,7 @@ textarea {
   text-align: center;
   font-weight: bold;
 }
+#wrapper {
+  max-height: 500px;
+  overflow-y: scroll;
+}
