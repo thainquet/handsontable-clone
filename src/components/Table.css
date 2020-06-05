@@ -20,6 +20,7 @@ th {
 
 td {
   width: 100px;
+  height: 24px;
   box-sizing: border-box;
   border-color: #ddd;
   position: relative;
@@ -35,6 +36,7 @@ input {
 }
 
 textarea {
+  height: 100%;
   vertical-align: top;
   background-color: transparent;
   border: none;

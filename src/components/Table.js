@@ -658,7 +658,6 @@ const Table = (props) => {
           divA.style.position = "absolute";
           divA.style.backgroundColor = "#d6d3d3";
           divA.style.opacity = "0.5";
-          divA.style.zIndex = "-1";
           divA.style.width =
             td.parentNode.getBoundingClientRect().width -
             coordinate.width +
@@ -727,7 +726,6 @@ const Table = (props) => {
           divA.style.position = "absolute";
           divA.style.backgroundColor = "#d6d3d3";
           divA.style.opacity = "0.5";
-          divA.style.zIndex = "-1";
           divA.style.left = coordinate.left + "px";
           divA.style.width = coordinate.width + "px";
           divA.style.height =
@@ -743,6 +741,13 @@ const Table = (props) => {
           };
         }
         function finishDrag(e) {
+          // remove divA after mouseup
+          Array.prototype.forEach.call(
+            document.querySelectorAll("#A"),
+            (thisEl) => {
+              thisEl.parentNode.removeChild(thisEl);
+            }
+          );
           let endEl = document.elementFromPoint(e.pageX, e.pageY);
           if (endEl.tagName === "INPUT") {
             endEl = endEl.parentNode;
@@ -782,13 +787,6 @@ const Table = (props) => {
               setInitArray(tempArr);
             }
           }
-          // remove divA after mouseup
-          Array.prototype.forEach.call(
-            document.querySelectorAll("#A"),
-            (thisEl) => {
-              thisEl.parentNode.removeChild(thisEl);
-            }
-          );
           document.onmouseup = null;
           document.onmousemove = null;
         }
