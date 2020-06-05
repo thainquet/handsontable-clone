@@ -261,16 +261,18 @@ const Table = (props) => {
         initArray.push(new Array(maxColumnAmount).fill(""));
       }
     }
-    console.log(maxRowAmount);
   }
 
   const exportCSV = () => {
     let data = [];
     let table = document.getElementById("tbl");
+    let lastColumnIndex = theadData.filter((i) => i !== "").length;
+    console.log(lastColumnIndex);
     Array.prototype.forEach.call(table.rows, (row) => {
       let dataItem = [];
       Array.prototype.forEach.call(row.cells, (cell) => {
-        if (cell.cellIndex !== 0) dataItem.push(cell.childNodes[0].value);
+        if (cell.cellIndex !== 0 && cell.cellIndex < lastColumnIndex)
+          dataItem.push(cell.childNodes[0].value);
       });
       data.push(dataItem);
     });
