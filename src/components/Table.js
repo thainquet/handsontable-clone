@@ -43,6 +43,7 @@ const cleanTable = () => {
   clearAllColumnborder();
   clearAllSelectedCell();
   removeElementsByClass("dot");
+  removeElementsByClass("outlineDiv");
 };
 
 const Table = (props) => {
@@ -449,7 +450,18 @@ const Table = (props) => {
         thisTR.querySelectorAll(".cellData"),
         (cell) => cell.classList.add("selected")
       );
-      thisTR.classList.add("rowSelected");
+      let rect = thisTR.getBoundingClientRect();
+      let outlineDiv = document.createElement("DIV");
+      outlineDiv.innerHTML = "";
+      outlineDiv.classList.add("outlineDiv");
+      outlineDiv.style.position = "absolute";
+      outlineDiv.style.top = rect.top + "px";
+      outlineDiv.style.left = rect.left + "px";
+      outlineDiv.style.width = rect.width + "px";
+      outlineDiv.style.height = rect.height + "px";
+
+      outlineDiv.classList.add("rowSelected");
+      document.getElementsByTagName("body")[0].appendChild(outlineDiv);
       e.target.parentNode.classList.add("selectedBoundaryColor");
     }
   };
@@ -622,9 +634,9 @@ const Table = (props) => {
 
     let data = e.target.value;
     let tempArr = [...initArray];
-    // let tempArr1 = JSON.parse(JSON.stringify(initArray));
-    // console.log(tempArr1);
-    // setClipBoard(tempArr1);
+    let tempArr1 = JSON.parse(JSON.stringify(initArray));
+    console.log(tempArr1);
+    setClipBoard(tempArr1);
     tempArr[tungdo - 1][hoanhdo - 1] = data;
     setInitArray(tempArr);
   };
@@ -758,11 +770,13 @@ const Table = (props) => {
 
           document.onmouseup = finishDrag;
           document.onmousemove = function (e) {
+            console.log("on mouse move");
             document.getElementsByTagName("body")[0].appendChild(divA);
             divA.style.left = divA.offsetLeft + e.movementX + "px";
           };
         }
         function finishDrag(e) {
+          console.log("finish");
           // remove divA after mouseup
           Array.prototype.forEach.call(
             document.querySelectorAll("#A"),
@@ -814,7 +828,7 @@ const Table = (props) => {
         }
       }
     );
-  });
+  }, []);
   return (
     <>
       <div className={visible ? "menu" : "menu hiden"} style={menuStyle}>

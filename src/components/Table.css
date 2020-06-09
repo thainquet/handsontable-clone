@@ -1,14 +1,14 @@
 table {
-  border-collapse: collapse;
-  width: max-content;
+  /* border-collapse: collapse; */
   user-select: none;
+  /* width: max-content; */
   display: block;
-  height: 100vh;
-  overflow-y: scroll;
+  height: 90vh;
+  overflow: scroll;
   border: none;
 }
 tr {
-  border-color: #ddd;
+  /* border-color: #ddd; */
   user-select: none;
   /* box-sizing: border-box; */
 }
@@ -24,7 +24,7 @@ td {
   box-sizing: border-box;
   border-color: #ddd;
   position: relative;
-  padding: 0px;
+  /* padding: 0px; */
   vertical-align: middle;
 }
 input {
