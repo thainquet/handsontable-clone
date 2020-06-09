@@ -24,9 +24,10 @@ td {
   box-sizing: border-box;
   border-color: #ddd;
   position: relative;
+  padding: 0px;
 }
 input {
-  vertical-align: top;
+  vertical-align: middle;
   padding: 0px;
   width: 100%;
   height: 100%;
@@ -37,7 +38,8 @@ input {
 
 textarea {
   height: 100%;
-  vertical-align: top;
+  /* display: flex; */
+  vertical-align: middle;
   background-color: transparent;
   border: none;
   outline: none;

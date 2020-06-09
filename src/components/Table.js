@@ -220,7 +220,7 @@ const Table = (props) => {
         thElm = undefined;
       });
     };
-  });
+  }, []);
   // labeling first column
   useEffect(() => {
     Array.prototype.forEach.call(
@@ -533,8 +533,8 @@ const Table = (props) => {
         }
       }
     };
-    document.getElementById("tbl").addEventListener("mousemove", mousemove);
-    document.getElementById("tbl").addEventListener("mouseup", function (e) {
+
+    const mouseup = (e) => {
       isMousedown = false;
       document
         .getElementById("tbl")
@@ -551,9 +551,14 @@ const Table = (props) => {
         }
       );
       setInitArray(tempArr);
-    });
-
+    };
+    // document.getElementById("tbl").removeEventListener("mouseup", mouseup);
+    document.getElementById("tbl").addEventListener("mousemove", mousemove);
+    // if (isMousedown)
+    document.getElementById("tbl").addEventListener("mouseup", mouseup);
     event.target.parentNode.classList.add("cellSelected");
+    return () =>
+      document.getElementById("tbl").removeEventListener("mouseup", mouseup);
   };
 
   const menuStyle = {
@@ -684,10 +689,10 @@ const Table = (props) => {
           divA.style.height = coordinate.height + "px";
           divA.style.left = coordinate.left + coordinate.width + "px";
           divA.style.top = coordinate.top + "px";
-          document.getElementsByTagName("body")[0].appendChild(divA);
 
           document.onmouseup = finishDrag;
           document.onmousemove = function (e) {
+            document.getElementsByTagName("body")[0].appendChild(divA);
             divA.style.top = divA.offsetTop + e.movementY + "px";
           };
         }
@@ -752,10 +757,10 @@ const Table = (props) => {
             coordinate.height +
             "px";
           divA.style.top = coordinate.bottom + "px";
-          document.getElementsByTagName("body")[0].appendChild(divA);
 
           document.onmouseup = finishDrag;
           document.onmousemove = function (e) {
+            document.getElementsByTagName("body")[0].appendChild(divA);
             divA.style.left = divA.offsetLeft + e.movementX + "px";
           };
         }
