@@ -552,11 +552,10 @@ const Table = (props) => {
         }
       );
       setInitArray(tempArr);
+      document.getElementById("tbl").removeEventListener("mouseup", mouseup);
     };
-    document.getElementById("tbl").removeEventListener("mouseup", mouseup);
     document.getElementById("tbl").addEventListener("mousemove", mousemove);
-    // if (isMousedown)
-    document.getElementById("tbl").addEventListener("mouseup", mouseup);
+    document.getElementById("tbl").addEventListener("mouseup", mouseup, false);
     event.target.parentNode.classList.add("cellSelected");
   };
 
