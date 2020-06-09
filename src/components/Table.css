@@ -25,6 +25,7 @@ td {
   border-color: #ddd;
   position: relative;
   padding: 0px;
+  vertical-align: middle;
 }
 input {
   vertical-align: middle;
@@ -46,6 +47,7 @@ textarea {
   resize: none;
   overflow: auto;
   padding: 0px;
+  padding-top: 4px;
   font-family: Roboto, Helvetica, Arial, sans-serif;
 }
 

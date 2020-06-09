@@ -487,6 +487,7 @@ const Table = (props) => {
         startRowIndex = td.parentNode.rowIndex;
       });
     const mousemove = function (e) {
+      // document.getElementById("tbl").removeEventListener("mouseup", mouseup);
       let endElement = document.elementFromPoint(e.pageX, e.pageY);
       if (
         endElement !== null &&
@@ -552,13 +553,11 @@ const Table = (props) => {
       );
       setInitArray(tempArr);
     };
-    // document.getElementById("tbl").removeEventListener("mouseup", mouseup);
+    document.getElementById("tbl").removeEventListener("mouseup", mouseup);
     document.getElementById("tbl").addEventListener("mousemove", mousemove);
     // if (isMousedown)
     document.getElementById("tbl").addEventListener("mouseup", mouseup);
     event.target.parentNode.classList.add("cellSelected");
-    return () =>
-      document.getElementById("tbl").removeEventListener("mouseup", mouseup);
   };
 
   const menuStyle = {
