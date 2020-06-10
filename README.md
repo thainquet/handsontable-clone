@@ -1,6 +1,6 @@
 ## Maxflow datasheet
 
-- keo cot bi cham [x]
+- keo cot bi cham [x] (lag khi bat F12, tat di thi het lag)
 - type textarea cham []
 - hide scroll textarea [x]
 - auto tang width khi long text []
