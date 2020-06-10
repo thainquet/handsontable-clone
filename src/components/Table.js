@@ -279,7 +279,7 @@ const Table = (props) => {
     let data = [];
     let table = document.getElementById("tbl");
     let lastColumnIndex = theadData.filter((i) => i !== "").length;
-    console.log(lastColumnIndex);
+    // console.log(lastColumnIndex);
     Array.prototype.forEach.call(table.rows, (row) => {
       let dataItem = [];
       Array.prototype.forEach.call(row.cells, (cell) => {
@@ -635,7 +635,7 @@ const Table = (props) => {
     let data = e.target.value;
     let tempArr = [...initArray];
     let tempArr1 = JSON.parse(JSON.stringify(initArray));
-    console.log(tempArr1);
+    // console.log(tempArr1);
     setClipBoard(tempArr1);
     tempArr[tungdo - 1][hoanhdo - 1] = data;
     setInitArray(tempArr);
@@ -770,13 +770,13 @@ const Table = (props) => {
 
           document.onmouseup = finishDrag;
           document.onmousemove = function (e) {
-            console.log("on mouse move");
+            // console.log("on mouse move");
             document.getElementsByTagName("body")[0].appendChild(divA);
             divA.style.left = divA.offsetLeft + e.movementX + "px";
           };
         }
         function finishDrag(e) {
-          console.log("finish");
+          // console.log("finish");
           // remove divA after mouseup
           Array.prototype.forEach.call(
             document.querySelectorAll("#A"),
@@ -830,7 +830,7 @@ const Table = (props) => {
     );
   }, []);
 
-  // handle resize column width on mount comp
+  // handle resize column width when component did mount
   useEffect(() => {
     let colNum = initArray[0].length
     let maxWidth = window.screen.width
@@ -842,8 +842,27 @@ const Table = (props) => {
         }
       })
   })
+
+  // auto resize column height
+  useEffect(() => {
+    const tx = document.getElementById('test');
+    tx.style.border = "1px solid black"
+    tx.parentNode.setAttribute('style', 'height:' + (tx.scrollHeight) + 'px;overflow-y:hidden;');
+    tx.addEventListener("input", OnInput, false);
+
+    function OnInput(e) {
+      console.log(e.target.scrollHeight)
+      tx.parentNode.style.height = 'auto';
+      tx.parentNode.style.height = (tx.scrollHeight) + 'px';
+    }
+
+    return () => tx.removeEventListener("input", OnInput, false);
+  })
   return (
     <>
+      <div style={{ height: "30px", marginBottom: "20px" }}>
+        <textarea id="test" />
+      </div>
       <div className={visible ? "menu" : "menu hiden"} style={menuStyle}>
         <div
           className="menu-line"
