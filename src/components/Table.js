@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import "./Table.css";
 import dummyData from "./dummyData.js";
 
+
 const clearAllTRBorder = () => {
   Array.prototype.forEach.call(document.querySelectorAll("tr"), function (e) {
     e.classList.remove("rowSelected");
@@ -256,6 +257,7 @@ const Table = (props) => {
     }
     beginArr.push(tbodyData);
   });
+
   const [initArray, setInitArray] = useState(beginArr);
   if (tableData) setInitArray(tableData);
   let maxColumnAmount = Math.floor((window.screen.width - 50) / 125);
