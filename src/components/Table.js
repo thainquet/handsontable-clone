@@ -464,6 +464,10 @@ const Table = (props) => {
   };
   const handleClickCell = (event) => {
     let rect = event.target.parentNode.getBoundingClientRect();
+    let testTextarea = document.createElement("TEXTAREA")
+    testTextarea.id = "testTa"
+    testTextarea.click()
+    document.getElementById("wrapper").appendChild(testTextarea)
     cleanTable();
     // const tempArr = JSON.parse(JSON.stringify(initArray));
     // setClipBoard([[...tempArr], [...theadData]]);
