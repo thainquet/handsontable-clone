@@ -1,7 +1,7 @@
 table {
   /* border-collapse: collapse; */
   user-select: none;
-  /* width: max-content; */
+  width: max-content;
   display: block;
   height: 90vh;
   overflow: scroll;
@@ -45,7 +45,7 @@ textarea {
   border: none;
   outline: none;
   resize: none;
-  overflow: auto;
+  overflow: hiden;
   padding: 0px;
   padding-top: 4px;
   font-family: Roboto, Helvetica, Arial, sans-serif;
@@ -145,7 +145,10 @@ textarea {
 /* #wrapper {
   max-height: 500px;
   overflow-y: scroll;
-}
-#wrapper::-webkit-scrollbar {
-  display: none;
 } */
+/* .element { overflow: -moz-scrollbars-none; }
+.element { -ms-overflow-style: none; }
+.element::-webkit-scrollbar { width: 0 !important } */
+.textArea::-webkit-scrollbar {
+  display: none;
+}

@@ -829,6 +829,19 @@ const Table = (props) => {
       }
     );
   }, []);
+
+  // handle resize column width on mount comp
+  useEffect(() => {
+    let colNum = initArray[0].length
+    let maxWidth = window.screen.width
+    let colWidth = (maxWidth - 33 - 20) / colNum
+    Array.prototype.forEach.call(document.querySelectorAll('table th'),
+      function (th) {
+        if (th.cellIndex !== 0) {
+          th.style.width = colWidth + "px"
+        }
+      })
+  })
   return (
     <>
       <div className={visible ? "menu" : "menu hiden"} style={menuStyle}>
@@ -919,11 +932,12 @@ const Table = (props) => {
                     <td
                       className="cellData mycol"
                       key={cindex}
-                      // onClick={(e) => {
-                      //   console.log(e.target.childNodes[0]);
-                      // }}
+                    // onClick={(e) => {
+                    //   console.log(e.target.childNodes[0]);
+                    // }}
                     >
                       <textarea
+                        className="textArea"
                         rows="1"
                         cols="15"
                         value={columnData}

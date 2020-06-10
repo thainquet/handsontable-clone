@@ -4,7 +4,7 @@ import Table from "./components/Table";
 
 function App() {
   return (
-    <div style={{ margin: "10px" }}>
+    <div>
       <Table />
     </div>
   );
