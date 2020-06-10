@@ -457,19 +457,6 @@ const Table = (props) => {
         thisTR.querySelectorAll(".cellData"),
         (cell) => cell.classList.add("selected")
       );
-      // let rect = thisTR.getBoundingClientRect();
-      // let outlineDiv = document.createElement("DIV");
-      // outlineDiv.innerHTML = "";
-      // outlineDiv.classList.add("outlineDiv");
-      // outlineDiv.style.position = "absolute";
-      // outlineDiv.style.top = rect.top + "px";
-      // outlineDiv.style.left = rect.left + "px";
-      // outlineDiv.style.width = rect.width + "px";
-      // outlineDiv.style.height = rect.height + "px";
-
-      // outlineDiv.classList.add("rowSelected");
-      // document.getElementsByTagName("body")[0].appendChild(outlineDiv);
-      // e.target.parentNode.classList.add("selectedBoundaryColor");
       thisTR.classList.add("rowSelected")
     }
   };
@@ -507,7 +494,6 @@ const Table = (props) => {
         startRowIndex = td.parentNode.rowIndex;
       });
     const mousemove = function (e) {
-      // document.getElementById("tbl").removeEventListener("mouseup", mouseup);
       let endElement = document.elementFromPoint(e.pageX, e.pageY);
       if (
         endElement !== null &&
@@ -774,13 +760,11 @@ const Table = (props) => {
 
           document.onmouseup = finishDrag;
           document.onmousemove = function (e) {
-            // console.log("on mouse move");
             document.getElementsByTagName("body")[0].appendChild(divA);
             divA.style.left = divA.offsetLeft + e.movementX + "px";
           };
         }
         function finishDrag(e) {
-          // console.log("finish");
           // remove divA after mouseup
           Array.prototype.forEach.call(
             document.querySelectorAll("#A"),
@@ -848,20 +832,20 @@ const Table = (props) => {
   })
 
   // auto resize column height
-  // useEffect(() => {
-  //   const tx = document.getElementById('test');
-  //   tx.style.border = "1px solid black"
-  //   tx.parentNode.setAttribute('style', 'height:' + (tx.scrollHeight) + 'px;overflow-y:hidden;');
-  //   tx.addEventListener("input", OnInput, false);
+  useEffect(() => {
+    const tx = document.getElementById('test');
+    tx.style.border = "1px solid black"
+    tx.parentNode.setAttribute('style', 'height:' + (tx.scrollHeight) + 'px;overflow-y:hidden;');
+    tx.addEventListener("input", OnInput, false);
 
-  //   function OnInput(e) {
-  //     console.log(e.target.scrollHeight)
-  //     tx.parentNode.style.height = 'auto';
-  //     tx.parentNode.style.height = (tx.scrollHeight) + 'px';
-  //   }
+    function OnInput(e) {
+      console.log(e.target.scrollHeight)
+      tx.parentNode.style.height = 'auto';
+      tx.parentNode.style.height = (tx.scrollHeight) + 'px';
+    }
 
-  //   return () => tx.removeEventListener("input", OnInput, false);
-  // })
+    return () => tx.removeEventListener("input", OnInput, false);
+  }, [])
   return (
     <>
       <div style={{ height: "30px", marginBottom: "20px" }}>
