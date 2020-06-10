@@ -457,19 +457,20 @@ const Table = (props) => {
         thisTR.querySelectorAll(".cellData"),
         (cell) => cell.classList.add("selected")
       );
-      let rect = thisTR.getBoundingClientRect();
-      let outlineDiv = document.createElement("DIV");
-      outlineDiv.innerHTML = "";
-      outlineDiv.classList.add("outlineDiv");
-      outlineDiv.style.position = "absolute";
-      outlineDiv.style.top = rect.top + "px";
-      outlineDiv.style.left = rect.left + "px";
-      outlineDiv.style.width = rect.width + "px";
-      outlineDiv.style.height = rect.height + "px";
+      // let rect = thisTR.getBoundingClientRect();
+      // let outlineDiv = document.createElement("DIV");
+      // outlineDiv.innerHTML = "";
+      // outlineDiv.classList.add("outlineDiv");
+      // outlineDiv.style.position = "absolute";
+      // outlineDiv.style.top = rect.top + "px";
+      // outlineDiv.style.left = rect.left + "px";
+      // outlineDiv.style.width = rect.width + "px";
+      // outlineDiv.style.height = rect.height + "px";
 
-      outlineDiv.classList.add("rowSelected");
-      document.getElementsByTagName("body")[0].appendChild(outlineDiv);
-      e.target.parentNode.classList.add("selectedBoundaryColor");
+      // outlineDiv.classList.add("rowSelected");
+      // document.getElementsByTagName("body")[0].appendChild(outlineDiv);
+      // e.target.parentNode.classList.add("selectedBoundaryColor");
+      thisTR.classList.add("rowSelected")
     }
   };
   const handleClickCell = (event) => {

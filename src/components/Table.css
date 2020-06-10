@@ -79,7 +79,7 @@ textarea {
 
 .rowSelected {
   outline: 2px solid #4b89ff;
-  outline-offset: -1px;
+  /* outline-offset: -1px; */
 }
 
 .cellSelected {
