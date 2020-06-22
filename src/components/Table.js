@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, memo } from "react";
 import "./Table.css";
 import dummyData from "./dummyData.js";
 
@@ -47,6 +47,35 @@ const cleanTable = () => {
   removeElementsByClass("dot");
   removeElementsByClass("outlineDiv");
 };
+
+const CellEntry = ({ value, rindex, cindex, onChange, onClick }) => {
+  console.log([rindex, cindex], 'rendered');
+  const textRef = useRef();
+  const $onChange = () => {
+    onChange(prev => {
+      let tempArr = [...prev];
+      tempArr[rindex][cindex] = textRef.current.value;
+      return tempArr;
+    });
+  };
+
+  return (
+    <td
+      className="cellData mycol">
+      <textarea
+        className="textArea"
+        rows="1"
+        cols="15"
+        ref={textRef}
+        value={value}
+        onChange={$onChange}
+      // onClick={onClick}
+      />
+    </td>
+  );
+};
+
+const MemoEntry = memo(CellEntry)
 
 const Table = (props) => {
   // handle selected cell background
@@ -941,24 +970,18 @@ const Table = (props) => {
                   <input disabled={true} defaultValue="" />
                 </td>
                 {rowData &&
-                  rowData.map((columnData, cindex) => (
-                    <td
-                      className="cellData mycol"
-                      key={cindex}
-                    // onClick={(e) => {
-                    //   console.log(e.target.childNodes[0]);
-                    // }}
-                    >
-                      <textarea
-                        className="textArea"
-                        rows="1"
-                        cols="15"
+                  rowData.map((columnData, cindex) => {
+                    // console.log([columnData, cindex], `rendered`);
+                    return (
+                      <MemoEntry
+                        key={cindex}
                         value={columnData}
-                        onChange={handleChangeCell}
-                        onClick={handleClickCell}
-                      />
-                    </td>
-                  ))}
+                        rindex={rindex}
+                        cindex={cindex}
+                        onChange={setInitArray}
+                      // onClick={handleClickCell}
+                      />)
+                  })}
               </tr>
             ))}
           </tbody>
