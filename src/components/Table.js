@@ -49,7 +49,7 @@ const cleanTable = () => {
 };
 
 const CellEntry = ({ value, rindex, cindex, onChange, onClick }) => {
-  console.log([rindex, cindex], 'rendered');
+
   const textRef = useRef();
   const $onChange = () => {
     onChange(prev => {
@@ -69,7 +69,7 @@ const CellEntry = ({ value, rindex, cindex, onChange, onClick }) => {
         ref={textRef}
         value={value}
         onChange={$onChange}
-      // onClick={onClick}
+        onClick={onClick}
       />
     </td>
   );
@@ -979,7 +979,7 @@ const Table = (props) => {
                         rindex={rindex}
                         cindex={cindex}
                         onChange={setInitArray}
-                      // onClick={handleClickCell}
+                        onClick={handleClickCell}
                       />)
                   })}
               </tr>
