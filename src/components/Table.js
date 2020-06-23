@@ -425,6 +425,23 @@ const Table = (props) => {
               let rowIndex = e.target.parentNode.parentNode.rowIndex;
               let cellIndex = e.target.parentNode.cellIndex;
               let tempArr = [...initArray];
+              if (cellIndex - 1 + data[0].length > tempArr[0].length) {
+                let num = cellIndex - 1 + data[0].length - tempArr[0].length;
+                while (num-- > 0) {
+                  tempArr.forEach((el) => {
+                    el.splice(cellIndex, 0, "");
+                  });
+                  theadData.splice(cellIndex, 0, "");
+                }
+              }
+              if (rowIndex - 1 + data.length > tempArr.length) {
+                let num = rowIndex - 1 + data.length - tempArr.length;
+                const lengthItem = tempArr[0].length;
+                const Item = new Array(lengthItem).fill("");
+                while (num-- > 0) {
+                  tempArr.splice(rowIndex, 0, Item);
+                }
+              }
               copyMultiLine(data, tempArr, rowIndex - 1, cellIndex - 1);
               setInitArray(tempArr);
             }
