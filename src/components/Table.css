@@ -157,3 +157,12 @@ textarea#test {
   padding-top: 4px;
   font-family: Roboto, Helvetica, Arial, sans-serif;
 }
+
+#newTextarea {
+  height: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  overflow: hiden;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+}

@@ -692,11 +692,22 @@ const Table = (props) => {
   };
 
   const handleChangeCell = (e) => {
+    let rect = e.target.getBoundingClientRect();
+    let table = document.getElementById("tbl");
+    let tempTextarea = document.createElement("TEXTAREA");
+    tempTextarea.style.position = "absolute";
+    tempTextarea.style.top = rect.top - 1 + "px";
+    tempTextarea.style.left = rect.left + "px";
+    tempTextarea.style.width = rect.width - 4 + "px";
+    tempTextarea.style.height = rect.height - 4 + "px";
+    tempTextarea.id = "newTextarea";
+    table.append(tempTextarea);
+    tempTextarea.value = e.target.value;
+    tempTextarea.focus();
     let tungdo = e.target.parentNode.parentNode.rowIndex;
     let hoanhdo = e.target.parentNode.cellIndex;
     let data = e.target.value;
     let tempArr = [...initArray];
-
     tempArr[tungdo - 1][hoanhdo - 1] = data;
     setInitArray(tempArr);
   };
