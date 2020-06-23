@@ -518,114 +518,113 @@ const Table = (props) => {
     }
   };
   const handleClickCell = (event) => {
-    console.log("click");
-    // let rect = event.target.parentNode.getBoundingClientRect();
+    let rect = event.target.parentNode.getBoundingClientRect();
     // let testTextarea = document.createElement("TEXTAREA");
     // testTextarea.id = "testTa";
     // testTextarea.click();
     // document.getElementById("wrapper").appendChild(testTextarea);
-    // cleanTable();
-    // const tempArr = JSON.parse(JSON.stringify(initArray));
-    // setClipBoard([[...tempArr], [...theadData]]);
+    cleanTable();
+    const tempArr = JSON.parse(JSON.stringify(initArray));
+    setClipBoard([[...tempArr], [...theadData]]);
 
-    // let dot = document.createElement("DIV");
-    // dot.innerHTML = "";
-    // dot.classList.add("dot");
-    // dot.style.top = rect.height - 5 + "px";
-    // dot.style.left = rect.width - 5 + "px";
-    // event.target.parentNode.appendChild(dot);
+    let dot = document.createElement("DIV");
+    dot.innerHTML = "";
+    dot.classList.add("dot");
+    dot.style.top = rect.height - 5 + "px";
+    dot.style.left = rect.width - 5 + "px";
+    event.target.parentNode.appendChild(dot);
 
-    // let value = event.target.value;
-    // let td = event.target.parentNode;
-    // let startCellIndex, startRowIndex;
-    // let isMousedown = false;
-    // document
-    //   .getElementById("tbl")
-    //   .rows[td.parentNode.rowIndex].cells[0].classList.add(
-    //     "selectedBoundaryColor"
-    //   );
-    // document
-    //   .getElementById("tbl")
-    //   .rows[0].cells[td.cellIndex].classList.add("selectedBoundaryColor");
+    let value = event.target.value;
+    let td = event.target.parentNode;
+    let startCellIndex, startRowIndex;
+    let isMousedown = false;
+    document
+      .getElementById("tbl")
+      .rows[td.parentNode.rowIndex].cells[0].classList.add(
+        "selectedBoundaryColor"
+      );
+    document
+      .getElementById("tbl")
+      .rows[0].cells[td.cellIndex].classList.add("selectedBoundaryColor");
 
-    // document
-    //   .getElementsByClassName("dot")[0]
-    //   .addEventListener("mousedown", function (e) {
-    //     clearAllSelectedCell();
-    //     isMousedown = true;
-    //     startCellIndex = td.cellIndex;
-    //     startRowIndex = td.parentNode.rowIndex;
-    //   });
-    // const mousemove = function (e) {
-    //   let endElement = document.elementFromPoint(e.pageX, e.pageY);
-    //   if (
-    //     endElement !== null &&
-    //     endElement.parentNode.tagName === "TD" &&
-    //     endElement.tagName === "TEXTAREA"
-    //   ) {
-    //     let thisTD = endElement.parentNode;
-    //     let cellIndex = thisTD.cellIndex;
-    //     let rowIndex = thisTD.parentNode.rowIndex;
-    //     let table = document.getElementById("tbl");
-    //     let rowStart, rowEnd, cellStart, cellEnd;
+    document
+      .getElementsByClassName("dot")[0]
+      .addEventListener("mousedown", function (e) {
+        clearAllSelectedCell();
+        isMousedown = true;
+        startCellIndex = td.cellIndex;
+        startRowIndex = td.parentNode.rowIndex;
+      });
+    const mousemove = function (e) {
+      let endElement = document.elementFromPoint(e.pageX, e.pageY);
+      if (
+        endElement !== null &&
+        endElement.parentNode.tagName === "TD" &&
+        endElement.tagName === "TEXTAREA"
+      ) {
+        let thisTD = endElement.parentNode;
+        let cellIndex = thisTD.cellIndex;
+        let rowIndex = thisTD.parentNode.rowIndex;
+        let table = document.getElementById("tbl");
+        let rowStart, rowEnd, cellStart, cellEnd;
 
-    //     if (rowIndex < startRowIndex) {
-    //       rowStart = rowIndex;
-    //       rowEnd = startRowIndex;
-    //       cellStart = cellEnd = startCellIndex;
-    //     } else if (rowIndex > startRowIndex) {
-    //       rowStart = startRowIndex;
-    //       rowEnd = rowIndex;
-    //       cellStart = cellEnd = startCellIndex;
-    //     } else {
-    //       rowStart = rowEnd = startRowIndex;
-    //       if (cellIndex < startCellIndex) {
-    //         cellStart = cellIndex;
-    //         cellEnd = startCellIndex;
-    //       } else {
-    //         cellStart = startCellIndex;
-    //         cellEnd = cellIndex;
-    //       }
-    //     }
-    //     if (isMousedown) {
-    //       Array.prototype.forEach.call(
-    //         document.getElementById("tbl").querySelectorAll("td"),
-    //         function (e) {
-    //           e.classList.remove("selectedForChangingData", "selected");
-    //         }
-    //       );
-    //       for (let i = rowStart; i <= rowEnd; i++) {
-    //         for (let j = cellStart; j <= cellEnd; j++) {
-    //           let thisCell = table.rows[i].cells[j];
-    //           thisCell.classList.add("selectedForChangingData");
-    //         }
-    //       }
-    //     }
-    //   }
-    // };
+        if (rowIndex < startRowIndex) {
+          rowStart = rowIndex;
+          rowEnd = startRowIndex;
+          cellStart = cellEnd = startCellIndex;
+        } else if (rowIndex > startRowIndex) {
+          rowStart = startRowIndex;
+          rowEnd = rowIndex;
+          cellStart = cellEnd = startCellIndex;
+        } else {
+          rowStart = rowEnd = startRowIndex;
+          if (cellIndex < startCellIndex) {
+            cellStart = cellIndex;
+            cellEnd = startCellIndex;
+          } else {
+            cellStart = startCellIndex;
+            cellEnd = cellIndex;
+          }
+        }
+        if (isMousedown) {
+          Array.prototype.forEach.call(
+            document.getElementById("tbl").querySelectorAll("td"),
+            function (e) {
+              e.classList.remove("selectedForChangingData", "selected");
+            }
+          );
+          for (let i = rowStart; i <= rowEnd; i++) {
+            for (let j = cellStart; j <= cellEnd; j++) {
+              let thisCell = table.rows[i].cells[j];
+              thisCell.classList.add("selectedForChangingData");
+            }
+          }
+        }
+      }
+    };
 
-    // const mouseup = (e) => {
-    //   isMousedown = false;
-    //   document
-    //     .getElementById("tbl")
-    //     .removeEventListener("mousemove", mousemove);
-    //   let tempArr = [...initArray];
-    //   Array.prototype.forEach.call(
-    //     document
-    //       .getElementById("tbl")
-    //       .querySelectorAll("td.selectedForChangingData"),
-    //     function (td) {
-    //       let tungdo = td.parentNode.rowIndex;
-    //       let hoanhdo = td.cellIndex;
-    //       tempArr[tungdo - 1][hoanhdo - 1] = value;
-    //     }
-    //   );
-    //   setInitArray(tempArr);
-    //   document.getElementById("tbl").removeEventListener("mouseup", mouseup);
-    // };
-    // document.getElementById("tbl").addEventListener("mousemove", mousemove);
-    // document.getElementById("tbl").addEventListener("mouseup", mouseup, false);
-    // event.target.parentNode.classList.add("cellSelected");
+    const mouseup = (e) => {
+      isMousedown = false;
+      document
+        .getElementById("tbl")
+        .removeEventListener("mousemove", mousemove);
+      let tempArr = [...initArray];
+      Array.prototype.forEach.call(
+        document
+          .getElementById("tbl")
+          .querySelectorAll("td.selectedForChangingData"),
+        function (td) {
+          let tungdo = td.parentNode.rowIndex;
+          let hoanhdo = td.cellIndex;
+          tempArr[tungdo - 1][hoanhdo - 1] = value;
+        }
+      );
+      setInitArray(tempArr);
+      document.getElementById("tbl").removeEventListener("mouseup", mouseup);
+    };
+    document.getElementById("tbl").addEventListener("mousemove", mousemove);
+    document.getElementById("tbl").addEventListener("mouseup", mouseup, false);
+    event.target.parentNode.classList.add("cellSelected");
   };
 
   const menuStyle = {
@@ -999,7 +998,7 @@ const Table = (props) => {
                 >
                   <input disabled={true} defaultValue="" />
                 </td>
-                {rowData &&
+                {/* {rowData &&
                   rowData.map((columnData, cindex) => {
                     // console.log([columnData, cindex], `rendered`);
                     return (
@@ -1012,7 +1011,25 @@ const Table = (props) => {
                         // onClick={handleClickCell}
                       />
                     );
-                  })}
+                  })} */}
+                {rowData &&
+                  rowData.map((columnData, cindex) => (
+                    <td
+                      className="cellData mycol"
+                      key={cindex}
+                      // onClick={(e) => {
+                      //   console.log(e.target.childNodes[0]);
+                      // }}
+                    >
+                      <textarea
+                        rows="1"
+                        cols="15"
+                        value={columnData}
+                        onChange={handleChangeCell}
+                        onClick={handleClickCell}
+                      />
+                    </td>
+                  ))}
               </tr>
             ))}
           </tbody>
