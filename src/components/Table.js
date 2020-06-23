@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef, memo } from "react";
 import "./Table.css";
 import dummyData from "./dummyData.js";
 
+// let thingsToCopy = [];
+
 const clearAllTRBorder = () => {
   Array.prototype.forEach.call(document.querySelectorAll("tr"), function (e) {
     e.classList.remove("rowSelected");
@@ -364,10 +366,10 @@ const Table = (props) => {
       window.removeEventListener("click", handleClickOutsideMenu);
     };
   }, [visible]);
+
   // copy paste
   const copyToClipboard = (str) => {
-    str = str.map((i) => i.toString());
-    str = str.join("-");
+    str = JSON.stringify(str);
     const el = document.createElement("input");
     el.value = str;
     document.body.appendChild(el);
@@ -396,24 +398,30 @@ const Table = (props) => {
             if (
               cell.tagName !== "TH" &&
               cell.cellIndex !== 0 &&
-              cell.className.indexOf("selected") !== -1
+              (cell.className.indexOf("selected") !== -1 ||
+                cell.className.indexOf("cellSelected") !== -1)
             )
               temp.push(cell);
           });
           if (temp.length > 0) result.push(temp);
         });
+        // thingsToCopy = result;
         // Array of Node to Array of value
         result = result.map((i) => i.map((j) => j.childNodes[0].value));
         // console.log(JSON.parse(JSON.stringify(result)));
         // copyToClipboard(e.target.value);
+        // thingsToCopy = result;
         copyToClipboard(result);
       } else if (key === 86 && ctrl) {
         e.preventDefault();
         navigator.clipboard
           .readText()
           .then((data) => {
-            data = data.split("-").map((i) => i.split(","));
-            if (e.target.tagName === "TEXTAREA") {
+            data = JSON.parse(data);
+            if (
+              e.target.tagName === "TEXTAREA"
+              // && thingsToCopy.length > 0
+            ) {
               let rowIndex = e.target.parentNode.parentNode.rowIndex;
               let cellIndex = e.target.parentNode.cellIndex;
               let tempArr = [...initArray];
