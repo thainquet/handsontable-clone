@@ -37,7 +37,7 @@ input {
   outline: none;
 }
 
-textarea {
+td textarea {
   height: 100%;
   /* display: flex; */
   vertical-align: middle;
@@ -142,13 +142,18 @@ textarea {
   text-align: center;
   font-weight: bold;
 }
-/* #wrapper {
-  max-height: 500px;
-  overflow-y: scroll;
-} */
-/* .element { overflow: -moz-scrollbars-none; }
-.element { -ms-overflow-style: none; }
-.element::-webkit-scrollbar { width: 0 !important } */
+
 .textArea::-webkit-scrollbar {
   display: none;
+}
+
+textarea#test {
+  height: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  overflow: hiden;
+  padding: 0px;
+  padding-top: 4px;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
 }

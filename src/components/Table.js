@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef, memo } from "react";
 import "./Table.css";
 import dummyData from "./dummyData.js";
 
-
 const clearAllTRBorder = () => {
   Array.prototype.forEach.call(document.querySelectorAll("tr"), function (e) {
     e.classList.remove("rowSelected");
@@ -49,10 +48,10 @@ const cleanTable = () => {
 };
 
 const CellEntry = ({ value, rindex, cindex, onChange, onClick }) => {
-
+  // console.log([rindex, cindex], "rendered");
   const textRef = useRef();
   const $onChange = () => {
-    onChange(prev => {
+    onChange((prev) => {
       let tempArr = [...prev];
       tempArr[rindex][cindex] = textRef.current.value;
       return tempArr;
@@ -60,8 +59,7 @@ const CellEntry = ({ value, rindex, cindex, onChange, onClick }) => {
   };
 
   return (
-    <td
-      className="cellData mycol">
+    <td className="cellData mycol">
       <textarea
         className="textArea"
         rows="1"
@@ -75,7 +73,7 @@ const CellEntry = ({ value, rindex, cindex, onChange, onClick }) => {
   );
 };
 
-const MemoEntry = memo(CellEntry)
+const MemoEntry = memo(CellEntry);
 
 const Table = (props) => {
   // handle selected cell background
@@ -368,6 +366,8 @@ const Table = (props) => {
   }, [visible]);
   // copy paste
   const copyToClipboard = (str) => {
+    str = str.map((i) => i.toString());
+    str = str.join("-");
     const el = document.createElement("input");
     el.value = str;
     document.body.appendChild(el);
@@ -376,24 +376,50 @@ const Table = (props) => {
     document.body.removeChild(el);
   };
   useEffect(() => {
+    function copyMultiLine(subArr, arr, ioff, joff) {
+      subArr.forEach((r, i) =>
+        r.forEach((v, j) => (arr[ioff + i][joff + j] = v))
+      );
+    }
     const handleCopyPaste = (e) => {
       var key = e.which || e.keyCode; // keyCode detection
       var ctrl = e.ctrlKey ? e.ctrlKey : key === 17 ? true : false; // ctrl detection
 
       if (key === 67 && ctrl) {
-        copyToClipboard(e.target.value);
+        let table = document.getElementById("tbl");
+        let allRows = Array.from(table.rows);
+        let result = [];
+        allRows.forEach((row) => {
+          let temp = [];
+          let allCells = Array.from(row.childNodes);
+          allCells.forEach((cell) => {
+            if (
+              cell.tagName !== "TH" &&
+              cell.cellIndex !== 0 &&
+              cell.className.indexOf("selected") !== -1
+            )
+              temp.push(cell);
+          });
+          if (temp.length > 0) result.push(temp);
+        });
+        // Array of Node to Array of value
+        result = result.map((i) => i.map((j) => j.childNodes[0].value));
+        // console.log(JSON.parse(JSON.stringify(result)));
+        // copyToClipboard(e.target.value);
+        copyToClipboard(result);
       } else if (key === 86 && ctrl) {
         e.preventDefault();
         navigator.clipboard
           .readText()
           .then((data) => {
+            data = data.split("-").map((i) => i.split(","));
             if (e.target.tagName === "TEXTAREA") {
-              let rowIndex = e.target.parentNode.parentNode.rowIndex
-              let cellIndex = e.target.parentNode.cellIndex
-              let tempArr = [...initArray]
-              tempArr[rowIndex - 1][cellIndex - 1] = data
-              setInitArray(tempArr)
-            };
+              let rowIndex = e.target.parentNode.parentNode.rowIndex;
+              let cellIndex = e.target.parentNode.cellIndex;
+              let tempArr = [...initArray];
+              copyMultiLine(data, tempArr, rowIndex - 1, cellIndex - 1);
+              setInitArray(tempArr);
+            }
           })
           .catch((err) => {
             console.error("Failed to read clipboard contents: ", err);
@@ -488,116 +514,118 @@ const Table = (props) => {
         thisTR.querySelectorAll(".cellData"),
         (cell) => cell.classList.add("selected")
       );
-      thisTR.classList.add("rowSelected")
+      thisTR.classList.add("rowSelected");
     }
   };
   const handleClickCell = (event) => {
-    let rect = event.target.parentNode.getBoundingClientRect();
-    let testTextarea = document.createElement("TEXTAREA")
-    testTextarea.id = "testTa"
-    testTextarea.click()
-    document.getElementById("wrapper").appendChild(testTextarea)
-    cleanTable();
+    console.log("click");
+    // let rect = event.target.parentNode.getBoundingClientRect();
+    // let testTextarea = document.createElement("TEXTAREA");
+    // testTextarea.id = "testTa";
+    // testTextarea.click();
+    // document.getElementById("wrapper").appendChild(testTextarea);
+    // cleanTable();
     // const tempArr = JSON.parse(JSON.stringify(initArray));
     // setClipBoard([[...tempArr], [...theadData]]);
-    let dot = document.createElement("DIV");
-    dot.innerHTML = "";
-    dot.classList.add("dot");
-    dot.style.top = rect.height - 5 + "px";
-    dot.style.left = rect.width - 5 + "px";
-    event.target.parentNode.appendChild(dot);
 
-    let value = event.target.value;
-    let td = event.target.parentNode;
-    let startCellIndex, startRowIndex;
-    let isMousedown = false;
-    document
-      .getElementById("tbl")
-      .rows[td.parentNode.rowIndex].cells[0].classList.add(
-        "selectedBoundaryColor"
-      );
-    document
-      .getElementById("tbl")
-      .rows[0].cells[td.cellIndex].classList.add("selectedBoundaryColor");
+    // let dot = document.createElement("DIV");
+    // dot.innerHTML = "";
+    // dot.classList.add("dot");
+    // dot.style.top = rect.height - 5 + "px";
+    // dot.style.left = rect.width - 5 + "px";
+    // event.target.parentNode.appendChild(dot);
 
-    document
-      .getElementsByClassName("dot")[0]
-      .addEventListener("mousedown", function (e) {
-        clearAllSelectedCell();
-        isMousedown = true;
-        startCellIndex = td.cellIndex;
-        startRowIndex = td.parentNode.rowIndex;
-      });
-    const mousemove = function (e) {
-      let endElement = document.elementFromPoint(e.pageX, e.pageY);
-      if (
-        endElement !== null &&
-        endElement.parentNode.tagName === "TD" &&
-        endElement.tagName === "TEXTAREA"
-      ) {
-        let thisTD = endElement.parentNode;
-        let cellIndex = thisTD.cellIndex;
-        let rowIndex = thisTD.parentNode.rowIndex;
-        let table = document.getElementById("tbl");
-        let rowStart, rowEnd, cellStart, cellEnd;
+    // let value = event.target.value;
+    // let td = event.target.parentNode;
+    // let startCellIndex, startRowIndex;
+    // let isMousedown = false;
+    // document
+    //   .getElementById("tbl")
+    //   .rows[td.parentNode.rowIndex].cells[0].classList.add(
+    //     "selectedBoundaryColor"
+    //   );
+    // document
+    //   .getElementById("tbl")
+    //   .rows[0].cells[td.cellIndex].classList.add("selectedBoundaryColor");
 
-        if (rowIndex < startRowIndex) {
-          rowStart = rowIndex;
-          rowEnd = startRowIndex;
-          cellStart = cellEnd = startCellIndex;
-        } else if (rowIndex > startRowIndex) {
-          rowStart = startRowIndex;
-          rowEnd = rowIndex;
-          cellStart = cellEnd = startCellIndex;
-        } else {
-          rowStart = rowEnd = startRowIndex;
-          if (cellIndex < startCellIndex) {
-            cellStart = cellIndex;
-            cellEnd = startCellIndex;
-          } else {
-            cellStart = startCellIndex;
-            cellEnd = cellIndex;
-          }
-        }
-        if (isMousedown) {
-          Array.prototype.forEach.call(
-            document.getElementById("tbl").querySelectorAll("td"),
-            function (e) {
-              e.classList.remove("selectedForChangingData", "selected");
-            }
-          );
-          for (let i = rowStart; i <= rowEnd; i++) {
-            for (let j = cellStart; j <= cellEnd; j++) {
-              let thisCell = table.rows[i].cells[j];
-              thisCell.classList.add("selectedForChangingData");
-            }
-          }
-        }
-      }
-    };
+    // document
+    //   .getElementsByClassName("dot")[0]
+    //   .addEventListener("mousedown", function (e) {
+    //     clearAllSelectedCell();
+    //     isMousedown = true;
+    //     startCellIndex = td.cellIndex;
+    //     startRowIndex = td.parentNode.rowIndex;
+    //   });
+    // const mousemove = function (e) {
+    //   let endElement = document.elementFromPoint(e.pageX, e.pageY);
+    //   if (
+    //     endElement !== null &&
+    //     endElement.parentNode.tagName === "TD" &&
+    //     endElement.tagName === "TEXTAREA"
+    //   ) {
+    //     let thisTD = endElement.parentNode;
+    //     let cellIndex = thisTD.cellIndex;
+    //     let rowIndex = thisTD.parentNode.rowIndex;
+    //     let table = document.getElementById("tbl");
+    //     let rowStart, rowEnd, cellStart, cellEnd;
 
-    const mouseup = (e) => {
-      isMousedown = false;
-      document
-        .getElementById("tbl")
-        .removeEventListener("mousemove", mousemove);
-      let tempArr = [...initArray];
-      Array.prototype.forEach.call(
-        document
-          .getElementById("tbl")
-          .querySelectorAll("td.selectedForChangingData"),
-        function (td) {
-          let tungdo = td.parentNode.rowIndex;
-          let hoanhdo = td.cellIndex;
-          tempArr[tungdo - 1][hoanhdo - 1] = value;
-        }
-      );
-      setInitArray(tempArr);
-      document.getElementById("tbl").removeEventListener("mouseup", mouseup);
-    };
-    document.getElementById("tbl").addEventListener("mousemove", mousemove);
-    document.getElementById("tbl").addEventListener("mouseup", mouseup, false);
-    event.target.parentNode.classList.add("cellSelected");
+    //     if (rowIndex < startRowIndex) {
+    //       rowStart = rowIndex;
+    //       rowEnd = startRowIndex;
+    //       cellStart = cellEnd = startCellIndex;
+    //     } else if (rowIndex > startRowIndex) {
+    //       rowStart = startRowIndex;
+    //       rowEnd = rowIndex;
+    //       cellStart = cellEnd = startCellIndex;
+    //     } else {
+    //       rowStart = rowEnd = startRowIndex;
+    //       if (cellIndex < startCellIndex) {
+    //         cellStart = cellIndex;
+    //         cellEnd = startCellIndex;
+    //       } else {
+    //         cellStart = startCellIndex;
+    //         cellEnd = cellIndex;
+    //       }
+    //     }
+    //     if (isMousedown) {
+    //       Array.prototype.forEach.call(
+    //         document.getElementById("tbl").querySelectorAll("td"),
+    //         function (e) {
+    //           e.classList.remove("selectedForChangingData", "selected");
+    //         }
+    //       );
+    //       for (let i = rowStart; i <= rowEnd; i++) {
+    //         for (let j = cellStart; j <= cellEnd; j++) {
+    //           let thisCell = table.rows[i].cells[j];
+    //           thisCell.classList.add("selectedForChangingData");
+    //         }
+    //       }
+    //     }
+    //   }
+    // };
+
+    // const mouseup = (e) => {
+    //   isMousedown = false;
+    //   document
+    //     .getElementById("tbl")
+    //     .removeEventListener("mousemove", mousemove);
+    //   let tempArr = [...initArray];
+    //   Array.prototype.forEach.call(
+    //     document
+    //       .getElementById("tbl")
+    //       .querySelectorAll("td.selectedForChangingData"),
+    //     function (td) {
+    //       let tungdo = td.parentNode.rowIndex;
+    //       let hoanhdo = td.cellIndex;
+    //       tempArr[tungdo - 1][hoanhdo - 1] = value;
+    //     }
+    //   );
+    //   setInitArray(tempArr);
+    //   document.getElementById("tbl").removeEventListener("mouseup", mouseup);
+    // };
+    // document.getElementById("tbl").addEventListener("mousemove", mousemove);
+    // document.getElementById("tbl").addEventListener("mouseup", mouseup, false);
+    // event.target.parentNode.classList.add("cellSelected");
   };
 
   const menuStyle = {
@@ -855,36 +883,38 @@ const Table = (props) => {
 
   // handle resize column width when component did mount
   useEffect(() => {
-    let colNum = initArray[0].length
-    let maxWidth = window.screen.width
-    let colWidth = (maxWidth - 33 - 20) / colNum
-    Array.prototype.forEach.call(document.querySelectorAll('table th'),
+    let colNum = initArray[0].length;
+    let maxWidth = window.screen.width;
+    let colWidth = (maxWidth - 33 - 20) / colNum;
+    Array.prototype.forEach.call(
+      document.querySelectorAll("table th"),
       function (th) {
         if (th.cellIndex !== 0) {
-          th.style.width = colWidth + "px"
+          th.style.width = colWidth + "px";
         }
-      })
-  })
+      }
+    );
+  });
 
   // auto resize column height
   useEffect(() => {
-    const tx = document.getElementById('test');
-    tx.style.border = "1px solid black"
-    tx.parentNode.setAttribute('style', 'height:' + (tx.scrollHeight) + 'px;overflow-y:hidden;');
-    tx.addEventListener("input", OnInput, false);
+    const tx = document.getElementById("test");
+    tx.style.border = "1px solid black";
+    tx.parentNode.style.height = tx.scrollHeight + "px;overflow-y:hidden;";
+    tx.addEventListener("input", OnInput);
 
     function OnInput(e) {
-      console.log(e.target.scrollHeight)
-      tx.parentNode.style.height = 'auto';
-      tx.parentNode.style.height = (tx.scrollHeight) + 'px';
+      console.log(e.target.scrollHeight);
+      tx.parentNode.style.height = "auto";
+      tx.parentNode.style.height = e.target.scrollHeight + "px";
     }
 
-    return () => tx.removeEventListener("input", OnInput, false);
-  }, [])
+    return () => tx.removeEventListener("input", OnInput);
+  }, []);
   return (
     <>
       <div style={{ height: "30px", marginBottom: "20px" }}>
-        <textarea id="test" />
+        <textarea id="test" className="textArea" />
       </div>
       <div className={visible ? "menu" : "menu hiden"} style={menuStyle}>
         <div
@@ -979,8 +1009,9 @@ const Table = (props) => {
                         rindex={rindex}
                         cindex={cindex}
                         onChange={setInitArray}
-                        onClick={handleClickCell}
-                      />)
+                        // onClick={handleClickCell}
+                      />
+                    );
                   })}
               </tr>
             ))}
