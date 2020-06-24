@@ -504,7 +504,7 @@ const Table = (props) => {
     }
   };
   const handleClickCell = (event) => {
-    event.stopPropagation();
+    // event.stopPropagation();
     let td = event.target;
     if (td.tagName !== "TD") return;
     let rowIndex = td.parentNode.rowIndex;
@@ -1004,7 +1004,7 @@ const Table = (props) => {
                       key={cindex}
                       onClick={handleClickCell}
                       onDoubleClick={handleChangeCell}
-                      onKeyPress={() => console.log(e)}
+                      onKeyPress={(e) => e.target.dblclick()}
                     >
                       {columnData}
                     </td>
