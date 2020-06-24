@@ -74,12 +74,8 @@ const Table = (props) => {
 
     const mousemove = function (e) {
       let endElement = document.elementFromPoint(e.pageX, e.pageY);
-      if (
-        endElement !== null &&
-        endElement.parentNode.tagName === "TD" &&
-        endElement.tagName === "TEXTAREA"
-      ) {
-        let thisTD = endElement.parentNode;
+      if (endElement !== null && endElement.tagName === "TD") {
+        let thisTD = endElement;
         let cellIndex = thisTD.cellIndex;
         let rowIndex = thisTD.parentNode.rowIndex;
         let table = document.getElementById("tbl");
