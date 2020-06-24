@@ -715,7 +715,7 @@ const Table = (props) => {
     tempTextarea.style.position = "absolute";
     tempTextarea.style.top = rect.top - 1 + "px";
     tempTextarea.style.left = rect.left + "px";
-    tempTextarea.style.width = rect.width - 1 + "px";
+    tempTextarea.style.width = rect.width + "px";
     tempTextarea.style.height = rect.height - 5 + "px";
     tempTextarea.style.padding = "0px";
     tempTextarea.style.paddingTop = "5px";

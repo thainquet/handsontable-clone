@@ -6,6 +6,7 @@ table {
   height: 90vh;
   overflow: scroll;
   border: none;
+  cursor: cell;
 }
 tr {
   /* border-color: #ddd; */
@@ -35,6 +36,7 @@ input {
   background-color: transparent;
   border: none;
   outline: none;
+  cursor: cell;
 }
 
 td textarea {
@@ -49,6 +51,7 @@ td textarea {
   padding: 0px;
   padding-top: 4px;
   font-family: Roboto, Helvetica, Arial, sans-serif;
+  cursor: cell;
 }
 
 .resizeColumn {
