@@ -49,34 +49,6 @@ const cleanTable = () => {
   removeElementsByClass("outlineDiv");
 };
 
-const CellEntry = ({ value, rindex, cindex, onChange, onClick }) => {
-  // console.log([rindex, cindex], "rendered");
-  const textRef = useRef();
-  const $onChange = () => {
-    onChange((prev) => {
-      let tempArr = [...prev];
-      tempArr[rindex][cindex] = textRef.current.value;
-      return tempArr;
-    });
-  };
-
-  return (
-    <td className="cellData mycol">
-      <textarea
-        className="textArea"
-        rows="1"
-        cols="15"
-        ref={textRef}
-        value={value}
-        onChange={$onChange}
-        onClick={onClick}
-      />
-    </td>
-  );
-};
-
-const MemoEntry = memo(CellEntry);
-
 const Table = (props) => {
   // handle selected cell background
   useEffect(() => {
@@ -405,12 +377,8 @@ const Table = (props) => {
           });
           if (temp.length > 0) result.push(temp);
         });
-        // thingsToCopy = result;
         // Array of Node to Array of value
         result = result.map((i) => i.map((j) => j.childNodes[0].value));
-        // console.log(JSON.parse(JSON.stringify(result)));
-        // copyToClipboard(e.target.value);
-        // thingsToCopy = result;
         copyToClipboard(result);
       } else if (key === 86 && ctrl) {
         e.preventDefault();
@@ -418,10 +386,7 @@ const Table = (props) => {
           .readText()
           .then((data) => {
             data = JSON.parse(data);
-            if (
-              e.target.tagName === "TEXTAREA"
-              // && thingsToCopy.length > 0
-            ) {
+            if (e.target.tagName === "TEXTAREA") {
               let rowIndex = e.target.parentNode.parentNode.rowIndex;
               let cellIndex = e.target.parentNode.cellIndex;
               let tempArr = [...initArray];
@@ -544,10 +509,6 @@ const Table = (props) => {
   };
   const handleClickCell = (event) => {
     let rect = event.target.parentNode.getBoundingClientRect();
-    // let testTextarea = document.createElement("TEXTAREA");
-    // testTextarea.id = "testTa";
-    // testTextarea.click();
-    // document.getElementById("wrapper").appendChild(testTextarea);
     cleanTable();
     const tempArr = JSON.parse(JSON.stringify(initArray));
     setClipBoard([[...tempArr], [...theadData]]);
@@ -718,8 +679,6 @@ const Table = (props) => {
     tempParent.style.left = rect.left + "px";
     tempParent.style.width = rect.width + "px";
     tempParent.style.height = rect.height - 5 + "px";
-    // tempTextarea.style.padding = "0px";
-    // tempTextarea.style.paddingTop = "5px";
     tempTextarea.style.width = "100%";
     tempTextarea.id = "newTextarea";
     tempTextarea.rows = "1";
@@ -734,7 +693,6 @@ const Table = (props) => {
     tx.addEventListener("input", OnInput);
 
     function OnInput(e) {
-      // console.log(e.target.scrollHeight);
       tx.parentNode.style.height = "auto";
       tx.parentNode.style.height = e.target.scrollHeight + "px";
     }
@@ -783,7 +741,6 @@ const Table = (props) => {
     });
     setInitArray(tempArr);
     theadData.splice(indexOfCellAndArrayItem - 1, 1);
-    // setTheadData();
   };
 
   const handleUndo = (e) => {
@@ -962,26 +919,8 @@ const Table = (props) => {
     );
   });
 
-  // auto resize column height
-  // useEffect(() => {
-  //   const tx = document.getElementById("test");
-  //   tx.style.border = "1px solid black";
-  //   tx.parentNode.style.height = tx.scrollHeight + "px;overflow-y:hidden;";
-  //   tx.addEventListener("input", OnInput);
-
-  //   function OnInput(e) {
-  //     console.log(e.target.scrollHeight);
-  //     tx.parentNode.style.height = "auto";
-  //     tx.parentNode.style.height = e.target.scrollHeight + "px";
-  //   }
-
-  //   return () => tx.removeEventListener("input", OnInput);
-  // }, []);
   return (
     <>
-      {/* <div style={{ height: "30px", marginBottom: "20px" }}>
-        <textarea id="test" className="textArea" />
-      </div> */}
       <div className={visible ? "menu" : "menu hiden"} style={menuStyle}>
         <div
           className="menu-line"
@@ -997,12 +936,6 @@ const Table = (props) => {
         >
           Insert column left
         </div>
-        {/* <div
-          className="menu-line borderBottom"
-          // onClick={handleDeleteColumnContent}
-        >
-          Delete this column content
-        </div> */}
         <div className="menu-line borderBottom" onClick={handleUndo}>
           Undo
         </div>
@@ -1026,12 +959,6 @@ const Table = (props) => {
         <div className="menu-line" onClick={handleDeleteRow}>
           Delete this row
         </div>
-        {/* <div
-          className="menu-line"
-          // onClick={handleDeleteRowContent}
-        >
-          Delete this row content
-        </div> */}
       </div>
 
       <div id="wrapper">
@@ -1065,29 +992,9 @@ const Table = (props) => {
                 >
                   <input disabled={true} defaultValue="" />
                 </td>
-                {/* {rowData &&
-                  rowData.map((columnData, cindex) => {
-                    // console.log([columnData, cindex], `rendered`);
-                    return (
-                      <MemoEntry
-                        key={cindex}
-                        value={columnData}
-                        rindex={rindex}
-                        cindex={cindex}
-                        onChange={setInitArray}
-                        // onClick={handleClickCell}
-                      />
-                    );
-                  })} */}
                 {rowData &&
                   rowData.map((columnData, cindex) => (
-                    <td
-                      className="cellData mycol"
-                      key={cindex}
-                      // onClick={(e) => {
-                      //   console.log(e.target.childNodes[0]);
-                      // }}
-                    >
+                    <td className="cellData mycol" key={cindex}>
                       <textarea
                         className="textArea"
                         rows="1"
