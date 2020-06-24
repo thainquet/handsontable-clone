@@ -374,7 +374,7 @@ const Table = (props) => {
           if (temp.length > 0) result.push(temp);
         });
         // Array of Node to Array of value
-        result = result.map((i) => i.map((j) => j.childNodes[0].value));
+        result = result.map((i) => i.map((j) => j.textContent));
         copyToClipboard(result);
       } else if (key === 86 && ctrl) {
         e.preventDefault();
@@ -382,9 +382,10 @@ const Table = (props) => {
           .readText()
           .then((data) => {
             data = JSON.parse(data);
-            if (e.target.tagName === "TEXTAREA") {
-              let rowIndex = e.target.parentNode.parentNode.rowIndex;
-              let cellIndex = e.target.parentNode.cellIndex;
+            console.log(data);
+            if (e.target.tagName === "TD") {
+              let rowIndex = e.target.parentNode.rowIndex;
+              let cellIndex = e.target.cellIndex;
               let tempArr = [...initArray];
               if (cellIndex - 1 + data[0].length > tempArr[0].length) {
                 let num = cellIndex - 1 + data[0].length - tempArr[0].length;
@@ -999,6 +1000,7 @@ const Table = (props) => {
                 {rowData &&
                   rowData.map((columnData, cindex) => (
                     <td
+                      tabIndex={cindex}
                       className="cellData mycol"
                       key={cindex}
                       onClick={handleClickCell}
