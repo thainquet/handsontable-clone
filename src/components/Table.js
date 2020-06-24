@@ -712,17 +712,32 @@ const Table = (props) => {
     let rect = e.target.getBoundingClientRect();
     let table = document.getElementById("tbl");
     let tempTextarea = document.createElement("TEXTAREA");
-    tempTextarea.style.position = "absolute";
-    tempTextarea.style.top = rect.top - 1 + "px";
-    tempTextarea.style.left = rect.left + "px";
-    tempTextarea.style.width = rect.width + "px";
-    tempTextarea.style.height = rect.height - 5 + "px";
-    tempTextarea.style.padding = "0px";
-    tempTextarea.style.paddingTop = "5px";
+    let tempParent = document.createElement("DIV");
+    tempParent.style.position = "absolute";
+    tempParent.style.top = rect.top - 1 + "px";
+    tempParent.style.left = rect.left + "px";
+    tempParent.style.width = rect.width + "px";
+    tempParent.style.height = rect.height - 5 + "px";
+    // tempTextarea.style.padding = "0px";
+    // tempTextarea.style.paddingTop = "5px";
+    tempTextarea.style.width = "100%";
     tempTextarea.id = "newTextarea";
-    table.append(tempTextarea);
+    tempTextarea.rows = "1";
+    tempParent.appendChild(tempTextarea);
+    table.append(tempParent);
+
     tempTextarea.value = e.target.value;
     tempTextarea.focus();
+
+    let tx = tempTextarea;
+    tx.parentNode.style.height = tx.scrollHeight + "px;overflow-y:hidden;";
+    tx.addEventListener("input", OnInput);
+
+    function OnInput(e) {
+      // console.log(e.target.scrollHeight);
+      tx.parentNode.style.height = "auto";
+      tx.parentNode.style.height = e.target.scrollHeight + "px";
+    }
 
     let tungdo = e.target.parentNode.parentNode.rowIndex;
     let hoanhdo = e.target.parentNode.cellIndex;
@@ -731,9 +746,19 @@ const Table = (props) => {
     tempTextarea.onblur = function (e) {
       tempArr[tungdo - 1][hoanhdo - 1] = e.target.value;
       setInitArray(tempArr);
-      table.removeChild(tempTextarea);
+      table.removeChild(tempParent);
     };
   };
+
+  useEffect(() => {
+    let allTD = document.querySelectorAll("table td");
+    Array.prototype.forEach.call(allTD, (td) => {
+      // min scrollHeight = 23 <> 1 rows
+      if (td.childNodes[0].scrollHeight > 30) {
+        td.style.height = td.childNodes[0].scrollHeight + 2 + "px";
+      }
+    });
+  });
 
   const handleDeleteRow = (event) => {
     event.preventDefault();
@@ -938,25 +963,25 @@ const Table = (props) => {
   });
 
   // auto resize column height
-  useEffect(() => {
-    const tx = document.getElementById("test");
-    tx.style.border = "1px solid black";
-    tx.parentNode.style.height = tx.scrollHeight + "px;overflow-y:hidden;";
-    tx.addEventListener("input", OnInput);
+  // useEffect(() => {
+  //   const tx = document.getElementById("test");
+  //   tx.style.border = "1px solid black";
+  //   tx.parentNode.style.height = tx.scrollHeight + "px;overflow-y:hidden;";
+  //   tx.addEventListener("input", OnInput);
 
-    function OnInput(e) {
-      console.log(e.target.scrollHeight);
-      tx.parentNode.style.height = "auto";
-      tx.parentNode.style.height = e.target.scrollHeight + "px";
-    }
+  //   function OnInput(e) {
+  //     console.log(e.target.scrollHeight);
+  //     tx.parentNode.style.height = "auto";
+  //     tx.parentNode.style.height = e.target.scrollHeight + "px";
+  //   }
 
-    return () => tx.removeEventListener("input", OnInput);
-  }, []);
+  //   return () => tx.removeEventListener("input", OnInput);
+  // }, []);
   return (
     <>
-      <div style={{ height: "30px", marginBottom: "20px" }}>
+      {/* <div style={{ height: "30px", marginBottom: "20px" }}>
         <textarea id="test" className="textArea" />
-      </div>
+      </div> */}
       <div className={visible ? "menu" : "menu hiden"} style={menuStyle}>
         <div
           className="menu-line"
@@ -1064,6 +1089,7 @@ const Table = (props) => {
                       // }}
                     >
                       <textarea
+                        className="textArea"
                         rows="1"
                         cols="15"
                         value={columnData}
