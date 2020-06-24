@@ -224,8 +224,6 @@ const Table = (props) => {
             if (td.cellIndex === thElm.cellIndex) {
               removeElementsByClass("dot");
               td.style.width = startOffset + e.pageY + "px";
-              td.childNodes[0].style.width = "100%";
-              td.childNodes[0].style.height = "100%";
             }
           }
         );
@@ -835,6 +833,7 @@ const Table = (props) => {
         });
 
         function startDrag() {
+          th.style.cursor = "grab";
           let divA = document.createElement("div");
           divA.id = "A";
           divA.style.position = "absolute";
@@ -1004,7 +1003,7 @@ const Table = (props) => {
                       key={cindex}
                       onClick={handleClickCell}
                       onDoubleClick={handleChangeCell}
-                      onKeyPress={(e) => e.target.dblclick()}
+                      onKeyPress={handleChangeCell}
                     >
                       {columnData}
                     </td>
