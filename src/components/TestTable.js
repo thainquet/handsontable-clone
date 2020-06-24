@@ -50,6 +50,32 @@ const cleanTable = () => {
 };
 
 const Table = (props) => {
+  const { tableData } = props;
+  let beginArr = [];
+  let [theadData, setTheadData] = useState([
+    "Id",
+    "Country",
+    "Code",
+    "Currency",
+    "Level",
+    "Units",
+    "Date",
+    "Change",
+  ]);
+  const [clipBoard, setClipBoard] = useState();
+  // for (let key in dummyData[0]) theadData.push(key);
+  // beginArr.push(theadData);
+  dummyData.forEach((item) => {
+    let tbodyData = [];
+    for (let key in item) {
+      let value = item[key];
+      tbodyData.push(value);
+    }
+    beginArr.push(tbodyData);
+  });
+
+  const [initArray, setInitArray] = useState(beginArr);
+  if (tableData) setInitArray(tableData);
   // handle selected cell background
   useEffect(() => {
     let startCellIndex, startRowIndex;
@@ -124,7 +150,7 @@ const Table = (props) => {
     document.getElementById("tbl").addEventListener("mouseup", function (e) {
       isMousedown = false;
     });
-  }, []);
+  }, [initArray]);
   // handle keydown delete and backspace
   const hasSelectedCells = () => {
     return document.getElementById("tbl").getElementsByClassName("selected")
@@ -231,32 +257,6 @@ const Table = (props) => {
       }
     );
   });
-  const { tableData } = props;
-  let beginArr = [];
-  let [theadData, setTheadData] = useState([
-    "Id",
-    "Country",
-    "Code",
-    "Currency",
-    "Level",
-    "Units",
-    "Date",
-    "Change",
-  ]);
-  const [clipBoard, setClipBoard] = useState();
-  // for (let key in dummyData[0]) theadData.push(key);
-  // beginArr.push(theadData);
-  dummyData.forEach((item) => {
-    let tbodyData = [];
-    for (let key in item) {
-      let value = item[key];
-      tbodyData.push(value);
-    }
-    beginArr.push(tbodyData);
-  });
-
-  const [initArray, setInitArray] = useState(beginArr);
-  if (tableData) setInitArray(tableData);
   let maxColumnAmount = Math.floor((window.screen.width - 50) / 125);
   if (theadData.length < maxColumnAmount) {
     for (let i = theadData.length; i < maxColumnAmount; i++) {
@@ -382,7 +382,6 @@ const Table = (props) => {
           .readText()
           .then((data) => {
             data = JSON.parse(data);
-            console.log(data);
             if (e.target.tagName === "TD") {
               let rowIndex = e.target.parentNode.rowIndex;
               let cellIndex = e.target.cellIndex;
