@@ -388,9 +388,9 @@ const Table = (props) => {
                 let num = cellIndex - 1 + data[0].length - tempArr[0].length;
                 while (num-- > 0) {
                   tempArr.forEach((el) => {
-                    el.splice(cellIndex, 0, "");
+                    el.splice(tempArr[0].length, 0, "");
                   });
-                  theadData.splice(cellIndex, 0, "");
+                  theadData.splice(tempArr[0].length, 0, "");
                 }
               }
               if (rowIndex - 1 + data.length > tempArr.length) {
