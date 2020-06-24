@@ -396,9 +396,9 @@ const Table = (props) => {
               if (rowIndex - 1 + data.length > tempArr.length) {
                 let num = rowIndex - 1 + data.length - tempArr.length;
                 const lengthItem = tempArr[0].length;
-                const Item = new Array(lengthItem).fill("");
                 while (num-- > 0) {
-                  tempArr.splice(rowIndex, 0, Item);
+                  const Item = new Array(lengthItem).fill("");
+                  tempArr.push(Item);
                 }
               }
               copyMultiLine(data, tempArr, rowIndex - 1, cellIndex - 1);
