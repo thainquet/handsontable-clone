@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useState, useEffect, useRef, memo } from "react";
 import "./Table.css";
-import dummyData from "./dummyData.js";
+import dummyData from "../dummyData.js";
 
 // let thingsToCopy = [];
 
@@ -52,20 +52,15 @@ const cleanTable = () => {
 const Table = (props) => {
   const { tableData } = props;
   let beginArr = [];
-  let [theadData, setTheadData] = useState([
-    "Id",
-    "Country",
-    "Code",
-    "Currency",
-    "Level",
-    "Units",
-    "Date",
-    "Change",
-  ]);
   const [clipBoard, setClipBoard] = useState();
-  // for (let key in dummyData[0]) theadData.push(key);
-  // beginArr.push(theadData);
-  dummyData.forEach((item) => {
+  // set header row data
+  let theadProps = [];
+  for (let key in tableData[0]) theadProps.push(key);
+  let [theadData, setTheadData] = useState(
+    theadProps.length > 0 ? theadProps : []
+  );
+  // set body table data
+  tableData.forEach((item) => {
     let tbodyData = [];
     for (let key in item) {
       let value = item[key];
@@ -74,8 +69,9 @@ const Table = (props) => {
     beginArr.push(tbodyData);
   });
 
-  const [initArray, setInitArray] = useState(beginArr);
-  if (tableData) setInitArray(tableData);
+  const [initArray, setInitArray] = useState(
+    beginArr.length > 0 ? beginArr : []
+  );
   // handle selected cell background
   useEffect(() => {
     let startCellIndex, startRowIndex;
