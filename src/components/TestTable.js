@@ -146,11 +146,19 @@ const Table = (props) => {
         }
       }
     };
-    document.getElementById("tbl").addEventListener("mousemove", mousemove);
-    document.getElementById("tbl").addEventListener("mouseup", function (e) {
+    const mouseup = function (e) {
       isMousedown = false;
-    });
-  }, [initArray]);
+    };
+    document.getElementById("tbl").addEventListener("mousemove", mousemove);
+    document.getElementById("tbl").addEventListener("mouseup", mouseup);
+    return () => {
+      document
+        .getElementById("tbl")
+        .removeEventListener("mousemove", mousemove);
+      document.getElementById("tbl").removeEventListener("mouseup", mouseup);
+    };
+  }, [initArray.length, initArray[0].length]);
+  // }, []);
   // handle keydown delete and backspace
   const hasSelectedCells = () => {
     return document.getElementById("tbl").getElementsByClassName("selected")
@@ -417,7 +425,7 @@ const Table = (props) => {
       document
         .getElementById("tbl")
         .removeEventListener("keydown", handleCopyPaste, false);
-  });
+  }, []);
   // resize row
   useEffect(() => {
     let thElm;
@@ -527,83 +535,79 @@ const Table = (props) => {
       .getElementById("tbl")
       .rows[0].cells[cellIndex].classList.add("selectedBoundaryColor");
 
-    // document
-    //   .getElementsByClassName("dot")[0]
-    //   .addEventListener("mousedown", function (e) {
-    //     clearAllSelectedCell();
-    //     isMousedown = true;
-    //     startCellIndex = td.cellIndex;
-    //     startRowIndex = td.parentNode.rowIndex;
-    //   });
-    // const mousemove = function (e) {
-    //   let endElement = document.elementFromPoint(e.pageX, e.pageY);
-    //   if (
-    //     endElement !== null &&
-    //     endElement.parentNode.tagName === "TD" &&
-    //     endElement.tagName === "TEXTAREA"
-    //   ) {
-    //     let thisTD = endElement.parentNode;
-    //     let cellIndex = thisTD.cellIndex;
-    //     let rowIndex = thisTD.parentNode.rowIndex;
-    //     let table = document.getElementById("tbl");
-    //     let rowStart, rowEnd, cellStart, cellEnd;
+    document
+      .getElementsByClassName("dot")[0]
+      .addEventListener("mousedown", function (e) {
+        clearAllSelectedCell();
+        isMousedown = true;
+        startCellIndex = td.cellIndex;
+        startRowIndex = td.parentNode.rowIndex;
+      });
+    const mousemove = function (e) {
+      let endElement = document.elementFromPoint(e.pageX, e.pageY);
+      if (endElement !== null && endElement.tagName === "TD") {
+        let thisTD = endElement;
+        let cellIndex = thisTD.cellIndex;
+        let rowIndex = thisTD.parentNode.rowIndex;
+        let table = document.getElementById("tbl");
+        let rowStart, rowEnd, cellStart, cellEnd;
 
-    //     if (rowIndex < startRowIndex) {
-    //       rowStart = rowIndex;
-    //       rowEnd = startRowIndex;
-    //       cellStart = cellEnd = startCellIndex;
-    //     } else if (rowIndex > startRowIndex) {
-    //       rowStart = startRowIndex;
-    //       rowEnd = rowIndex;
-    //       cellStart = cellEnd = startCellIndex;
-    //     } else {
-    //       rowStart = rowEnd = startRowIndex;
-    //       if (cellIndex < startCellIndex) {
-    //         cellStart = cellIndex;
-    //         cellEnd = startCellIndex;
-    //       } else {
-    //         cellStart = startCellIndex;
-    //         cellEnd = cellIndex;
-    //       }
-    //     }
-    //     if (isMousedown) {
-    //       Array.prototype.forEach.call(
-    //         document.getElementById("tbl").querySelectorAll("td"),
-    //         function (e) {
-    //           e.classList.remove("selectedForChangingData", "selected");
-    //         }
-    //       );
-    //       for (let i = rowStart; i <= rowEnd; i++) {
-    //         for (let j = cellStart; j <= cellEnd; j++) {
-    //           let thisCell = table.rows[i].cells[j];
-    //           thisCell.classList.add("selectedForChangingData");
-    //         }
-    //       }
-    //     }
-    //   }
-    // };
+        if (rowIndex < startRowIndex) {
+          rowStart = rowIndex;
+          rowEnd = startRowIndex;
+          cellStart = cellEnd = startCellIndex;
+        } else if (rowIndex > startRowIndex) {
+          rowStart = startRowIndex;
+          rowEnd = rowIndex;
+          cellStart = cellEnd = startCellIndex;
+        } else {
+          rowStart = rowEnd = startRowIndex;
+          if (cellIndex < startCellIndex) {
+            cellStart = cellIndex;
+            cellEnd = startCellIndex;
+          } else {
+            cellStart = startCellIndex;
+            cellEnd = cellIndex;
+          }
+        }
+        if (isMousedown) {
+          Array.prototype.forEach.call(
+            document.getElementById("tbl").querySelectorAll("td"),
+            function (e) {
+              e.classList.remove("selectedForChangingData", "selected");
+            }
+          );
+          for (let i = rowStart; i <= rowEnd; i++) {
+            for (let j = cellStart; j <= cellEnd; j++) {
+              let thisCell = table.rows[i].cells[j];
+              thisCell.classList.add("selectedForChangingData");
+            }
+          }
+        }
+      }
+    };
 
-    // const mouseup = (e) => {
-    //   isMousedown = false;
-    //   document
-    //     .getElementById("tbl")
-    //     .removeEventListener("mousemove", mousemove);
-    //   let tempArr = [...initArray];
-    //   Array.prototype.forEach.call(
-    //     document
-    //       .getElementById("tbl")
-    //       .querySelectorAll("td.selectedForChangingData"),
-    //     function (td) {
-    //       let tungdo = td.parentNode.rowIndex;
-    //       let hoanhdo = td.cellIndex;
-    //       tempArr[tungdo - 1][hoanhdo - 1] = value;
-    //     }
-    //   );
-    //   setInitArray(tempArr);
-    //   document.getElementById("tbl").removeEventListener("mouseup", mouseup);
-    // };
-    // document.getElementById("tbl").addEventListener("mousemove", mousemove);
-    // document.getElementById("tbl").addEventListener("mouseup", mouseup, false);
+    const mouseup = (e) => {
+      isMousedown = false;
+      document
+        .getElementById("tbl")
+        .removeEventListener("mousemove", mousemove);
+      let tempArr = [...initArray];
+      Array.prototype.forEach.call(
+        document
+          .getElementById("tbl")
+          .querySelectorAll("td.selectedForChangingData"),
+        function (td) {
+          let tungdo = td.parentNode.rowIndex;
+          let hoanhdo = td.cellIndex;
+          tempArr[tungdo - 1][hoanhdo - 1] = value;
+        }
+      );
+      setInitArray(tempArr);
+      document.getElementById("tbl").removeEventListener("mouseup", mouseup);
+    };
+    document.getElementById("tbl").addEventListener("mousemove", mousemove);
+    document.getElementById("tbl").addEventListener("mouseup", mouseup, false);
     event.target.classList.add("cellSelected");
   };
 
