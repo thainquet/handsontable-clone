@@ -76,21 +76,23 @@ const Table = (props) => {
   useEffect(() => {
     let startCellIndex, startRowIndex;
     let isMousedown = false;
+    const mousedown = function (e) {
+      e.target.click();
+      Array.prototype.forEach.call(
+        document.getElementById("tbl").querySelectorAll("td"),
+        function (e) {
+          e.classList.remove("selected");
+        }
+      );
+      isMousedown = true;
+      startCellIndex = e.target.cellIndex;
+      startRowIndex = e.target.parentNode.rowIndex;
+    };
     Array.prototype.forEach.call(
       document.querySelectorAll("table td.mycol"),
       function (td) {
-        td.addEventListener("mousedown", function (e) {
-          e.target.click();
-          Array.prototype.forEach.call(
-            document.getElementById("tbl").querySelectorAll("td"),
-            function (e) {
-              e.classList.remove("selected");
-            }
-          );
-          isMousedown = true;
-          startCellIndex = td.cellIndex;
-          startRowIndex = td.parentNode.rowIndex;
-        });
+        td.removeEventListener("mousedown", mousedown);
+        td.addEventListener("mousedown", mousedown);
       }
     );
 
@@ -145,16 +147,18 @@ const Table = (props) => {
     const mouseup = function (e) {
       isMousedown = false;
     };
+    document.getElementById("tbl").removeEventListener("mousemove", mousemove);
+    document.getElementById("tbl").removeEventListener("mouseup", mouseup);
     document.getElementById("tbl").addEventListener("mousemove", mousemove);
     document.getElementById("tbl").addEventListener("mouseup", mouseup);
-    return () => {
-      document
-        .getElementById("tbl")
-        .removeEventListener("mousemove", mousemove);
-      document.getElementById("tbl").removeEventListener("mouseup", mouseup);
-    };
-  }, [initArray.length, initArray[0].length]);
-  // }, []);
+    // return () => {
+    //   document
+    //     .getElementById("tbl")
+    //     .removeEventListener("mousemove", mousemove);
+    //   document.getElementById("tbl").removeEventListener("mouseup", mouseup);
+    // };
+    // }, [initArray.length, initArray[0].length]);
+  }, []);
   // handle keydown delete and backspace
   const hasSelectedCells = () => {
     return document.getElementById("tbl").getElementsByClassName("selected")
@@ -357,6 +361,10 @@ const Table = (props) => {
       var key = e.which || e.keyCode; // keyCode detection
       var ctrl = e.ctrlKey ? e.ctrlKey : key === 17 ? true : false; // ctrl detection
 
+      let rowIndex = e.target.parentNode.rowIndex;
+      let cellIndex = e.target.cellIndex;
+      let tempArr = [...initArray];
+
       if (key === 67 && ctrl) {
         let table = document.getElementById("tbl");
         let allRows = Array.from(table.rows);
@@ -385,9 +393,6 @@ const Table = (props) => {
           .then((data) => {
             data = JSON.parse(data);
             if (e.target.tagName === "TD") {
-              let rowIndex = e.target.parentNode.rowIndex;
-              let cellIndex = e.target.cellIndex;
-              let tempArr = [...initArray];
               if (cellIndex - 1 + data[0].length > tempArr[0].length) {
                 let num = cellIndex - 1 + data[0].length - tempArr[0].length;
                 while (num-- > 0) {
@@ -396,6 +401,9 @@ const Table = (props) => {
                   });
                   theadData.splice(tempArr[0].length, 0, "");
                 }
+                copyMultiLine(data, tempArr, rowIndex - 1, cellIndex - 1);
+                setInitArray(tempArr);
+                return;
               }
               if (rowIndex - 1 + data.length > tempArr.length) {
                 let num = rowIndex - 1 + data.length - tempArr.length;
@@ -404,6 +412,9 @@ const Table = (props) => {
                   const Item = new Array(lengthItem).fill("");
                   tempArr.push(Item);
                 }
+                copyMultiLine(data, tempArr, rowIndex - 1, cellIndex - 1);
+                setInitArray(tempArr);
+                return;
               }
               copyMultiLine(data, tempArr, rowIndex - 1, cellIndex - 1);
               setInitArray(tempArr);
@@ -513,8 +524,8 @@ const Table = (props) => {
     let cellIndex = td.cellIndex;
     let rect = td.getBoundingClientRect();
     cleanTable();
-    const tempArr = JSON.parse(JSON.stringify(initArray));
-    setClipBoard([[...tempArr], [...theadData]]);
+    // const tempArr = JSON.parse(JSON.stringify(initArray));
+    // setClipBoard([[...tempArr], [...theadData]]);
 
     let dot = document.createElement("DIV");
     dot.innerHTML = "";
@@ -678,6 +689,7 @@ const Table = (props) => {
     tempParent.style.height = rect.height - 2 + "px";
     //
     tempTextarea.style.width = "100%";
+    tempTextarea.style.backgroundColor = "transparent";
     tempTextarea.id = "newTextarea";
     tempTextarea.rows = "1";
     tempTextarea.style.padding = "0";
